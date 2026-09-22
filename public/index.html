@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BMA Digital Strategy Dashboard</title>
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: 'Sarabun', sans-serif; background-color: #f8f9fa; }
@@ -33,7 +31,18 @@
     </div>
 
     <div id="dashboardContent" class="d-none">
-        <!-- 1. Executive Summaries (ตัวเลขภาพรวม) -->
+        
+        <!-- แถบตัวกรอง (Filters) -->
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label class="form-label fw-bold text-muted">กรองตามหน่วยงาน (R)</label>
+                <select id="deptFilter" class="form-select" onchange="applyFilters()">
+                    <option value="all">แสดงทั้งหมด</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 1. Executive Summaries -->
         <div class="row mb-4">
             <div class="col-md-3">
                 <div class="card card-custom bg-white border-start border-primary border-4 h-100">
@@ -71,26 +80,32 @@
 
         <!-- 2. กราฟ (Charts) -->
         <div class="row mb-4">
-            <div class="col-md-6">
+            <div class="col-md-6 mb-3">
                 <div class="card card-custom h-100">
                     <div class="card-body">
                         <h5 class="card-title fw-bold">สัดส่วนงบประมาณแบ่งตามยุทธศาสตร์ (ด้าน)</h5>
-                        <canvas id="budgetChart" height="250"></canvas>
+                        <!-- แก้บัคกราฟยืดเด้งตรงนี้ -->
+                        <div style="position: relative; height: 250px; width: 100%;">
+                            <canvas id="budgetChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 mb-3">
                 <div class="card card-custom h-100">
                     <div class="card-body">
-                        <h5 class="card-title fw-bold">ภาพรวมความสำเร็จของโครงการ (ร้อยละ)</h5>
-                        <canvas id="progressChart" height="250"></canvas>
+                        <h5 class="card-title fw-bold">ความสำเร็จเฉลี่ยของโครงการ แบ่งตามด้าน (%)</h5>
+                        <!-- แก้บัคกราฟยืดเด้งตรงนี้ -->
+                        <div style="position: relative; height: 250px; width: 100%;">
+                            <canvas id="progressChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 3. ตารางข้อมูล (Operational View) -->
-        <div class="table-responsive mt-4">
+        <!-- 3. ตารางข้อมูล -->
+        <div class="table-responsive">
             <h5 class="fw-bold mb-3">รายการโครงการและผลการดำเนินงาน</h5>
             <table class="table table-hover align-middle">
                 <thead class="table-light">
@@ -114,6 +129,7 @@
 <script>
     let budgetChartInstance = null;
     let progressChartInstance = null;
+    let globalData = []; // เก็บข้อมูลต้นฉบับไว้ทำ Filter
 
     async function fetchData() {
         const year = document.getElementById('yearSelect').value;
@@ -121,62 +137,93 @@
         document.getElementById('dashboardContent').classList.add('d-none');
 
         try {
-            // ดึงข้อมูลผ่าน API 
-            // หากคุณใช้ไฟล์นี้ทดสอบบนเครื่องที่ยังไม่ต่อ Backend ให้จำลองข้อมูล (Mock Data) ตรงนี้แทนได้
             const response = await fetch(`/api/data?year=${year}`);
             const result = await response.json();
             
             if(result.status === 'success') {
-                processDashboardData(result.data);
+                globalData = result.data.filter(row => row['โครงการ/กิจกรรม ตาม\nแผนปฏิบัติราชการของหน่วยงาน']); // กรองเฉพาะแถวที่มีชื่อโครงการ
+                populateFilters(globalData);
+                applyFilters(); // แสดงผลทั้งหมด
             } else {
                 alert("ข้อมูลจาก Sheet ผิดพลาด: " + result.error);
             }
         } catch (error) {
             console.error(error);
-            alert("ไม่สามารถดึงข้อมูลได้ กรุณาตรวจสอบการตั้งค่า Vercel / API");
+            alert("ไม่สามารถดึงข้อมูลได้ กรุณาตรวจสอบการเชื่อมต่อ");
         } finally {
             document.getElementById('loading').classList.add('d-none');
             document.getElementById('dashboardContent').classList.remove('d-none');
         }
     }
 
+    function populateFilters(data) {
+        const deptSelect = document.getElementById('deptFilter');
+        const depts = new Set();
+        
+        data.forEach(row => {
+            let dept = row['หน่วยงาน (R)'];
+            if(dept && dept.trim() !== '') depts.add(dept.trim());
+        });
+
+        // รีเซ็ตตัวกรองและสร้างตัวเลือกใหม่
+        deptSelect.innerHTML = '<option value="all">แสดงทั้งหมด</option>';
+        depts.forEach(dept => {
+            let option = document.createElement('option');
+            option.value = dept;
+            option.innerText = dept;
+            deptSelect.appendChild(option);
+        });
+    }
+
+    function applyFilters() {
+        const selectedDept = document.getElementById('deptFilter').value;
+        
+        // กรองข้อมูลตาม Dropdown
+        let filteredData = globalData;
+        if (selectedDept !== 'all') {
+            filteredData = globalData.filter(row => (row['หน่วยงาน (R)'] || '').trim() === selectedDept);
+        }
+
+        processDashboardData(filteredData);
+    }
+
     function processDashboardData(data) {
         let totalBudget = 0;
         let totalSpent = 0;
-        let validProjects = 0;
+        let validProjects = data.length;
         
         let budgetByCategory = {};
+        let progressByCategory = {};
         let tableHTML = '';
 
         data.forEach(row => {
-            // ข้ามแถวที่ไม่มีชื่อโครงการ
-            if(!row['โครงการ/กิจกรรม ตาม\nแผนปฏิบัติราชการของหน่วยงาน']) return;
-            
-            validProjects++;
-
-            // จัดการตัวเลขงบประมาณ
             let budget = parseFloat(row['งบประมาณจัดสรร (บาท)']) || 0;
             let spent = parseFloat(row['ผลการเบิกจ่ายจริง (บาท)']) || 0;
             totalBudget += budget;
             totalSpent += spent;
 
-            // จัดกลุ่มงบประมาณตาม "ด้าน"
             let category = row['ด้าน'] || 'ไม่ระบุ';
+            
+            // 1. รวมงบประมาณตามด้าน
             if(!budgetByCategory[category]) budgetByCategory[category] = 0;
             budgetByCategory[category] += budget;
 
-            // คำนวณความสำเร็จของโครงการ (%)
-            let target = parseFloat(row['ค่าเป้าหมายของโครงการ/กิจกรรม']) || 1; // กันหาร 0
+            // 2. คำนวณความสำเร็จของโปรเจกต์
+            let target = parseFloat(row['ค่าเป้าหมายของโครงการ/กิจกรรม']) || 1;
             let actual = parseFloat(row['ผลการดำเนินงานตามค่าเป้าหมายของโครงการ/กิจกรรม']) || 0;
-            let progressPercent = Math.min((actual / target) * 100, 100).toFixed(2);
+            let progressPercent = Math.min((actual / target) * 100, 100);
 
-            // จัดการลิงก์เอกสาร
+            // เก็บค่าไว้หาค่าเฉลี่ยความสำเร็จตามด้าน
+            if(!progressByCategory[category]) progressByCategory[category] = { sum: 0, count: 0 };
+            progressByCategory[category].sum += progressPercent;
+            progressByCategory[category].count += 1;
+
+            // 3. จัดการตาราง
             let docLink = row['ลิงก์ไฟล์เอกสารโครงการ'];
             let docButton = docLink && docLink.startsWith('http') 
-                ? `<a href="${docLink}" target="_blank" class="btn btn-sm btn-outline-primary">📂 ดูเอกสาร</a>`
-                : `<span class="text-muted" style="font-size:0.85em;">ไม่มีไฟล์แนบ</span>`;
+                ? `<a href="${docLink}" target="_blank" class="btn btn-sm btn-outline-primary">📂 เอกสาร</a>`
+                : `<span class="text-muted" style="font-size:0.85em;">ไม่มีไฟล์</span>`;
 
-            // สร้างแถวตาราง
             tableHTML += `
                 <tr>
                     <td><span class="badge bg-secondary">${row['รหัส KRs'] || '-'}</span></td>
@@ -184,7 +231,7 @@
                     <td>${row['หน่วยงาน (R)'] || '-'}</td>
                     <td>
                         <div class="d-flex align-items-center">
-                            <span class="me-2">${progressPercent}%</span>
+                            <span class="me-2">${progressPercent.toFixed(2)}%</span>
                             <div class="progress w-100" style="height: 6px;">
                                 <div class="progress-bar ${progressPercent == 100 ? 'bg-success' : 'bg-primary'}" role="progressbar" style="width: ${progressPercent}%;"></div>
                             </div>
@@ -207,16 +254,22 @@
         // ใส่ข้อมูลลงตาราง
         document.getElementById('projectTableBody').innerHTML = tableHTML;
 
-        // วาดกราฟ
-        drawCharts(budgetByCategory);
+        // คำนวณค่าเฉลี่ยความสำเร็จตามด้าน
+        let avgProgressLabels = [];
+        let avgProgressData = [];
+        for (let cat in progressByCategory) {
+            avgProgressLabels.push(cat);
+            avgProgressData.push( (progressByCategory[cat].sum / progressByCategory[cat].count).toFixed(2) );
+        }
+
+        drawCharts(budgetByCategory, avgProgressLabels, avgProgressData);
     }
 
-    function drawCharts(budgetByCategory) {
-        // ทำลายกราฟเก่าก่อนวาดใหม่ (ป้องกันบัคเวลากดเปลี่ยนปีงบประมาณ)
+    function drawCharts(budgetByCategory, avgProgressLabels, avgProgressData) {
         if(budgetChartInstance) budgetChartInstance.destroy();
         if(progressChartInstance) progressChartInstance.destroy();
 
-        // 1. กราฟโดนัท (งบประมาณตามด้าน)
+        // 1. กราฟโดนัท (งบประมาณ)
         const ctxBudget = document.getElementById('budgetChart').getContext('2d');
         budgetChartInstance = new Chart(ctxBudget, {
             type: 'doughnut',
@@ -230,19 +283,25 @@
             options: { responsive: true, maintainAspectRatio: false }
         });
 
-        // 2. กราฟแท่ง (ตัวอย่าง Mockup ภาพรวมการเบิกจ่ายรายไตรมาส - สามารถปรับแก้ดึงจาก Data จริงภายหลังได้)
+        // 2. กราฟแท่ง (ร้อยละความสำเร็จเฉลี่ย แยกตามด้าน)
         const ctxProgress = document.getElementById('progressChart').getContext('2d');
         progressChartInstance = new Chart(ctxProgress, {
             type: 'bar',
             data: {
-                labels: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4'],
+                labels: avgProgressLabels,
                 datasets: [{
-                    label: 'ความสำเร็จเฉลี่ยสะสม (%)',
-                    data: [15, 45, 60, 85], // ข้อมูลสมมติสำหรับแสดงผลการเติบโต
-                    backgroundColor: '#0d6efd'
+                    label: 'ความสำเร็จเฉลี่ย (%)',
+                    data: avgProgressData,
+                    backgroundColor: '#198754'
                 }]
             },
-            options: { responsive: true, maintainAspectRatio: false }
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, max: 100 }
+                }
+            }
         });
     }
 
