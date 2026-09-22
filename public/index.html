@@ -129,7 +129,18 @@
 <script>
     let budgetChartInstance = null;
     let progressChartInstance = null;
-    let globalData = []; // เก็บข้อมูลต้นฉบับไว้ทำ Filter
+    let globalData = [];
+    
+    // ตัวแปรเก็บชื่อคอลัมน์ที่หาเจอแบบไดนามิก
+    let colProjectName = '';
+    let colKR = '';
+    let colDept = '';
+    let colBudget = '';
+    let colSpent = '';
+    let colTarget = '';
+    let colActual = '';
+    let colDoc = '';
+    let colCategory = '';
 
     async function fetchData() {
         const year = document.getElementById('yearSelect').value;
@@ -141,15 +152,41 @@
             const result = await response.json();
             
             if(result.status === 'success') {
-                globalData = result.data.filter(row => row['โครงการ/กิจกรรม ตาม\nแผนปฏิบัติราชการของหน่วยงาน']); // กรองเฉพาะแถวที่มีชื่อโครงการ
+                const data = result.data;
+                console.log("📥 ข้อมูลดิบจาก API:", data); // เอาไว้ดูใน Console (F12)
+
+                if(data.length === 0) {
+                    alert("เชื่อมต่อ Sheet สำเร็จ แต่ไม่พบข้อมูลใน Sheet ปี " + year);
+                    return;
+                }
+
+                // ดึงชื่อคอลัมน์ทั้งหมดจากแถวแรก เพื่อหาคอลัมน์ที่ต้องการแบบยืดหยุ่น (แก้ปัญหาการขึ้นบรรทัดใหม่)
+                const keys = Object.keys(data[0]);
+                colProjectName = keys.find(k => k.includes('โครงการ/กิจกรรม') && k.includes('หน่วยงาน')) || keys[14];
+                colKR = keys.find(k => k.includes('รหัส KRs')) || keys[1];
+                colDept = keys.find(k => k.includes('หน่วยงาน (R)')) || keys[9];
+                colBudget = keys.find(k => k.includes('งบประมาณจัดสรร')) || keys[19];
+                colSpent = keys.find(k => k.includes('ผลการเบิกจ่ายจริง')) || keys[20];
+                colTarget = keys.find(k => k.includes('ค่าเป้าหมายของโครงการ')) || keys[16];
+                colActual = keys.find(k => k.includes('ผลการดำเนินงานตามค่าเป้าหมายของโครงการ')) || keys[18];
+                colDoc = keys.find(k => k.includes('ลิงก์ไฟล์เอกสาร')) || keys[22];
+                colCategory = keys.find(k => k.includes('ด้าน')) || keys[2];
+
+                // กรองเฉพาะแถวที่มีชื่อโครงการ และข้อมูลไม่ว่างเปล่า
+                globalData = data.filter(row => row[colProjectName] && String(row[colProjectName]).trim() !== '');
+                
+                if(globalData.length === 0) {
+                    alert(`พบข้อมูลใน Sheet ${data.length} แถว แต่ไม่มีการกรอกชื่อโครงการเลยในคอลัมน์: ${colProjectName}`);
+                }
+
                 populateFilters(globalData);
-                applyFilters(); // แสดงผลทั้งหมด
+                applyFilters(); 
             } else {
                 alert("ข้อมูลจาก Sheet ผิดพลาด: " + result.error);
             }
         } catch (error) {
             console.error(error);
-            alert("ไม่สามารถดึงข้อมูลได้ กรุณาตรวจสอบการเชื่อมต่อ");
+            alert("ไม่สามารถดึงข้อมูลได้: ลองเปิดดู URL /api/data?year=2570 เพื่อดู Error จริง");
         } finally {
             document.getElementById('loading').classList.add('d-none');
             document.getElementById('dashboardContent').classList.remove('d-none');
@@ -161,11 +198,10 @@
         const depts = new Set();
         
         data.forEach(row => {
-            let dept = row['หน่วยงาน (R)'];
-            if(dept && dept.trim() !== '') depts.add(dept.trim());
+            let dept = row[colDept];
+            if(dept && String(dept).trim() !== '') depts.add(String(dept).trim());
         });
 
-        // รีเซ็ตตัวกรองและสร้างตัวเลือกใหม่
         deptSelect.innerHTML = '<option value="all">แสดงทั้งหมด</option>';
         depts.forEach(dept => {
             let option = document.createElement('option');
@@ -177,11 +213,10 @@
 
     function applyFilters() {
         const selectedDept = document.getElementById('deptFilter').value;
-        
-        // กรองข้อมูลตาม Dropdown
         let filteredData = globalData;
+        
         if (selectedDept !== 'all') {
-            filteredData = globalData.filter(row => (row['หน่วยงาน (R)'] || '').trim() === selectedDept);
+            filteredData = globalData.filter(row => String(row[colDept] || '').trim() === selectedDept);
         }
 
         processDashboardData(filteredData);
@@ -197,38 +232,34 @@
         let tableHTML = '';
 
         data.forEach(row => {
-            let budget = parseFloat(row['งบประมาณจัดสรร (บาท)']) || 0;
-            let spent = parseFloat(row['ผลการเบิกจ่ายจริง (บาท)']) || 0;
+            let budget = parseFloat(String(row[colBudget] || '0').replace(/,/g, '')) || 0;
+            let spent = parseFloat(String(row[colSpent] || '0').replace(/,/g, '')) || 0;
             totalBudget += budget;
             totalSpent += spent;
 
-            let category = row['ด้าน'] || 'ไม่ระบุ';
+            let category = row[colCategory] || 'ไม่ระบุ';
             
-            // 1. รวมงบประมาณตามด้าน
             if(!budgetByCategory[category]) budgetByCategory[category] = 0;
             budgetByCategory[category] += budget;
 
-            // 2. คำนวณความสำเร็จของโปรเจกต์
-            let target = parseFloat(row['ค่าเป้าหมายของโครงการ/กิจกรรม']) || 1;
-            let actual = parseFloat(row['ผลการดำเนินงานตามค่าเป้าหมายของโครงการ/กิจกรรม']) || 0;
+            let target = parseFloat(row[colTarget]) || 1;
+            let actual = parseFloat(row[colActual]) || 0;
             let progressPercent = Math.min((actual / target) * 100, 100);
 
-            // เก็บค่าไว้หาค่าเฉลี่ยความสำเร็จตามด้าน
             if(!progressByCategory[category]) progressByCategory[category] = { sum: 0, count: 0 };
             progressByCategory[category].sum += progressPercent;
             progressByCategory[category].count += 1;
 
-            // 3. จัดการตาราง
-            let docLink = row['ลิงก์ไฟล์เอกสารโครงการ'];
-            let docButton = docLink && docLink.startsWith('http') 
+            let docLink = row[colDoc];
+            let docButton = docLink && String(docLink).startsWith('http') 
                 ? `<a href="${docLink}" target="_blank" class="btn btn-sm btn-outline-primary">📂 เอกสาร</a>`
                 : `<span class="text-muted" style="font-size:0.85em;">ไม่มีไฟล์</span>`;
 
             tableHTML += `
                 <tr>
-                    <td><span class="badge bg-secondary">${row['รหัส KRs'] || '-'}</span></td>
-                    <td>${row['โครงการ/กิจกรรม ตาม\nแผนปฏิบัติราชการของหน่วยงาน']}</td>
-                    <td>${row['หน่วยงาน (R)'] || '-'}</td>
+                    <td><span class="badge bg-secondary">${row[colKR] || '-'}</span></td>
+                    <td>${row[colProjectName]}</td>
+                    <td>${row[colDept] || '-'}</td>
                     <td>
                         <div class="d-flex align-items-center">
                             <span class="me-2">${progressPercent.toFixed(2)}%</span>
@@ -243,7 +274,6 @@
             `;
         });
 
-        // อัปเดต Card ด้านบน
         document.getElementById('totalProjects').innerText = validProjects;
         document.getElementById('totalBudget').innerText = totalBudget.toLocaleString();
         document.getElementById('totalSpent').innerText = totalSpent.toLocaleString();
@@ -251,10 +281,8 @@
         let spendPercent = totalBudget > 0 ? ((totalSpent / totalBudget) * 100).toFixed(2) : 0;
         document.getElementById('spendPercent').innerText = `${spendPercent}%`;
 
-        // ใส่ข้อมูลลงตาราง
         document.getElementById('projectTableBody').innerHTML = tableHTML;
 
-        // คำนวณค่าเฉลี่ยความสำเร็จตามด้าน
         let avgProgressLabels = [];
         let avgProgressData = [];
         for (let cat in progressByCategory) {
@@ -269,7 +297,6 @@
         if(budgetChartInstance) budgetChartInstance.destroy();
         if(progressChartInstance) progressChartInstance.destroy();
 
-        // 1. กราฟโดนัท (งบประมาณ)
         const ctxBudget = document.getElementById('budgetChart').getContext('2d');
         budgetChartInstance = new Chart(ctxBudget, {
             type: 'doughnut',
@@ -283,7 +310,6 @@
             options: { responsive: true, maintainAspectRatio: false }
         });
 
-        // 2. กราฟแท่ง (ร้อยละความสำเร็จเฉลี่ย แยกตามด้าน)
         const ctxProgress = document.getElementById('progressChart').getContext('2d');
         progressChartInstance = new Chart(ctxProgress, {
             type: 'bar',
