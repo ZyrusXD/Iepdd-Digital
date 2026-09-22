@@ -3,97 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard แผนปฏิบัติราชการ | สำนักดิจิทัล กทม.</title>
+    <title>Dashboard ยุทธศาสตร์ | สำนักดิจิทัล กทม.</title>
     
-    <!-- Bootstrap 5 & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    
-    <!-- Google Fonts: Sarabun -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        body { 
-            font-family: 'Sarabun', sans-serif; 
-            background-color: #f4f6f9; 
-            color: #333;
-        }
-        /* Navbar */
-        .navbar-custom { background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); }
+        body { font-family: 'Sarabun', sans-serif; background-color: #f1f5f9; color: #1e293b; }
         
-        /* Stats Cards */
-        .stat-card {
-            border: none;
-            border-radius: 12px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        .navbar-custom { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 1rem 0; }
+        
+        /* Tab Styles */
+        .nav-tabs { border-bottom: 2px solid #e2e8f0; margin-bottom: 25px; }
+        .nav-tabs .nav-link { 
+            border: none; color: #64748b; font-weight: 600; font-size: 1.1rem; 
+            padding: 12px 25px; transition: 0.3s; background: transparent;
         }
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-        .stat-icon {
-            font-size: 2.5rem;
-            opacity: 0.2;
-            position: absolute;
-            right: -10px;
-            bottom: -10px;
+        .nav-tabs .nav-link:hover { color: #0f172a; }
+        .nav-tabs .nav-link.active { 
+            color: #2563eb; background: transparent; 
+            border-bottom: 3px solid #2563eb; 
         }
 
-        /* Table & Container */
-        .content-box { 
-            background: white; 
-            border-radius: 16px; 
-            padding: 25px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
-        }
-        .table > :not(caption) > * > * { padding: 1rem 0.75rem; }
+        /* Card Styles */
+        .content-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .stat-box { padding: 20px; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); }
+        .stat-box h3 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0; }
+        .stat-icon { position: absolute; right: -15px; bottom: -20px; font-size: 5rem; opacity: 0.15; }
+
+        /* Filter Section */
+        .filter-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 25px; }
         
-        /* KR Row Styles */
-        .kr-row { 
-            background-color: #eef2f7 !important; 
-            font-weight: 600; 
-            cursor: pointer; 
-            border-bottom: 2px solid #fff;
-            transition: background-color 0.2s;
-        }
-        .kr-row:hover { background-color: #e2e8f0 !important; }
+        /* Table Styles */
+        .table-custom { border-collapse: separate; border-spacing: 0; width: 100%; }
+        .table-custom th { background: #f8fafc; color: #475569; font-weight: 600; padding: 15px; border-bottom: 2px solid #e2e8f0; font-size: 0.95rem; }
+        .table-custom td { padding: 15px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
         
-        .toggle-icon {
-            display: inline-flex; align-items: center; justify-content: center;
-            width: 24px; height: 24px; border-radius: 50%;
-            background-color: #fff; color: #0d6efd;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-right: 12px;
-            transition: transform 0.3s;
-        }
+        .kr-row { background-color: #ffffff; border-left: 4px solid #2563eb; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .kr-row:hover { background-color: #f8fafc; }
+        .proj-row { background-color: #fdfdfd; border-left: 4px solid #cbd5e1; }
+        
+        .toggle-icon { display: inline-flex; width: 24px; height: 24px; border-radius: 50%; background: #e2e8f0; align-items: center; justify-content: center; color: #475569; transition: 0.3s; margin-right: 15px; }
         .kr-row.collapsed .toggle-icon { transform: rotate(-90deg); }
-        
-        /* Badges */
-        .badge-host { background-color: #e0ebff; color: #0d6efd; border: 1px solid #0d6efd; }
-        .badge-relative { background-color: #fff3cd; color: #fd7e14; border: 1px solid #fd7e14; }
-        .badge-plan { font-size: 0.8rem; font-weight: 500; background: #f8f9fa; border: 1px solid #dee2e6; color: #6c757d; }
 
-        /* Progress Bar */
-        .progress { height: 8px; border-radius: 10px; background-color: #e9ecef; }
-        .progress-bar { border-radius: 10px; }
+        .progress-slim { height: 6px; border-radius: 10px; background-color: #e2e8f0; margin-top: 5px; }
+        .progress-bar-budget { background: linear-gradient(90deg, #f59e0b, #d97706); }
+        .progress-bar-kpi { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+        
+        .badge-sub { font-size: 0.75rem; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 3px 8px; border-radius: 4px; }
     </style>
 </head>
 <body>
 
-<!-- Header -->
-<nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow-sm py-3">
+<nav class="navbar navbar-dark navbar-custom shadow-sm">
     <div class="container-fluid px-4">
-        <a class="navbar-brand mb-0 h1 fw-bold d-flex align-items-center" href="#">
-            <i class="bi bi-bar-chart-fill me-2 fs-3"></i>
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <i class="bi bi-layers-fill fs-2 text-primary me-3"></i>
             <div>
-                <div class="fs-5">Dashboard ผลการดำเนินงานตามยุทธศาสตร์</div>
-                <div class="fs-6 fw-normal" style="opacity: 0.8;">สำนักดิจิทัล กรุงเทพมหานคร</div>
+                <div class="fs-4 fw-bold">ระบบติดตามแผนปฏิบัติราชการ</div>
+                <div class="fs-6 fw-light text-light opacity-75">สำนักดิจิทัล กรุงเทพมหานคร</div>
             </div>
         </a>
-        <div class="d-flex align-items-center">
-            <label class="text-white me-2 fw-medium">ปีงบประมาณ :</label>
-            <select id="yearSelect" class="form-select border-0 shadow-sm" style="width: 140px; border-radius: 8px;" onchange="fetchData()">
+        <div class="d-flex align-items-center bg-white bg-opacity-10 rounded p-2">
+            <label class="text-white me-3 fw-medium mb-0">ปีงบประมาณ</label>
+            <select id="yearSelect" class="form-select form-select-sm border-0 fw-bold text-primary" style="width: 100px; border-radius: 6px;" onchange="fetchData()">
                 <option value="2570">2570</option>
                 <option value="2571">2571</option>
             </select>
@@ -102,109 +77,152 @@
 </nav>
 
 <div class="container-fluid py-4 px-4">
-    <!-- Loading Spinner -->
+    
     <div id="loading" class="text-center my-5 py-5">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status"></div>
-        <h5 class="mt-4 fw-bold text-muted">กำลังซิงค์ข้อมูลจาก Google Sheets...</h5>
+        <h5 class="mt-4 fw-bold text-muted">กำลังดึงข้อมูลจากฐานข้อมูล (Google Sheets)...</h5>
     </div>
 
     <div id="dashboardContent" class="d-none">
         
-        <!-- Filter Controls -->
-        <div class="content-box mb-4">
-            <div class="row align-items-end">
-                <div class="col-md-6 mb-3 mb-md-0">
-                    <label class="form-label fw-bold text-secondary"><i class="bi bi-funnel-fill me-1"></i> กรองตามบทบาทของ สดท.</label>
-                    <div class="d-flex gap-2">
-                        <input type="radio" class="btn-check" name="roleFilter" id="roleAll" value="all" autocomplete="off" checked onchange="applyFilters()">
-                        <label class="btn btn-outline-primary rounded-pill px-4" for="roleAll">ทั้งหมด</label>
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button"><i class="bi bi-pie-chart-fill me-2"></i>ภาพรวมแดชบอร์ด (Overview)</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="detail-tab" data-bs-toggle="tab" data-bs-target="#detail" type="button"><i class="bi bi-table me-2"></i>ตารางข้อมูลแจกแจง (Data Table)</button>
+            </li>
+        </ul>
 
-                        <input type="radio" class="btn-check" name="roleFilter" id="roleHost" value="host" autocomplete="off" onchange="applyFilters()">
-                        <label class="btn btn-outline-primary rounded-pill px-4" for="roleHost">H: เจ้าภาพหลัก</label>
-
-                        <input type="radio" class="btn-check" name="roleFilter" id="roleRel" value="relative" autocomplete="off" onchange="applyFilters()">
-                        <label class="btn btn-outline-primary rounded-pill px-4" for="roleRel">R: หน่วยงานร่วม</label>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label fw-bold text-secondary">กรองประเภทแผน</label>
-                    <select id="planTypeFilter" class="form-select rounded-pill" onchange="applyFilters()">
-                        <option value="all">แสดงทั้งหมด</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <!-- 4 Stat Cards -->
-        <div class="row mb-4 g-3">
-            <div class="col-xl-3 col-sm-6">
-                <div class="card stat-card bg-primary text-white h-100">
-                    <div class="card-body position-relative">
-                        <p class="mb-1 opacity-75 fw-medium">เป้าหมาย (KRs) ทั้งหมด</p>
-                        <h2 id="totalKRs" class="mb-0 fw-bold display-6">0</h2>
-                        <i class="bi bi-bullseye stat-icon"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6">
-                <div class="card stat-card bg-info text-white h-100">
-                    <div class="card-body position-relative">
-                        <p class="mb-1 opacity-75 fw-medium">โครงการที่ดำเนินงาน</p>
-                        <h2 id="totalProjects" class="mb-0 fw-bold display-6">0</h2>
-                        <i class="bi bi-kanban stat-icon"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6">
-                <div class="card stat-card bg-success text-white h-100">
-                    <div class="card-body position-relative">
-                        <p class="mb-1 opacity-75 fw-medium">งบประมาณจัดสรรรวม</p>
-                        <h2 class="mb-0 fw-bold fs-2"><span id="totalBudget">0</span> <span class="fs-6 fw-normal">บาท</span></h2>
-                        <i class="bi bi-cash-stack stat-icon"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6">
-                <div class="card stat-card bg-warning text-dark h-100">
-                    <div class="card-body position-relative">
-                        <p class="mb-1 opacity-75 fw-medium">ผลการเบิกจ่ายสะสม</p>
-                        <h2 class="mb-0 fw-bold fs-2"><span id="totalSpent">0</span> <span class="fs-6 fw-normal">บาท</span></h2>
-                        <i class="bi bi-graph-up-arrow stat-icon"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Data Table -->
-        <div class="content-box">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="fw-bold text-secondary mb-0"><i class="bi bi-list-task me-2"></i>ความเชื่อมโยงยุทธศาสตร์ (KRs) และ โครงการ</h5>
-                <small class="text-muted"><i class="bi bi-info-circle me-1"></i>คลิกที่แถว KRs เพื่อกาง/พับดูรายชื่อโครงการ</small>
-            </div>
+        <div class="tab-content" id="myTabContent">
             
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead>
-                        <tr class="text-secondary" style="border-bottom: 2px solid #dee2e6;">
-                            <th style="width: 45%;">ยุทธศาสตร์ (KRs) / ชื่อโครงการ</th>
-                            <th style="width: 15%;">สถานะ / ประเภทแผน</th>
-                            <th style="width: 15%;">ความคืบหน้า</th>
-                            <th style="width: 15%;" class="text-end">งบประมาณ (บาท)</th>
-                            <th style="width: 10%;" class="text-center">หลักฐาน</th>
-                        </tr>
-                    </thead>
-                    <tbody id="projectTableBody" style="border-top: none;">
-                        <!-- JS renders content here -->
-                    </tbody>
-                </table>
+            <!-- ================= TAB 1: OVERVIEW ================= -->
+            <div class="tab-pane fade show active" id="overview">
+                <!-- Stat Cards -->
+                <div class="row g-4 mb-4">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-box bg-primary text-white shadow-sm">
+                            <p class="mb-1 opacity-75 fw-medium">จำนวนตัวชี้วัด (KRs)</p>
+                            <h3 id="statKRs">0</h3>
+                            <i class="bi bi-flag-fill stat-icon text-white"></i>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-box bg-info text-white shadow-sm">
+                            <p class="mb-1 opacity-75 fw-medium">โครงการที่ดำเนินการ</p>
+                            <h3 id="statProjects">0</h3>
+                            <i class="bi bi-diagram-3-fill stat-icon text-white"></i>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-box" style="background: #10b981; color: white;">
+                            <p class="mb-1 opacity-75 fw-medium">งบประมาณรวม (บาท)</p>
+                            <h3 id="statBudget">0</h3>
+                            <i class="bi bi-cash-coin stat-icon text-white"></i>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-box" style="background: #f59e0b; color: white;">
+                            <p class="mb-1 opacity-75 fw-medium">ผลการเบิกจ่ายสะสม</p>
+                            <h3 id="statSpent">0</h3>
+                            <div class="mt-2">
+                                <div class="progress" style="height: 4px; background: rgba(255,255,255,0.2);">
+                                    <div id="statSpentBar" class="progress-bar bg-white" style="width: 0%"></div>
+                                </div>
+                                <small id="statSpentPercent" class="fw-bold">0%</small>
+                            </div>
+                            <i class="bi bi-graph-up-arrow stat-icon text-white"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="content-card h-100">
+                            <h5 class="fw-bold mb-4 text-secondary"><i class="bi bi-donut-chart me-2 text-primary"></i>สัดส่วนงบประมาณแยกตามยุทธศาสตร์ (ด้าน)</h5>
+                            <div style="height: 300px; position: relative;">
+                                <canvas id="budgetChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="content-card h-100">
+                            <h5 class="fw-bold mb-4 text-secondary"><i class="bi bi-bar-chart-steps me-2 text-primary"></i>ร้อยละความสำเร็จของเป้าหมาย (KRs) แยกตามด้าน</h5>
+                            <div style="height: 300px; position: relative;">
+                                <canvas id="progressChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB 2: DATA TABLE ================= -->
+            <div class="tab-pane fade" id="detail">
+                
+                <!-- Multi-level Filters -->
+                <div class="filter-section shadow-sm">
+                    <h6 class="fw-bold text-primary mb-3"><i class="bi bi-funnel-fill me-2"></i>ตัวกรองข้อมูลเชิงลึก</h6>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold">ด้านยุทธศาสตร์</label>
+                            <select id="filterCategory" class="form-select form-select-sm" onchange="applyFilters()">
+                                <option value="all">ทั้งหมด</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold">ประเด็นพัฒนา</label>
+                            <select id="filterIssue" class="form-select form-select-sm" onchange="applyFilters()">
+                                <option value="all">ทั้งหมด</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold">บทบาทหน่วยงาน สดท.</label>
+                            <select id="filterRole" class="form-select form-select-sm" onchange="applyFilters()">
+                                <option value="all">ทั้งหมด</option>
+                                <option value="host">H : เจ้าภาพหลัก</option>
+                                <option value="relative">R : หน่วยงานร่วม</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold">ค้นหารหัส / ชื่อ KR</label>
+                            <input type="text" id="filterSearch" class="form-control form-select-sm" placeholder="พิมพ์คำค้นหา..." onkeyup="applyFilters()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="content-card">
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40%;">ยุทธศาสตร์ (KRs) / โครงการ</th>
+                                    <th style="width: 20%;">เป้าหมาย / หน่วยนับ</th>
+                                    <th style="width: 15%;">ความคืบหน้า (ผลสำเร็จ)</th>
+                                    <th style="width: 15%;">งบประมาณ / เบิกจ่าย</th>
+                                    <th style="width: 10%; text-align: center;">เอกสาร</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projectTableBody">
+                                <!-- Data injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     let globalData = [];
     let cols = {};
+    let budgetChartInstance = null;
+    let progressChartInstance = null;
 
     async function fetchData() {
         const year = document.getElementById('yearSelect').value;
@@ -219,17 +237,12 @@
                 globalData = result.data;
                 if(globalData.length > 0) {
                     setupColumns(globalData[0]);
-                    populateFilters(globalData);
-                    applyFilters(); 
-                } else {
-                    alert("ไม่พบข้อมูลใน Sheet ปี " + year);
+                    populateDropdownFilters(globalData);
+                    applyFilters(); // Process both Overview & Table
                 }
-            } else {
-                alert("เกิดข้อผิดพลาดจาก Backend: " + result.error);
-            }
+            } else { alert("เกิดข้อผิดพลาด: " + result.error); }
         } catch (error) {
-            console.error(error);
-            alert("ไม่สามารถเชื่อมต่อดึงข้อมูลได้");
+            console.error(error); alert("ไม่สามารถเชื่อมต่อได้");
         } finally {
             document.getElementById('loading').classList.add('d-none');
             document.getElementById('dashboardContent').classList.remove('d-none');
@@ -240,40 +253,39 @@
         const keys = Object.keys(row);
         cols = {
             krID: keys.find(k => k.includes('รหัส KRs')) || keys[1],
+            category: keys.find(k => k.includes('ด้าน')) || keys[2],
+            issue: keys.find(k => k.includes('ประเด็นพัฒนา')) || keys[3],
             krName: keys.find(k => k.includes('KEY RESULT')) || keys[5],
-            krTarget: keys.find(k => k.includes('ค่าเป้าหมายของ KRs')) || keys[7], // ดึงเป้าหมายรวมของ KR
-            
+            unit: keys.find(k => k.includes('หน่วยนับ')) || keys[6],
+            krTarget: keys.find(k => k.includes('ค่าเป้าหมายของ KRs')) || keys[7],
             projectName: keys.find(k => k.includes('โครงการ/กิจกรรม') || k.includes('ชื่อโครงการ')) || keys[13],
-            planType: keys.find(k => k.includes('ประเภทของแผน') || k.includes('ประเภทแผน')) || keys[14],
-            
             hostDept: keys.find(k => k.includes('หน่วยงาน (H)')),
             relDept: keys.find(k => k.includes('หน่วยงาน (R)')),
             budget: keys.find(k => k.includes('งบประมาณจัดสรร')),
             spent: keys.find(k => k.includes('ผลการเบิกจ่ายจริง')),
-            
             projTarget: keys.find(k => k.includes('ค่าเป้าหมายของโครงการ')),
-            projActual: keys.find(k => k.includes('ผลการดำเนินงานตามค่าเป้าหมายของโครงการ')),
-            calcToKR: keys.find(k => k.includes('การคำนวณเข้า KR')), // ดึงสถานะว่านำไปคำนวณหรือไม่
-            doc: keys.find(k => k.includes('ลิงก์ไฟล์เอกสารโครงการ'))
+            projActual: keys.find(k => k.includes('ผลการดำเนินงาน')),
+            calcToKR: keys.find(k => k.includes('การคำนวณเข้า KR')),
+            doc: keys.find(k => k.includes('ลิงก์ไฟล์เอกสาร'))
         };
     }
 
-    function populateFilters(data) {
-        const planSelect = document.getElementById('planTypeFilter');
-        const plans = new Set();
+    function populateDropdownFilters(data) {
+        const catSelect = document.getElementById('filterCategory');
+        const issueSelect = document.getElementById('filterIssue');
+        const categories = new Set();
+        const issues = new Set();
+
+        data.forEach(row => {
+            if(row[cols.category] && row[cols.category] !== 'NaN') categories.add(String(row[cols.category]).trim());
+            if(row[cols.issue] && row[cols.issue] !== 'NaN') issues.add(String(row[cols.issue]).trim());
+        });
+
+        catSelect.innerHTML = '<option value="all">ทั้งหมด</option>';
+        categories.forEach(c => { catSelect.innerHTML += `<option value="${c}">${c}</option>`; });
         
-        if(cols.planType) {
-            data.forEach(row => {
-                let p = row[cols.planType];
-                if(p && String(p).trim() !== '' && p !== 'NaN') plans.add(String(p).trim());
-            });
-            planSelect.innerHTML = '<option value="all">แสดงทั้งหมด</option>';
-            plans.forEach(p => {
-                let opt = document.createElement('option');
-                opt.value = p; opt.innerText = p;
-                planSelect.appendChild(opt);
-            });
-        }
+        issueSelect.innerHTML = '<option value="all">ทั้งหมด</option>';
+        issues.forEach(i => { issueSelect.innerHTML += `<option value="${i}">${i}</option>`; });
     }
 
     function checkRole(row) {
@@ -285,201 +297,238 @@
     }
 
     function applyFilters() {
-        const roleFilter = document.querySelector('input[name="roleFilter"]:checked').value;
-        const planFilter = document.getElementById('planTypeFilter').value;
-        
-        let filteredData = globalData.filter(row => {
-            let roleMatch = true;
-            let roles = checkRole(row);
-            
-            if (roleFilter === 'host' && !roles.isH) roleMatch = false;
-            if (roleFilter === 'relative' && !roles.isR) roleMatch = false;
+        const fCat = document.getElementById('filterCategory').value;
+        const fIssue = document.getElementById('filterIssue').value;
+        const fRole = document.getElementById('filterRole').value;
+        const fSearch = document.getElementById('filterSearch').value.toLowerCase();
 
-            let planMatch = true;
-            if (planFilter !== 'all' && cols.planType) {
-                let pName = String(row[cols.projectName] || '').trim();
-                if (pName && pName !== 'NaN' && String(row[cols.planType] || '').trim() !== planFilter) {
-                    planMatch = false;
-                }
+        let filteredData = globalData.filter(row => {
+            let catMatch = fCat === 'all' || String(row[cols.category] || '').trim() === fCat;
+            let issueMatch = fIssue === 'all' || String(row[cols.issue] || '').trim() === fIssue;
+            
+            let roles = checkRole(row);
+            let roleMatch = true;
+            if (fRole === 'host' && !roles.isH) roleMatch = false;
+            if (fRole === 'relative' && !roles.isR) roleMatch = false;
+
+            let searchMatch = true;
+            if (fSearch !== '') {
+                let krCode = String(row[cols.krID] || '').toLowerCase();
+                let krTitle = String(row[cols.krName] || '').toLowerCase();
+                searchMatch = krCode.includes(fSearch) || krTitle.includes(fSearch);
             }
-            return roleMatch && planMatch;
+
+            // ถ้าบรรทัดนั้นเป็น KR แต่ไม่ตรงเงื่อนไข ก็กรองออก (โครงการย่อยจะหายไปด้วย)
+            let isKRRow = String(row[cols.krName] || '').trim() !== '' && String(row[cols.krName] || '').trim() !== 'NaN';
+            if (isKRRow) {
+                return catMatch && issueMatch && roleMatch && searchMatch;
+            }
+            return true; // ถ้าเป็นบรรทัดโครงการ ให้ตาม KR ตัวบนไป (เดี๋ยวค่อยจัดกลุ่ม)
         });
 
-        processDashboardData(filteredData);
+        processData(filteredData);
     }
 
-    function processDashboardData(data) {
+    function processData(data) {
         let krGroups = {}; 
-        let totalBudget = 0;
-        let totalSpent = 0;
-        let totalProjectsCount = 0;
+        let totalBudget = 0; let totalSpent = 0; let totalProjectsCount = 0;
+        let chartBudget = {}; let chartProgress = {};
 
-        // 1. จัดกลุ่มและคำนวณค่าสะสม
-        data.forEach((row) => {
+        data.forEach(row => {
             let krTitle = String(row[cols.krName] || '').trim();
             if(!krTitle || krTitle === 'NaN' || krTitle === 'None') return;
 
             let krKey = row[cols.krID] || krTitle; 
             let roles = checkRole(row);
+            let cat = String(row[cols.category] || 'ไม่ระบุ').trim();
             
-            // สร้างกลุ่ม KR ถ้ายังไม่มี
             if(!krGroups[krKey]) {
-                let targetKR = parseFloat(String(row[cols.krTarget]).replace(/,/g, '')) || 0;
                 krGroups[krKey] = {
                     title: krTitle,
                     id: String(row[cols.krID] || '').trim() !== 'NaN' ? row[cols.krID] : '',
-                    target: targetKR, // เป้าหมายสูงสุดของ KR (เช่น 1500)
-                    accumulatedActual: 0, // ผลรวมจริงของทุกโครงการที่เอามาคิดรวม
-                    isH: roles.isH,
-                    isR: roles.isR,
+                    category: cat,
+                    unit: String(row[cols.unit] || '-').trim(),
+                    target: parseFloat(String(row[cols.krTarget]).replace(/,/g, '')) || 0,
+                    accumulatedActual: 0,
+                    isH: roles.isH, isR: roles.isR,
                     projects: [],
-                    krBudget: 0
+                    krBudget: 0, krSpent: 0
                 };
             }
 
-            // จัดการข้อมูลโครงการ
             let pName = String(row[cols.projectName] || '').trim();
-            if(pName && pName !== 'NaN' && pName !== 'None') {
+            if(pName && pName !== 'NaN') {
                 totalProjectsCount++;
                 let pBudget = parseFloat(String(row[cols.budget] || '0').replace(/,/g, '')) || 0;
                 let pSpent = parseFloat(String(row[cols.spent] || '0').replace(/,/g, '')) || 0;
                 
                 krGroups[krKey].krBudget += pBudget;
+                krGroups[krKey].krSpent += pSpent;
                 totalBudget += pBudget;
                 totalSpent += pSpent;
+                
+                if(!chartBudget[cat]) chartBudget[cat] = 0;
+                chartBudget[cat] += pBudget;
 
                 let pTarget = parseFloat(String(row[cols.projTarget]).replace(/,/g, '')) || 0;
                 let pActual = parseFloat(String(row[cols.projActual]).replace(/,/g, '')) || 0;
+                let pProgress = pTarget > 0 ? Math.min((pActual / pTarget) * 100, 100) : 0;
                 
-                // คำนวณเปอร์เซ็นต์ของโครงการเดี่ยวๆ
-                let pProgress = 0;
-                if(pTarget > 0) pProgress = Math.min((pActual / pTarget) * 100, 100).toFixed(0);
-                
-                let pType = row[cols.planType] && row[cols.planType] !== 'NaN' ? row[cols.planType] : '-';
-                
-                // เช็กว่าโครงการนี้ ให้นำไปสะท้อนยอด KR หรือไม่ (ดูจากคอลัมน์ "การคำนวณเข้า KR")
                 let calcFlag = String(row[cols.calcToKR] || '').trim();
-                if(calcFlag === 'คำนวณ') {
-                    // เอา "ผลการดำเนินงานจริง" ของโครงการ ไปบวกสะสมให้ KR
-                    krGroups[krKey].accumulatedActual += pActual;
-                }
+                if(calcFlag === 'คำนวณ') krGroups[krKey].accumulatedActual += pActual;
 
                 krGroups[krKey].projects.push({
-                    name: pName,
-                    type: pType,
-                    budget: pBudget,
-                    progress: pProgress,
-                    calcFlag: calcFlag, // เก็บสถานะไว้แสดง
-                    doc: row[cols.doc]
+                    name: pName, budget: pBudget, spent: pSpent,
+                    target: pTarget, actual: pActual, progress: pProgress,
+                    calcFlag: calcFlag, doc: row[cols.doc]
                 });
             }
         });
 
-        // 2. สร้างตาราง HTML
-        let tableHTML = '';
-        let krCount = 0;
-
+        // Generate Table HTML & Chart Data
+        let tableHTML = ''; let krCount = 0;
+        
         for (const key in krGroups) {
             krCount++;
             const group = krGroups[key];
             const hasProjects = group.projects.length > 0;
             const krRowId = `kr-${krCount}`;
 
-            // ป้ายกำกับ H/R
+            // KPI Progress
+            let krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
+            
+            // For Chart Progress (Average per category)
+            let cat = group.category;
+            if(!chartProgress[cat]) chartProgress[cat] = { sum: 0, count: 0 };
+            chartProgress[cat].sum += krProgressPercent;
+            chartProgress[cat].count += 1;
+
+            // Budget Progress
+            let budgetPercent = group.krBudget > 0 ? Math.min((group.krSpent / group.krBudget) * 100, 100) : 0;
+
             let roleBadge = '';
-            if (group.isH) roleBadge += `<span class="badge badge-host ms-2"><i class="bi bi-star-fill me-1"></i>H</span>`;
-            if (group.isR) roleBadge += `<span class="badge badge-relative ms-2"><i class="bi bi-people-fill me-1"></i>R</span>`;
+            if (group.isH) roleBadge += `<span class="badge text-bg-primary ms-2">H</span>`;
+            if (group.isR) roleBadge += `<span class="badge text-bg-warning ms-2">R</span>`;
 
-            // คำนวณร้อยละความสำเร็จของ KR หลัก (เทียบเป้าหมาย KR)
-            let krProgressPercent = 0;
-            if (group.target > 0) {
-                krProgressPercent = Math.min((group.accumulatedActual / group.target) * 100, 100).toFixed(2);
-            }
-
-            // หลอด Progress ของ KR หลัก
-            let krProgressBar = '';
-            if (hasProjects) {
-                krProgressBar = `
-                    <div class="d-flex align-items-center">
-                        <span class="me-2 fw-bold text-dark">${krProgressPercent}%</span>
-                        <div class="progress flex-grow-1" style="height: 10px; box-shadow: inset 0 1px 2px rgba(0,0,0,.1);">
-                            <div class="progress-bar ${krProgressPercent >= 100 ? 'bg-success' : 'bg-dark'}" style="width: ${krProgressPercent}%;"></div>
-                        </div>
-                    </div>
-                    <div style="font-size: 0.75rem; color: #6c757d; margin-top: 2px;">
-                        ทำได้รวม: ${group.accumulatedActual.toLocaleString()} / เป้าหมายรวม: ${group.target.toLocaleString()}
-                    </div>
-                `;
-            }
-
-            // แถว KR (เพิ่มคอลัมน์แสดง Progress ของ KR)
             tableHTML += `
-                <tr class="kr-row ${hasProjects ? '' : 'text-danger'}" onclick="toggleKR('${krRowId}')">
-                    <td colspan="2">
+                <tr class="kr-row mb-2" onclick="toggleKR('${krRowId}')">
+                    <td>
                         <div class="d-flex align-items-start">
                             <span class="toggle-icon"><i class="bi bi-chevron-down"></i></span>
                             <div>
-                                ${group.id ? `<span class="badge bg-secondary me-2">${group.id}</span>` : ''}
-                                <span class="fw-bold">${group.title}</span>
-                                ${roleBadge}${!hasProjects ? '<span class="badge bg-danger ms-2"><i class="bi bi-exclamation-triangle-fill"></i> ไม่มีโครงการ</span>' : ''}
+                                ${group.id ? `<span class="badge bg-secondary mb-1">${group.id}</span>` : ''}
+                                <div class="fw-bold text-primary">${group.title} ${roleBadge}</div>
+                                <span class="badge-sub mt-1"><i class="bi bi-tags"></i> ${group.category}</span>
                             </div>
                         </div>
                     </td>
-                    <td class="align-middle">${krProgressBar}</td>
-                    <td class="text-end fw-bold text-primary align-middle">${group.krBudget.toLocaleString()}</td>
+                    <td>
+                        <div class="text-muted small">เป้าหมายรวม: <strong class="text-dark">${group.target.toLocaleString()}</strong></div>
+                        <div class="text-muted small">หน่วยนับ: <strong class="text-dark">${group.unit}</strong></div>
+                    </td>
+                    <td>
+                        <div class="d-flex justify-content-between small fw-bold mb-1">
+                            <span>ผลสำเร็จ</span> <span class="${krProgressPercent==100?'text-success':'text-primary'}">${krProgressPercent.toFixed(1)}%</span>
+                        </div>
+                        <div class="progress progress-slim"><div class="progress-bar progress-bar-kpi" style="width: ${krProgressPercent}%;"></div></div>
+                        <div class="text-muted small mt-1 text-end">${group.accumulatedActual.toLocaleString()} / ${group.target.toLocaleString()}</div>
+                    </td>
+                    <td>
+                        <div class="d-flex justify-content-between small fw-bold mb-1">
+                            <span>เบิกจ่าย</span> <span class="text-warning">${budgetPercent.toFixed(1)}%</span>
+                        </div>
+                        <div class="progress progress-slim"><div class="progress-bar progress-bar-budget" style="width: ${budgetPercent}%;"></div></div>
+                        <div class="text-muted small mt-1 text-end">${group.krSpent.toLocaleString()} / ${group.krBudget.toLocaleString()}</div>
+                    </td>
                     <td></td>
                 </tr>
             `;
 
-            // แถวโครงการย่อย
             group.projects.forEach(proj => {
-                let docButton = proj.doc && String(proj.doc).startsWith('http') 
-                    ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3"><i class="bi bi-file-earmark-text"></i> ไฟล์</a>`
-                    : `<span class="text-muted fst-italic" style="font-size:0.85em;">-</span>`;
-                    
-                // ป้ายแสดงสถานะการคำนวณเข้า KR
-                let calcBadge = proj.calcFlag === 'คำนวณ' 
-                    ? `<span class="badge bg-info text-dark" style="font-size:0.7rem;" title="ยอดของโครงการนี้ถูกนำไปรวมกับเป้าหมาย KR"><i class="bi bi-plus-circle"></i> คิดยอดรวม</span>` 
-                    : ``;
+                let docBtn = proj.doc && String(proj.doc).startsWith('http') 
+                    ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-secondary"><i class="bi bi-file-earmark-text"></i></a>` : `-`;
+                
+                let pBudgPct = proj.budget > 0 ? Math.min((proj.spent / proj.budget) * 100, 100) : 0;
 
                 tableHTML += `
-                    <tr class="kr-child-${krRowId} bg-white">
-                        <td class="ps-5 align-middle border-start border-3 border-primary">
-                            <span class="text-dark"><i class="bi bi-arrow-return-right text-muted me-2"></i> ${proj.name}</span>
-                            <div class="mt-1">${calcBadge}</div>
+                    <tr class="proj-row kr-child-${krRowId}">
+                        <td class="ps-5">
+                            <div class="text-dark"><i class="bi bi-arrow-return-right text-muted me-2"></i> ${proj.name}</div>
+                            ${proj.calcFlag === 'คำนวณ' ? `<span class="badge-sub ms-4 text-info"><i class="bi bi-plus"></i> คำนวณเข้า KR</span>` : ''}
                         </td>
-                        <td class="align-middle">
-                            <span class="badge badge-plan px-2 py-1">${proj.type}</span>
+                        <td>
+                            <div class="text-muted small">เป้าหมาย: <strong class="text-dark">${proj.target.toLocaleString()}</strong></div>
                         </td>
-                        <td class="align-middle">
+                        <td>
                             <div class="d-flex align-items-center">
-                                <span class="me-2 fw-medium ${proj.progress == 100 ? 'text-success' : 'text-primary'}">${proj.progress}%</span>
-                                <div class="progress flex-grow-1 shadow-sm">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated ${proj.progress == 100 ? 'bg-success' : 'bg-primary'}" style="width: ${proj.progress}%;"></div>
-                                </div>
+                                <span class="small fw-bold me-2 w-25">${proj.progress.toFixed(0)}%</span>
+                                <div class="progress progress-slim w-75"><div class="progress-bar bg-secondary" style="width: ${proj.progress}%;"></div></div>
                             </div>
                         </td>
-                        <td class="text-end align-middle text-dark fw-medium">${proj.budget.toLocaleString()}</td>
-                        <td class="text-center align-middle">${docButton}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="small fw-bold me-2 w-25">${pBudgPct.toFixed(0)}%</span>
+                                <div class="progress progress-slim w-75"><div class="progress-bar bg-warning" style="width: ${pBudgPct}%;"></div></div>
+                            </div>
+                        </td>
+                        <td class="text-center">${docBtn}</td>
                     </tr>
                 `;
             });
         }
 
-        document.getElementById('totalKRs').innerText = krCount.toLocaleString();
-        document.getElementById('totalProjects').innerText = totalProjectsCount.toLocaleString();
-        document.getElementById('totalBudget').innerText = totalBudget.toLocaleString();
-        document.getElementById('totalSpent').innerText = totalSpent.toLocaleString();
+        // Update Stat Cards (Overview Tab)
+        document.getElementById('statKRs').innerText = krCount.toLocaleString();
+        document.getElementById('statProjects').innerText = totalProjectsCount.toLocaleString();
+        document.getElementById('statBudget').innerText = totalBudget.toLocaleString();
+        document.getElementById('statSpent').innerText = totalSpent.toLocaleString();
         
+        let spendPct = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
+        document.getElementById('statSpentPercent').innerText = spendPct.toFixed(1) + "%";
+        document.getElementById('statSpentBar').style.width = spendPct + "%";
+
         document.getElementById('projectTableBody').innerHTML = tableHTML;
+        
+        // Draw Charts
+        drawCharts(chartBudget, chartProgress);
     }
 
     function toggleKR(krId) {
         const krRow = document.querySelector(`tr[onclick="toggleKR('${krId}')"]`);
         krRow.classList.toggle('collapsed');
-        const children = document.querySelectorAll(`.kr-child-${krId}`);
-        children.forEach(child => {
+        document.querySelectorAll(`.kr-child-${krId}`).forEach(child => {
             child.style.display = krRow.classList.contains('collapsed') ? 'none' : 'table-row';
+        });
+    }
+
+    function drawCharts(chartBudget, chartProgress) {
+        if(budgetChartInstance) budgetChartInstance.destroy();
+        if(progressChartInstance) progressChartInstance.destroy();
+
+        const ctxB = document.getElementById('budgetChart').getContext('2d');
+        budgetChartInstance = new Chart(ctxB, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(chartBudget),
+                datasets: [{ data: Object.values(chartBudget), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'] }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
+        });
+
+        let pLabels = []; let pData = [];
+        for(let cat in chartProgress) {
+            pLabels.push(cat);
+            pData.push( (chartProgress[cat].sum / chartProgress[cat].count).toFixed(1) );
+        }
+
+        const ctxP = document.getElementById('progressChart').getContext('2d');
+        progressChartInstance = new Chart(ctxP, {
+            type: 'bar',
+            data: {
+                labels: pLabels,
+                datasets: [{ label: 'ร้อยละความสำเร็จเฉลี่ยของ KRs', data: pData, backgroundColor: '#3b82f6', borderRadius: 6 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
         });
     }
 
