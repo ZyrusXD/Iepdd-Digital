@@ -5,20 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BMA Digital Strategy Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: 'Sarabun', sans-serif; background-color: #f8f9fa; }
         .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .table-responsive { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         
-        /* ตกแต่งแถว KR ให้เด่นขึ้น */
-        .kr-row { background-color: #e9ecef !important; font-weight: bold; cursor: pointer; }
-        .kr-row:hover { background-color: #dee2e6 !important; }
-        .project-row { transition: all 0.3s; }
-        
-        /* สัญลักษณ์ เปิด/ปิด แถว */
+        .kr-row { background-color: #f1f3f5 !important; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .kr-row:hover { background-color: #e9ecef !important; }
         .toggle-icon::before { content: "▼"; display: inline-block; margin-right: 8px; font-size: 0.8em; color: #6c757d; }
         .kr-row.collapsed .toggle-icon::before { content: "▶"; }
+        
+        .badge-host { background-color: #0d6efd; color: white; } /* สีน้ำเงิน H */
+        .badge-relative { background-color: #fd7e14; color: white; } /* สีส้ม R */
     </style>
 </head>
 <body>
@@ -41,47 +39,26 @@
 
     <div id="dashboardContent" class="d-none">
         
-        <div class="row mb-3">
-            <div class="col-md-3">
-                <label class="form-label fw-bold text-muted">กรองตามหน่วยงาน (R)</label>
-                <select id="deptFilter" class="form-select" onchange="applyFilters()">
-                    <option value="all">แสดงทั้งหมด</option>
-                </select>
-            </div>
-        </div>
+        <!-- ตัวกรองบทบาทของ สดท. (H / R) -->
+        <div class="row mb-4 align-items-end">
+            <div class="col-md-6">
+                <label class="form-label fw-bold text-muted">บทบาทของ สดท. (สำนักดิจิทัลฯ)</label><br>
+                <div class="btn-group" role="group">
+                    <input type="radio" class="btn-check" name="roleFilter" id="roleAll" value="all" autocomplete="off" checked onchange="applyFilters()">
+                    <label class="btn btn-outline-primary" for="roleAll">ดูทั้งหมด</label>
 
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="card card-custom bg-white border-start border-primary border-4 h-100">
-                    <div class="card-body">
-                        <p class="text-muted mb-1 fw-bold">จำนวน KRs ทั้งหมด</p>
-                        <h2 id="totalKRs" class="mb-0 text-primary">0</h2>
-                    </div>
+                    <input type="radio" class="btn-check" name="roleFilter" id="roleHost" value="host" autocomplete="off" onchange="applyFilters()">
+                    <label class="btn btn-outline-primary" for="roleHost">H: เจ้าภาพหลัก</label>
+
+                    <input type="radio" class="btn-check" name="roleFilter" id="roleRel" value="relative" autocomplete="off" onchange="applyFilters()">
+                    <label class="btn btn-outline-primary" for="roleRel">R: หน่วยงานร่วม</label>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card card-custom bg-white border-start border-info border-4 h-100">
-                    <div class="card-body">
-                        <p class="text-muted mb-1 fw-bold">จำนวนโครงการ</p>
-                        <h2 id="totalProjects" class="mb-0 text-info">0</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card card-custom bg-white border-start border-success border-4 h-100">
-                    <div class="card-body">
-                        <p class="text-muted mb-1 fw-bold">งบประมาณรวม</p>
-                        <h2 id="totalBudget" class="mb-0 text-success">0 <small class="fs-6 text-muted">บาท</small></h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card card-custom bg-white border-start border-warning border-4 h-100">
-                    <div class="card-body">
-                        <p class="text-muted mb-1 fw-bold">เบิกจ่ายสะสม</p>
-                        <h2 id="totalSpent" class="mb-0 text-warning">0 <small class="fs-6 text-muted">บาท</small></h2>
-                    </div>
-                </div>
+                <label class="form-label fw-bold text-muted">ประเภทแผน</label>
+                <select id="planTypeFilter" class="form-select" onchange="applyFilters()">
+                    <option value="all">ทุกประเภทแผน</option>
+                </select>
             </div>
         </div>
 
@@ -91,8 +68,8 @@
             <table class="table table-bordered align-middle">
                 <thead class="table-dark">
                     <tr>
-                        <th style="width: 40%;">ยุทธศาสตร์ / โครงการ</th>
-                        <th>หน่วยงานรับผิดชอบ</th>
+                        <th style="width: 45%;">ยุทธศาสตร์ / โครงการ</th>
+                        <th>ประเภทแผน</th>
                         <th>ผลสำเร็จ (%)</th>
                         <th>งบประมาณ (บาท)</th>
                         <th>เอกสารหลักฐาน</th>
@@ -108,7 +85,7 @@
 
 <script>
     let globalData = [];
-    let krGroups = {}; 
+    let cols = {};
 
     async function fetchData() {
         const year = document.getElementById('yearSelect').value;
@@ -121,10 +98,13 @@
             
             if(result.status === 'success') {
                 globalData = result.data;
-                populateFilters(globalData);
-                applyFilters(); 
+                if(globalData.length > 0) {
+                    setupColumns(globalData[0]);
+                    populateFilters(globalData);
+                    applyFilters(); 
+                }
             } else {
-                alert("เกิดข้อผิดพลาดจาก Backend: " + result.error);
+                alert("เกิดข้อผิดพลาด: " + result.error);
             }
         } catch (error) {
             console.error(error);
@@ -135,108 +115,118 @@
         }
     }
 
-    // หาชื่อคอลัมน์แบบยืดหยุ่น (แก้ปัญหาการขึ้นบรรทัดใหม่)
-    function getColNames(row) {
+    function setupColumns(row) {
         const keys = Object.keys(row);
-        return {
+        cols = {
             krID: keys.find(k => k.includes('รหัส KRs')) || keys[1],
             krName: keys.find(k => k.includes('KEY RESULT')) || keys[5],
-            projectName: keys.find(k => k.includes('โครงการ/กิจกรรม') && k.includes('หน่วยงาน')) || keys[14],
-            dept: keys.find(k => k.includes('หน่วยงาน (R)')) || keys[9],
+            
+            // รองรับทั้งคอลัมน์ชื่อโครงการเก่า และ คอลัมน์ "ชื่อโครงการ" แบบใหม่
+            projectName: keys.find(k => k.includes('ชื่อโครงการ') || (k.includes('โครงการ/กิจกรรม') && k.includes('หน่วยงาน'))) || keys[14],
+            // รองรับคอลัมน์ "ประเภทของแผน" (ถ้ามี)
+            planType: keys.find(k => k.includes('ประเภทของแผน') || k.includes('ประเภทแผน')),
+            
+            hostDept: keys.find(k => k.includes('หน่วยงาน (H)')),
+            relDept: keys.find(k => k.includes('หน่วยงาน (R)')),
             budget: keys.find(k => k.includes('งบประมาณจัดสรร')) || keys[19],
-            spent: keys.find(k => k.includes('ผลการเบิกจ่ายจริง')) || keys[20],
             target: keys.find(k => k.includes('ค่าเป้าหมายของโครงการ')) || keys[16],
-            actual: keys.find(k => k.includes('ผลการดำเนินงานตามค่าเป้าหมายของโครงการ')) || keys[18],
+            actual: keys.find(k => k.includes('ผลการดำเนินงาน')) || keys[18],
             doc: keys.find(k => k.includes('ลิงก์ไฟล์เอกสาร')) || keys[22]
         };
     }
 
     function populateFilters(data) {
-        if(data.length === 0) return;
-        const cols = getColNames(data[0]);
-        const deptSelect = document.getElementById('deptFilter');
-        const depts = new Set();
+        const planSelect = document.getElementById('planTypeFilter');
+        const plans = new Set();
         
-        data.forEach(row => {
-            let dept = row[cols.dept];
-            if(dept && String(dept).trim() !== '') depts.add(String(dept).trim());
-        });
+        if(cols.planType) {
+            data.forEach(row => {
+                let p = row[cols.planType];
+                if(p && String(p).trim() !== '') plans.add(String(p).trim());
+            });
+            planSelect.innerHTML = '<option value="all">ทุกประเภทแผน</option>';
+            plans.forEach(p => {
+                let opt = document.createElement('option');
+                opt.value = p; opt.innerText = p;
+                planSelect.appendChild(opt);
+            });
+        } else {
+            planSelect.disabled = true;
+            planSelect.innerHTML = '<option>ยังไม่มีคอลัมน์ประเภทแผน</option>';
+        }
+    }
 
-        deptSelect.innerHTML = '<option value="all">แสดงทั้งหมด</option>';
-        depts.forEach(dept => {
-            let option = document.createElement('option');
-            option.value = dept;
-            option.innerText = dept;
-            deptSelect.appendChild(option);
-        });
+    // ฟังก์ชันเช็กว่า สดท. เป็น H หรือ R
+    function checkRole(row) {
+        let hText = String(row[cols.hostDept] || '');
+        let rText = String(row[cols.relDept] || '');
+        let isH = hText.includes('สดท') || hText.includes('สำนักดิจิทัล');
+        let isR = rText.includes('สดท') || rText.includes('สำนักดิจิทัล');
+        return { isH, isR };
     }
 
     function applyFilters() {
-        const selectedDept = document.getElementById('deptFilter').value;
-        if(globalData.length === 0) return;
+        const roleFilter = document.querySelector('input[name="roleFilter"]:checked').value;
+        const planFilter = document.getElementById('planTypeFilter').value;
         
-        const cols = getColNames(globalData[0]);
-        let filteredData = globalData;
-        
-        // กรองเฉพาะโครงการ (KR จะแสดงเสมอเพื่อเป็นโครงร่าง)
-        if (selectedDept !== 'all') {
-            filteredData = globalData.filter(row => {
-                let pName = String(row[cols.projectName] || '').trim();
-                let deptName = String(row[cols.dept] || '').trim();
-                // อนุญาตให้ผ่านถ้าเป็นแถว KR ว่างเปล่า (ไม่มีชื่อโครงการ) หรือเป็นโครงการที่ตรงกับ Filter
-                return pName === '' || deptName === selectedDept;
-            });
-        }
+        let filteredData = globalData.filter(row => {
+            let roleMatch = true;
+            let roles = checkRole(row);
+            
+            // กรองตามบทบาท H/R ของ KR นั้นๆ
+            if (roleFilter === 'host' && !roles.isH) roleMatch = false;
+            if (roleFilter === 'relative' && !roles.isR) roleMatch = false;
 
-        processDashboardData(filteredData, cols);
+            // กรองประเภทแผน (ถ้ามี)
+            let planMatch = true;
+            if (planFilter !== 'all' && cols.planType) {
+                let pName = String(row[cols.projectName] || '').trim();
+                // บรรทัดที่เป็นโครงการเท่านั้นถึงกรองแผน บรรทัด KR เปล่าๆ ให้ปล่อยผ่าน
+                if (pName !== '' && String(row[cols.planType] || '').trim() !== planFilter) {
+                    planMatch = false;
+                }
+            }
+
+            return roleMatch && planMatch;
+        });
+
+        processDashboardData(filteredData);
     }
 
-    function processDashboardData(data, cols) {
-        let totalBudget = 0;
-        let totalSpent = 0;
-        let totalProjectsCount = 0;
-        
-        krGroups = {}; // รีเซ็ตการจัดกลุ่ม
+    function processDashboardData(data) {
+        let krGroups = {}; 
 
-        // 1. จัดกลุ่มข้อมูลตาม KR
-        data.forEach((row, index) => {
-            // หากไม่มีชื่อ KR ถือเป็นแถวว่าง ให้ข้ามไป
+        data.forEach((row) => {
             let krTitle = String(row[cols.krName] || '').trim();
             if(!krTitle || krTitle === 'NaN' || krTitle === 'None') return;
 
-            // ใช้ชื่อ KR เป็น Key เพื่อจัดกลุ่ม (กรณี รหัส KR ว่าง)
             let krKey = row[cols.krID] || krTitle; 
+            let roles = checkRole(row);
             
             if(!krGroups[krKey]) {
                 krGroups[krKey] = {
                     title: krTitle,
-                    id: row[cols.krID] || 'ไม่มีรหัส',
+                    id: row[cols.krID] || '-',
+                    isH: roles.isH,
+                    isR: roles.isR,
                     projects: [],
-                    krBudget: 0,
-                    krSpent: 0
+                    krBudget: 0
                 };
             }
 
-            // ตรวจสอบว่าบรรทัดนี้มี โครงการ หรือไม่
             let pName = String(row[cols.projectName] || '').trim();
             if(pName && pName !== 'NaN' && pName !== 'None') {
                 let pBudget = parseFloat(String(row[cols.budget] || '0').replace(/,/g, '')) || 0;
-                let pSpent = parseFloat(String(row[cols.spent] || '0').replace(/,/g, '')) || 0;
-                
-                totalBudget += pBudget;
-                totalSpent += pSpent;
-                totalProjectsCount++;
-                
                 krGroups[krKey].krBudget += pBudget;
-                krGroups[krKey].krSpent += pSpent;
 
                 let pTarget = parseFloat(row[cols.target]) || 1;
                 let pActual = parseFloat(row[cols.actual]) || 0;
                 let pProgress = Math.min((pActual / pTarget) * 100, 100).toFixed(2);
+                let pType = cols.planType ? (row[cols.planType] || '-') : '-';
 
                 krGroups[krKey].projects.push({
                     name: pName,
-                    dept: row[cols.dept] || '-',
+                    type: pType,
                     budget: pBudget,
                     progress: isNaN(pProgress) ? 0 : pProgress,
                     doc: row[cols.doc]
@@ -244,7 +234,6 @@
             }
         });
 
-        // 2. สร้าง HTML ตาราง
         let tableHTML = '';
         let krCount = 0;
 
@@ -254,30 +243,34 @@
             const hasProjects = group.projects.length > 0;
             const krRowId = `kr-${krCount}`;
 
-            // แถวหัวข้อ KR
+            // ป้ายกำกับ บทบาท
+            let roleBadge = '';
+            if (group.isH) roleBadge += `<span class="badge badge-host ms-2">H: เจ้าภาพหลัก</span>`;
+            if (group.isR) roleBadge += `<span class="badge badge-relative ms-2">R: หน่วยงานร่วม</span>`;
+
             tableHTML += `
                 <tr class="kr-row ${hasProjects ? '' : 'text-danger'}" onclick="toggleKR('${krRowId}')">
                     <td colspan="3">
                         <span class="toggle-icon"></span>
                         <span class="badge bg-secondary me-2">${group.id}</span>
-                        ${group.title}
-                        ${!hasProjects ? '<span class="badge bg-danger ms-2">ยังไม่มีโครงการรองรับ</span>' : ''}
+                        ${group.title} 
+                        ${roleBadge}
+                        ${!hasProjects ? '<span class="badge bg-danger ms-2">ยังไม่มีโครงการ</span>' : ''}
                     </td>
                     <td class="text-end fw-bold">${group.krBudget.toLocaleString()}</td>
                     <td></td>
                 </tr>
             `;
 
-            // แถวโครงการย่อย (ซ่อนอยู่ใต้ KR)
             group.projects.forEach(proj => {
                 let docButton = proj.doc && String(proj.doc).startsWith('http') 
                     ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-primary">📂 เอกสาร</a>`
-                    : `<span class="text-muted" style="font-size:0.85em;">ไม่มีไฟล์</span>`;
+                    : `<span class="text-muted" style="font-size:0.85em;">-</span>`;
 
                 tableHTML += `
                     <tr class="project-row kr-child-${krRowId}">
                         <td class="ps-5 text-primary">↳ ${proj.name}</td>
-                        <td>${proj.dept}</td>
+                        <td><span class="badge bg-light text-dark border">${proj.type}</span></td>
                         <td>
                             <div class="d-flex align-items-center">
                                 <span class="me-2">${proj.progress}%</span>
@@ -293,32 +286,19 @@
             });
         }
 
-        // อัปเดต Card สรุปผล
-        document.getElementById('totalKRs').innerText = krCount;
-        document.getElementById('totalProjects').innerText = totalProjectsCount;
-        document.getElementById('totalBudget').innerText = totalBudget.toLocaleString();
-        document.getElementById('totalSpent').innerText = totalSpent.toLocaleString();
-        
         document.getElementById('projectTableBody').innerHTML = tableHTML;
     }
 
-    // ฟังก์ชันสำหรับ กดพับ/กาง แถวโครงการ
     function toggleKR(krId) {
         const krRow = document.querySelector(`tr[onclick="toggleKR('${krId}')"]`);
         krRow.classList.toggle('collapsed');
-        
         const children = document.querySelectorAll(`.kr-child-${krId}`);
         children.forEach(child => {
-            if (krRow.classList.contains('collapsed')) {
-                child.style.display = 'none';
-            } else {
-                child.style.display = 'table-row';
-            }
+            child.style.display = krRow.classList.contains('collapsed') ? 'none' : 'table-row';
         });
     }
 
     window.onload = fetchData;
 </script>
-
 </body>
 </html>
