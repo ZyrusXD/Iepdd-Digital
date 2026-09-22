@@ -10,6 +10,15 @@
         body { font-family: 'Sarabun', sans-serif; background-color: #f8f9fa; }
         .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .table-responsive { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        
+        /* ตกแต่งแถว KR ให้เด่นขึ้น */
+        .kr-row { background-color: #e9ecef !important; font-weight: bold; cursor: pointer; }
+        .kr-row:hover { background-color: #dee2e6 !important; }
+        .project-row { transition: all 0.3s; }
+        
+        /* สัญลักษณ์ เปิด/ปิด แถว */
+        .toggle-icon::before { content: "▼"; display: inline-block; margin-right: 8px; font-size: 0.8em; color: #6c757d; }
+        .kr-row.collapsed .toggle-icon::before { content: "▶"; }
     </style>
 </head>
 <body>
@@ -27,12 +36,11 @@
 <div class="container-fluid py-4 px-4">
     <div id="loading" class="text-center my-5">
         <div class="spinner-border text-primary" role="status"></div>
-        <p class="mt-3 fw-bold text-muted">กำลังซิงค์ข้อมูลล่าสุดจาก Google Sheets...</p>
+        <p class="mt-3 fw-bold text-muted">กำลังซิงค์ข้อมูลล่าสุด...</p>
     </div>
 
     <div id="dashboardContent" class="d-none">
         
-        <!-- แถบตัวกรอง (Filters) -->
         <div class="row mb-3">
             <div class="col-md-3">
                 <label class="form-label fw-bold text-muted">กรองตามหน่วยงาน (R)</label>
@@ -42,20 +50,27 @@
             </div>
         </div>
 
-        <!-- 1. Executive Summaries -->
         <div class="row mb-4">
             <div class="col-md-3">
                 <div class="card card-custom bg-white border-start border-primary border-4 h-100">
                     <div class="card-body">
-                        <p class="text-muted mb-1 fw-bold">โครงการทั้งหมด</p>
-                        <h2 id="totalProjects" class="mb-0 text-primary">0</h2>
+                        <p class="text-muted mb-1 fw-bold">จำนวน KRs ทั้งหมด</p>
+                        <h2 id="totalKRs" class="mb-0 text-primary">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-custom bg-white border-start border-info border-4 h-100">
+                    <div class="card-body">
+                        <p class="text-muted mb-1 fw-bold">จำนวนโครงการ</p>
+                        <h2 id="totalProjects" class="mb-0 text-info">0</h2>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card card-custom bg-white border-start border-success border-4 h-100">
                     <div class="card-body">
-                        <p class="text-muted mb-1 fw-bold">งบประมาณจัดสรรรวม</p>
+                        <p class="text-muted mb-1 fw-bold">งบประมาณรวม</p>
                         <h2 id="totalBudget" class="mb-0 text-success">0 <small class="fs-6 text-muted">บาท</small></h2>
                     </div>
                 </div>
@@ -63,63 +78,28 @@
             <div class="col-md-3">
                 <div class="card card-custom bg-white border-start border-warning border-4 h-100">
                     <div class="card-body">
-                        <p class="text-muted mb-1 fw-bold">เบิกจ่ายจริงสะสม</p>
+                        <p class="text-muted mb-1 fw-bold">เบิกจ่ายสะสม</p>
                         <h2 id="totalSpent" class="mb-0 text-warning">0 <small class="fs-6 text-muted">บาท</small></h2>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card card-custom bg-white border-start border-info border-4 h-100">
-                    <div class="card-body">
-                        <p class="text-muted mb-1 fw-bold">อัตราการเบิกจ่าย</p>
-                        <h2 id="spendPercent" class="mb-0 text-info">0%</h2>
-                    </div>
-                </div>
-            </div>
         </div>
 
-        <!-- 2. กราฟ (Charts) -->
-        <div class="row mb-4">
-            <div class="col-md-6 mb-3">
-                <div class="card card-custom h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">สัดส่วนงบประมาณแบ่งตามยุทธศาสตร์ (ด้าน)</h5>
-                        <!-- แก้บัคกราฟยืดเด้งตรงนี้ -->
-                        <div style="position: relative; height: 250px; width: 100%;">
-                            <canvas id="budgetChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-3">
-                <div class="card card-custom h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">ความสำเร็จเฉลี่ยของโครงการ แบ่งตามด้าน (%)</h5>
-                        <!-- แก้บัคกราฟยืดเด้งตรงนี้ -->
-                        <div style="position: relative; height: 250px; width: 100%;">
-                            <canvas id="progressChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. ตารางข้อมูล -->
+        <!-- 3. ตารางข้อมูลแบบซ้อน (Nested Table) -->
         <div class="table-responsive">
-            <h5 class="fw-bold mb-3">รายการโครงการและผลการดำเนินงาน</h5>
-            <table class="table table-hover align-middle">
-                <thead class="table-light">
+            <h5 class="fw-bold mb-3">ความเชื่อมโยงยุทธศาสตร์ (KRs) และ โครงการ</h5>
+            <table class="table table-bordered align-middle">
+                <thead class="table-dark">
                     <tr>
-                        <th>รหัส KRs</th>
-                        <th style="width: 30%;">ชื่อโครงการ/กิจกรรม</th>
-                        <th>หน่วยงาน (R)</th>
+                        <th style="width: 40%;">ยุทธศาสตร์ / โครงการ</th>
+                        <th>หน่วยงานรับผิดชอบ</th>
                         <th>ผลสำเร็จ (%)</th>
                         <th>งบประมาณ (บาท)</th>
                         <th>เอกสารหลักฐาน</th>
                     </tr>
                 </thead>
                 <tbody id="projectTableBody">
-                    <!-- ข้อมูลแถวจะถูกสร้างด้วย JavaScript -->
+                    <!-- โค้ดสร้างตารางจะถูกใส่ตรงนี้ -->
                 </tbody>
             </table>
         </div>
@@ -127,20 +107,8 @@
 </div>
 
 <script>
-    let budgetChartInstance = null;
-    let progressChartInstance = null;
     let globalData = [];
-    
-    // ตัวแปรเก็บชื่อคอลัมน์ที่หาเจอแบบไดนามิก
-    let colProjectName = '';
-    let colKR = '';
-    let colDept = '';
-    let colBudget = '';
-    let colSpent = '';
-    let colTarget = '';
-    let colActual = '';
-    let colDoc = '';
-    let colCategory = '';
+    let krGroups = {}; 
 
     async function fetchData() {
         const year = document.getElementById('yearSelect').value;
@@ -152,53 +120,45 @@
             const result = await response.json();
             
             if(result.status === 'success') {
-                const data = result.data;
-                console.log("📥 ข้อมูลดิบจาก API:", data); // เอาไว้ดูใน Console (F12)
-
-                if(data.length === 0) {
-                    alert("เชื่อมต่อ Sheet สำเร็จ แต่ไม่พบข้อมูลใน Sheet ปี " + year);
-                    return;
-                }
-
-                // ดึงชื่อคอลัมน์ทั้งหมดจากแถวแรก เพื่อหาคอลัมน์ที่ต้องการแบบยืดหยุ่น (แก้ปัญหาการขึ้นบรรทัดใหม่)
-                const keys = Object.keys(data[0]);
-                colProjectName = keys.find(k => k.includes('โครงการ/กิจกรรม') && k.includes('หน่วยงาน')) || keys[14];
-                colKR = keys.find(k => k.includes('รหัส KRs')) || keys[1];
-                colDept = keys.find(k => k.includes('หน่วยงาน (R)')) || keys[9];
-                colBudget = keys.find(k => k.includes('งบประมาณจัดสรร')) || keys[19];
-                colSpent = keys.find(k => k.includes('ผลการเบิกจ่ายจริง')) || keys[20];
-                colTarget = keys.find(k => k.includes('ค่าเป้าหมายของโครงการ')) || keys[16];
-                colActual = keys.find(k => k.includes('ผลการดำเนินงานตามค่าเป้าหมายของโครงการ')) || keys[18];
-                colDoc = keys.find(k => k.includes('ลิงก์ไฟล์เอกสาร')) || keys[22];
-                colCategory = keys.find(k => k.includes('ด้าน')) || keys[2];
-
-                // กรองเฉพาะแถวที่มีชื่อโครงการ และข้อมูลไม่ว่างเปล่า
-                globalData = data.filter(row => row[colProjectName] && String(row[colProjectName]).trim() !== '');
-                
-                if(globalData.length === 0) {
-                    alert(`พบข้อมูลใน Sheet ${data.length} แถว แต่ไม่มีการกรอกชื่อโครงการเลยในคอลัมน์: ${colProjectName}`);
-                }
-
+                globalData = result.data;
                 populateFilters(globalData);
                 applyFilters(); 
             } else {
-                alert("ข้อมูลจาก Sheet ผิดพลาด: " + result.error);
+                alert("เกิดข้อผิดพลาดจาก Backend: " + result.error);
             }
         } catch (error) {
             console.error(error);
-            alert("ไม่สามารถดึงข้อมูลได้: ลองเปิดดู URL /api/data?year=2570 เพื่อดู Error จริง");
+            alert("ไม่สามารถเชื่อมต่อดึงข้อมูลได้");
         } finally {
             document.getElementById('loading').classList.add('d-none');
             document.getElementById('dashboardContent').classList.remove('d-none');
         }
     }
 
+    // หาชื่อคอลัมน์แบบยืดหยุ่น (แก้ปัญหาการขึ้นบรรทัดใหม่)
+    function getColNames(row) {
+        const keys = Object.keys(row);
+        return {
+            krID: keys.find(k => k.includes('รหัส KRs')) || keys[1],
+            krName: keys.find(k => k.includes('KEY RESULT')) || keys[5],
+            projectName: keys.find(k => k.includes('โครงการ/กิจกรรม') && k.includes('หน่วยงาน')) || keys[14],
+            dept: keys.find(k => k.includes('หน่วยงาน (R)')) || keys[9],
+            budget: keys.find(k => k.includes('งบประมาณจัดสรร')) || keys[19],
+            spent: keys.find(k => k.includes('ผลการเบิกจ่ายจริง')) || keys[20],
+            target: keys.find(k => k.includes('ค่าเป้าหมายของโครงการ')) || keys[16],
+            actual: keys.find(k => k.includes('ผลการดำเนินงานตามค่าเป้าหมายของโครงการ')) || keys[18],
+            doc: keys.find(k => k.includes('ลิงก์ไฟล์เอกสาร')) || keys[22]
+        };
+    }
+
     function populateFilters(data) {
+        if(data.length === 0) return;
+        const cols = getColNames(data[0]);
         const deptSelect = document.getElementById('deptFilter');
         const depts = new Set();
         
         data.forEach(row => {
-            let dept = row[colDept];
+            let dept = row[cols.dept];
             if(dept && String(dept).trim() !== '') depts.add(String(dept).trim());
         });
 
@@ -213,120 +173,146 @@
 
     function applyFilters() {
         const selectedDept = document.getElementById('deptFilter').value;
+        if(globalData.length === 0) return;
+        
+        const cols = getColNames(globalData[0]);
         let filteredData = globalData;
         
+        // กรองเฉพาะโครงการ (KR จะแสดงเสมอเพื่อเป็นโครงร่าง)
         if (selectedDept !== 'all') {
-            filteredData = globalData.filter(row => String(row[colDept] || '').trim() === selectedDept);
+            filteredData = globalData.filter(row => {
+                let pName = String(row[cols.projectName] || '').trim();
+                let deptName = String(row[cols.dept] || '').trim();
+                // อนุญาตให้ผ่านถ้าเป็นแถว KR ว่างเปล่า (ไม่มีชื่อโครงการ) หรือเป็นโครงการที่ตรงกับ Filter
+                return pName === '' || deptName === selectedDept;
+            });
         }
 
-        processDashboardData(filteredData);
+        processDashboardData(filteredData, cols);
     }
 
-    function processDashboardData(data) {
+    function processDashboardData(data, cols) {
         let totalBudget = 0;
         let totalSpent = 0;
-        let validProjects = data.length;
+        let totalProjectsCount = 0;
         
-        let budgetByCategory = {};
-        let progressByCategory = {};
-        let tableHTML = '';
+        krGroups = {}; // รีเซ็ตการจัดกลุ่ม
 
-        data.forEach(row => {
-            let budget = parseFloat(String(row[colBudget] || '0').replace(/,/g, '')) || 0;
-            let spent = parseFloat(String(row[colSpent] || '0').replace(/,/g, '')) || 0;
-            totalBudget += budget;
-            totalSpent += spent;
+        // 1. จัดกลุ่มข้อมูลตาม KR
+        data.forEach((row, index) => {
+            // หากไม่มีชื่อ KR ถือเป็นแถวว่าง ให้ข้ามไป
+            let krTitle = String(row[cols.krName] || '').trim();
+            if(!krTitle || krTitle === 'NaN' || krTitle === 'None') return;
 
-            let category = row[colCategory] || 'ไม่ระบุ';
+            // ใช้ชื่อ KR เป็น Key เพื่อจัดกลุ่ม (กรณี รหัส KR ว่าง)
+            let krKey = row[cols.krID] || krTitle; 
             
-            if(!budgetByCategory[category]) budgetByCategory[category] = 0;
-            budgetByCategory[category] += budget;
+            if(!krGroups[krKey]) {
+                krGroups[krKey] = {
+                    title: krTitle,
+                    id: row[cols.krID] || 'ไม่มีรหัส',
+                    projects: [],
+                    krBudget: 0,
+                    krSpent: 0
+                };
+            }
 
-            let target = parseFloat(row[colTarget]) || 1;
-            let actual = parseFloat(row[colActual]) || 0;
-            let progressPercent = Math.min((actual / target) * 100, 100);
+            // ตรวจสอบว่าบรรทัดนี้มี โครงการ หรือไม่
+            let pName = String(row[cols.projectName] || '').trim();
+            if(pName && pName !== 'NaN' && pName !== 'None') {
+                let pBudget = parseFloat(String(row[cols.budget] || '0').replace(/,/g, '')) || 0;
+                let pSpent = parseFloat(String(row[cols.spent] || '0').replace(/,/g, '')) || 0;
+                
+                totalBudget += pBudget;
+                totalSpent += pSpent;
+                totalProjectsCount++;
+                
+                krGroups[krKey].krBudget += pBudget;
+                krGroups[krKey].krSpent += pSpent;
 
-            if(!progressByCategory[category]) progressByCategory[category] = { sum: 0, count: 0 };
-            progressByCategory[category].sum += progressPercent;
-            progressByCategory[category].count += 1;
+                let pTarget = parseFloat(row[cols.target]) || 1;
+                let pActual = parseFloat(row[cols.actual]) || 0;
+                let pProgress = Math.min((pActual / pTarget) * 100, 100).toFixed(2);
 
-            let docLink = row[colDoc];
-            let docButton = docLink && String(docLink).startsWith('http') 
-                ? `<a href="${docLink}" target="_blank" class="btn btn-sm btn-outline-primary">📂 เอกสาร</a>`
-                : `<span class="text-muted" style="font-size:0.85em;">ไม่มีไฟล์</span>`;
-
-            tableHTML += `
-                <tr>
-                    <td><span class="badge bg-secondary">${row[colKR] || '-'}</span></td>
-                    <td>${row[colProjectName]}</td>
-                    <td>${row[colDept] || '-'}</td>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <span class="me-2">${progressPercent.toFixed(2)}%</span>
-                            <div class="progress w-100" style="height: 6px;">
-                                <div class="progress-bar ${progressPercent == 100 ? 'bg-success' : 'bg-primary'}" role="progressbar" style="width: ${progressPercent}%;"></div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>${budget.toLocaleString()}</td>
-                    <td>${docButton}</td>
-                </tr>
-            `;
+                krGroups[krKey].projects.push({
+                    name: pName,
+                    dept: row[cols.dept] || '-',
+                    budget: pBudget,
+                    progress: isNaN(pProgress) ? 0 : pProgress,
+                    doc: row[cols.doc]
+                });
+            }
         });
 
-        document.getElementById('totalProjects').innerText = validProjects;
+        // 2. สร้าง HTML ตาราง
+        let tableHTML = '';
+        let krCount = 0;
+
+        for (const key in krGroups) {
+            krCount++;
+            const group = krGroups[key];
+            const hasProjects = group.projects.length > 0;
+            const krRowId = `kr-${krCount}`;
+
+            // แถวหัวข้อ KR
+            tableHTML += `
+                <tr class="kr-row ${hasProjects ? '' : 'text-danger'}" onclick="toggleKR('${krRowId}')">
+                    <td colspan="3">
+                        <span class="toggle-icon"></span>
+                        <span class="badge bg-secondary me-2">${group.id}</span>
+                        ${group.title}
+                        ${!hasProjects ? '<span class="badge bg-danger ms-2">ยังไม่มีโครงการรองรับ</span>' : ''}
+                    </td>
+                    <td class="text-end fw-bold">${group.krBudget.toLocaleString()}</td>
+                    <td></td>
+                </tr>
+            `;
+
+            // แถวโครงการย่อย (ซ่อนอยู่ใต้ KR)
+            group.projects.forEach(proj => {
+                let docButton = proj.doc && String(proj.doc).startsWith('http') 
+                    ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-primary">📂 เอกสาร</a>`
+                    : `<span class="text-muted" style="font-size:0.85em;">ไม่มีไฟล์</span>`;
+
+                tableHTML += `
+                    <tr class="project-row kr-child-${krRowId}">
+                        <td class="ps-5 text-primary">↳ ${proj.name}</td>
+                        <td>${proj.dept}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="me-2">${proj.progress}%</span>
+                                <div class="progress w-100" style="height: 6px;">
+                                    <div class="progress-bar ${proj.progress == 100 ? 'bg-success' : 'bg-primary'}" style="width: ${proj.progress}%;"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-end">${proj.budget.toLocaleString()}</td>
+                        <td class="text-center">${docButton}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // อัปเดต Card สรุปผล
+        document.getElementById('totalKRs').innerText = krCount;
+        document.getElementById('totalProjects').innerText = totalProjectsCount;
         document.getElementById('totalBudget').innerText = totalBudget.toLocaleString();
         document.getElementById('totalSpent').innerText = totalSpent.toLocaleString();
         
-        let spendPercent = totalBudget > 0 ? ((totalSpent / totalBudget) * 100).toFixed(2) : 0;
-        document.getElementById('spendPercent').innerText = `${spendPercent}%`;
-
         document.getElementById('projectTableBody').innerHTML = tableHTML;
-
-        let avgProgressLabels = [];
-        let avgProgressData = [];
-        for (let cat in progressByCategory) {
-            avgProgressLabels.push(cat);
-            avgProgressData.push( (progressByCategory[cat].sum / progressByCategory[cat].count).toFixed(2) );
-        }
-
-        drawCharts(budgetByCategory, avgProgressLabels, avgProgressData);
     }
 
-    function drawCharts(budgetByCategory, avgProgressLabels, avgProgressData) {
-        if(budgetChartInstance) budgetChartInstance.destroy();
-        if(progressChartInstance) progressChartInstance.destroy();
-
-        const ctxBudget = document.getElementById('budgetChart').getContext('2d');
-        budgetChartInstance = new Chart(ctxBudget, {
-            type: 'doughnut',
-            data: {
-                labels: Object.keys(budgetByCategory),
-                datasets: [{
-                    data: Object.values(budgetByCategory),
-                    backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#0dcaf0', '#d63384', '#6f42c1'],
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
-
-        const ctxProgress = document.getElementById('progressChart').getContext('2d');
-        progressChartInstance = new Chart(ctxProgress, {
-            type: 'bar',
-            data: {
-                labels: avgProgressLabels,
-                datasets: [{
-                    label: 'ความสำเร็จเฉลี่ย (%)',
-                    data: avgProgressData,
-                    backgroundColor: '#198754'
-                }]
-            },
-            options: { 
-                responsive: true, 
-                maintainAspectRatio: false,
-                scales: {
-                    y: { beginAtZero: true, max: 100 }
-                }
+    // ฟังก์ชันสำหรับ กดพับ/กาง แถวโครงการ
+    function toggleKR(krId) {
+        const krRow = document.querySelector(`tr[onclick="toggleKR('${krId}')"]`);
+        krRow.classList.toggle('collapsed');
+        
+        const children = document.querySelectorAll(`.kr-child-${krId}`);
+        children.forEach(child => {
+            if (krRow.classList.contains('collapsed')) {
+                child.style.display = 'none';
+            } else {
+                child.style.display = 'table-row';
             }
         });
     }
