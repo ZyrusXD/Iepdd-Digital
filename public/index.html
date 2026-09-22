@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dashboard ยุทธศาสตร์ | สำนักดิจิทัล กทม.</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,55 +11,93 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Sarabun', sans-serif; background-color: #f1f5f9; color: #1e293b; }
+        :root { --primary-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        body { font-family: 'Sarabun', sans-serif; background-color: #f1f5f9; color: #1e293b; overflow-x: hidden; }
         
-        .navbar-custom { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 1rem 0; }
+        /* Navbar */
+        .navbar-custom { background: var(--primary-gradient); padding: 0.8rem 0; }
+        .nav-brand-text { line-height: 1.2; }
         
-        .nav-tabs { border-bottom: 2px solid #e2e8f0; margin-bottom: 25px; }
-        .nav-tabs .nav-link { border: none; color: #64748b; font-weight: 600; font-size: 1.1rem; padding: 12px 25px; transition: 0.3s; background: transparent; }
-        .nav-tabs .nav-link:hover { color: #0f172a; }
-        .nav-tabs .nav-link.active { color: #2563eb; background: transparent; border-bottom: 3px solid #2563eb; }
+        /* Tabs - Mobile Swipeable */
+        .nav-tabs { border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .nav-tabs::-webkit-scrollbar { display: none; }
+        .nav-tabs .nav-link { border: none; color: #64748b; font-weight: 600; font-size: 1rem; padding: 12px 20px; transition: 0.3s; background: transparent; }
+        .nav-tabs .nav-link.active { color: #2563eb; border-bottom: 3px solid #2563eb; }
 
-        .content-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        /* Cards */
+        .content-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
         .stat-box { padding: 20px; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); }
-        .stat-box h3 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0; }
-        .stat-icon { position: absolute; right: -15px; bottom: -20px; font-size: 5rem; opacity: 0.15; }
+        .stat-box h3 { font-size: 2rem; font-weight: 700; margin-bottom: 0; }
+        .stat-icon { position: absolute; right: -10px; bottom: -15px; font-size: 4.5rem; opacity: 0.15; }
 
-        .filter-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 25px; }
+        .filter-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; margin-bottom: 20px; }
         
-        .table-custom { border-collapse: separate; border-spacing: 0; width: 100%; }
-        .table-custom th { background: #f8fafc; color: #475569; font-weight: 600; padding: 15px; border-bottom: 2px solid #e2e8f0; font-size: 0.95rem; }
-        .table-custom td { padding: 15px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+        /* Table Responsive Styles */
+        .table-responsive { -webkit-overflow-scrolling: touch; border-radius: 8px; }
+        .table-custom { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 850px; /* บังคับกว้างเพื่อให้ตารางไม่เบียดบนมือถือ */ }
+        .table-custom th { background: #f8fafc; color: #475569; font-weight: 600; padding: 12px 15px; border-bottom: 2px solid #e2e8f0; font-size: 0.9rem; white-space: nowrap; }
+        .table-custom td { padding: 12px 15px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+        
+        .overview-table { min-width: 600px; }
         
         .kr-row { background-color: #ffffff; border-left: 4px solid #2563eb; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .kr-row:hover { background-color: #f8fafc; }
         .proj-row { background-color: #fdfdfd; border-left: 4px solid #cbd5e1; }
         
-        .toggle-icon { display: inline-flex; width: 24px; height: 24px; border-radius: 50%; background: #e2e8f0; align-items: center; justify-content: center; color: #475569; transition: 0.3s; margin-right: 15px; flex-shrink: 0;}
+        .toggle-icon { display: inline-flex; width: 24px; height: 24px; border-radius: 50%; background: #e2e8f0; align-items: center; justify-content: center; color: #475569; transition: 0.3s; margin-right: 12px; flex-shrink: 0; }
         .kr-row.collapsed .toggle-icon { transform: rotate(-90deg); }
 
         .progress-slim { height: 6px; border-radius: 10px; background-color: #e2e8f0; margin-top: 5px; }
         .progress-bar-budget { background: linear-gradient(90deg, #f59e0b, #d97706); }
         .progress-bar-kpi { background: linear-gradient(90deg, #3b82f6, #2563eb); }
         
-        .badge-sub { font-size: 0.75rem; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 3px 8px; border-radius: 4px; }
-        .kr-badge { font-size: 1rem; font-weight: 700; background: #e2e8f0; color: #0f172a; padding: 5px 12px; border-radius: 6px; border: 1px solid #cbd5e1; white-space: nowrap; }
+        .badge-sub { font-size: 0.75rem; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-top: 4px;}
+        .kr-badge { font-size: 0.9rem; font-weight: 700; background: #e2e8f0; color: #0f172a; padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1; white-space: nowrap; }
+
+        /* Media Queries for Mobile (Smartphones) */
+        @media (max-width: 768px) {
+            .navbar-custom .container-fluid { flex-direction: column; align-items: stretch !important; gap: 10px; }
+            .navbar-brand { justify-content: center; margin-bottom: 5px; }
+            .nav-brand-text .fs-4 { font-size: 1.25rem !important; }
+            .nav-brand-text .fs-6 { font-size: 0.8rem !important; }
+            
+            /* Year selector full width on mobile */
+            .year-selector-container { justify-content: space-between; background: rgba(255,255,255,0.1); padding: 8px 15px !important; border-radius: 8px; }
+            .year-selector-container select { width: 120px !important; }
+
+            .stat-box h3 { font-size: 1.5rem; }
+            .content-card { padding: 15px; }
+            
+            /* Table adjustments for mobile */
+            .table-custom th, .table-custom td { padding: 10px; font-size: 0.85rem; }
+            .kr-badge { font-size: 0.8rem; padding: 3px 6px; }
+            
+            /* Chart Container */
+            .chart-container { height: 250px !important; }
+            
+            /* Show swipe hint on mobile */
+            .swipe-hint { display: block !important; }
+        }
+        
+        .swipe-hint { display: none; font-size: 0.8rem; color: #64748b; margin-bottom: 8px; text-align: right; }
+        .swipe-hint i { animation: swipe-anim 2s infinite; display: inline-block; }
+        @keyframes swipe-anim { 0% { transform: translateX(0); } 50% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
     </style>
 </head>
 <body>
 
 <nav class="navbar navbar-dark navbar-custom shadow-sm">
     <div class="container-fluid px-4">
-        <a class="navbar-brand d-flex align-items-center" href="#">
-            <i class="bi bi-layers-fill fs-2 text-primary me-3"></i>
-            <div>
+        <a class="navbar-brand d-flex align-items-center m-0" href="#">
+            <i class="bi bi-layers-fill fs-2 text-primary me-2"></i>
+            <div class="nav-brand-text text-start">
                 <div class="fs-4 fw-bold">ระบบติดตามแผนปฏิบัติราชการ</div>
                 <div class="fs-6 fw-light text-light opacity-75">สำนักดิจิทัล กรุงเทพมหานคร</div>
             </div>
         </a>
-        <div class="d-flex align-items-center bg-white bg-opacity-10 rounded p-2">
-            <label class="text-white me-3 fw-medium mb-0">ปีงบประมาณ</label>
-            <select id="yearSelect" class="form-select form-select-sm border-0 fw-bold text-primary" style="width: 100px; border-radius: 6px;" onchange="fetchData()">
+        <div class="d-flex align-items-center year-selector-container">
+            <label class="text-white me-2 fw-medium mb-0 small">ปีงบประมาณ</label>
+            <select id="yearSelect" class="form-select form-select-sm border-0 fw-bold text-primary shadow-sm" style="width: 100px; border-radius: 6px;" onchange="fetchData()">
                 <option value="2570">2570</option>
                 <option value="2571">2571</option>
             </select>
@@ -67,15 +105,16 @@
     </div>
 </nav>
 
-<div class="container-fluid py-4 px-4">
+<div class="container-fluid py-3 px-3 px-md-4">
     
     <div id="loading" class="text-center my-5 py-5">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status"></div>
-        <h5 class="mt-4 fw-bold text-muted">กำลังดึงข้อมูลจากฐานข้อมูล (Google Sheets)...</h5>
+        <div class="spinner-border text-primary" style="width: 2.5rem; height: 2.5rem;" role="status"></div>
+        <h6 class="mt-3 fw-bold text-muted">กำลังดึงข้อมูล...</h6>
     </div>
 
     <div id="dashboardContent" class="d-none">
         
+        <!-- Swipeable Tabs -->
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button"><i class="bi bi-pie-chart-fill me-2"></i>ภาพรวมแดชบอร์ด</button>
@@ -90,37 +129,37 @@
             <!-- TAB 1: OVERVIEW -->
             <div class="tab-pane fade show active" id="overview">
                 <!-- Stat Cards -->
-                <div class="row g-4 mb-4">
-                    <div class="col-xl-3 col-md-6">
-                        <div class="stat-box bg-primary text-white shadow-sm">
-                            <p class="mb-1 opacity-75 fw-medium">จำนวนตัวชี้วัด (KRs)</p>
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-3">
+                        <div class="stat-box bg-primary text-white shadow-sm h-100">
+                            <p class="mb-1 opacity-75 fw-medium small">ตัวชี้วัด (KRs)</p>
                             <h3 id="statKRs">0</h3>
                             <i class="bi bi-flag-fill stat-icon text-white"></i>
                         </div>
                     </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="stat-box bg-info text-white shadow-sm">
-                            <p class="mb-1 opacity-75 fw-medium">โครงการที่ดำเนินการ</p>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-box bg-info text-white shadow-sm h-100">
+                            <p class="mb-1 opacity-75 fw-medium small">โครงการ</p>
                             <h3 id="statProjects">0</h3>
                             <i class="bi bi-diagram-3-fill stat-icon text-white"></i>
                         </div>
                     </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="stat-box" style="background: #10b981; color: white;">
-                            <p class="mb-1 opacity-75 fw-medium">งบประมาณรวม (บาท)</p>
-                            <h3 id="statBudget">0</h3>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-box h-100" style="background: #10b981; color: white;">
+                            <p class="mb-1 opacity-75 fw-medium small">งบรวม (บาท)</p>
+                            <h3 id="statBudget" class="fs-4">0</h3>
                             <i class="bi bi-cash-coin stat-icon text-white"></i>
                         </div>
                     </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="stat-box" style="background: #f59e0b; color: white;">
-                            <p class="mb-1 opacity-75 fw-medium">ผลการเบิกจ่ายสะสม</p>
-                            <h3 id="statSpent">0</h3>
-                            <div class="mt-2">
-                                <div class="progress" style="height: 4px; background: rgba(255,255,255,0.2);">
+                    <div class="col-6 col-md-3">
+                        <div class="stat-box h-100" style="background: #f59e0b; color: white;">
+                            <p class="mb-1 opacity-75 fw-medium small">เบิกจ่ายสะสม</p>
+                            <h3 id="statSpent" class="fs-4">0</h3>
+                            <div class="mt-1 d-flex align-items-center">
+                                <div class="progress flex-grow-1 me-2" style="height: 4px; background: rgba(255,255,255,0.2);">
                                     <div id="statSpentBar" class="progress-bar bg-white" style="width: 0%"></div>
                                 </div>
-                                <small id="statSpentPercent" class="fw-bold">0%</small>
+                                <small id="statSpentPercent" class="fw-bold" style="font-size: 0.75rem;">0%</small>
                             </div>
                             <i class="bi bi-graph-up-arrow stat-icon text-white"></i>
                         </div>
@@ -128,42 +167,43 @@
                 </div>
 
                 <!-- Charts -->
-                <div class="row g-4 mb-4">
+                <div class="row g-3 mb-4">
                     <div class="col-lg-6">
                         <div class="content-card h-100">
-                            <h5 class="fw-bold mb-4 text-secondary"><i class="bi bi-donut-chart me-2 text-primary"></i>สัดส่วนงบประมาณแยกตามยุทธศาสตร์ (ด้าน)</h5>
-                            <div style="height: 300px; position: relative;">
+                            <h6 class="fw-bold mb-3 text-secondary"><i class="bi bi-donut-chart me-2 text-primary"></i>สัดส่วนงบประมาณแยกตามยุทธศาสตร์</h6>
+                            <div class="chart-container" style="height: 300px; position: relative;">
                                 <canvas id="budgetChart"></canvas>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="content-card h-100">
-                            <h5 class="fw-bold mb-4 text-secondary"><i class="bi bi-bar-chart-steps me-2 text-primary"></i>ร้อยละความสำเร็จของเป้าหมาย (KRs) แยกตามด้าน</h5>
-                            <div style="height: 300px; position: relative;">
+                            <h6 class="fw-bold mb-3 text-secondary"><i class="bi bi-bar-chart-steps me-2 text-primary"></i>ร้อยละความสำเร็จของ KRs แยกตามด้าน</h6>
+                            <div class="chart-container" style="height: 300px; position: relative;">
                                 <canvas id="progressChart"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- รายชื่อ KRs ทั้งหมดในหน้าแรก -->
-                <div class="row g-4">
+                <!-- Overview Table -->
+                <div class="row g-3">
                     <div class="col-12">
                         <div class="content-card">
-                            <h5 class="fw-bold mb-4 text-secondary"><i class="bi bi-list-stars me-2 text-primary"></i>สรุปสถานะตัวชี้วัด (KRs) ทั้งหมด</h5>
+                            <h5 class="fw-bold mb-3 text-secondary fs-6"><i class="bi bi-list-stars me-2 text-primary"></i>สรุปสถานะตัวชี้วัด (KRs) ทั้งหมด</h5>
+                            <div class="swipe-hint"><i class="bi bi-arrow-left-right"></i> เลื่อนซ้าย-ขวา เพื่อดูข้อมูล</div>
                             <div class="table-responsive">
-                                <table class="table table-hover align-middle border">
+                                <table class="table table-hover align-middle border overview-table">
                                     <thead class="table-light">
                                         <tr>
                                             <th style="width: 15%;">ด้าน</th>
-                                            <th style="width: 10%;">รหัส KRs</th>
-                                            <th style="width: 50%;">ชื่อตัวชี้วัด (KEY RESULT)</th>
-                                            <th style="width: 25%;">ระดับความสำเร็จของ KRs</th>
+                                            <th style="width: 15%;">รหัส KRs</th>
+                                            <th style="width: 45%;">ชื่อตัวชี้วัด (KEY RESULT)</th>
+                                            <th style="width: 25%;">ระดับความสำเร็จ</th>
                                         </tr>
                                     </thead>
                                     <tbody id="overviewKrTableBody">
-                                        <!-- ข้อมูลจะถูกแทรกที่นี่ผ่าน JS -->
+                                        <!-- Injected by JS -->
                                     </tbody>
                                 </table>
                             </div>
@@ -175,46 +215,45 @@
             <!-- TAB 2: DATA TABLE -->
             <div class="tab-pane fade" id="detail">
                 
+                <!-- Filters -->
                 <div class="filter-section shadow-sm">
-                    <h6 class="fw-bold text-primary mb-3"><i class="bi bi-funnel-fill me-2"></i>ตัวกรองข้อมูลเชิงลึก</h6>
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <label class="form-label text-muted small fw-bold">ด้านยุทธศาสตร์</label>
-                            <select id="filterCategory" class="form-select form-select-sm" onchange="applyFilters()">
-                                <option value="all">ทั้งหมด</option>
-                            </select>
+                    <h6 class="fw-bold text-primary mb-3 fs-6"><i class="bi bi-funnel-fill me-2"></i>ตัวกรองข้อมูลเชิงลึก</h6>
+                    <div class="row g-2">
+                        <div class="col-6 col-md-3">
+                            <label class="form-label text-muted small fw-bold mb-1">ด้านยุทธศาสตร์</label>
+                            <select id="filterCategory" class="form-select form-select-sm" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label text-muted small fw-bold">ประเด็นพัฒนา</label>
-                            <select id="filterIssue" class="form-select form-select-sm" onchange="applyFilters()">
-                                <option value="all">ทั้งหมด</option>
-                            </select>
+                        <div class="col-6 col-md-3">
+                            <label class="form-label text-muted small fw-bold mb-1">ประเด็นพัฒนา</label>
+                            <select id="filterIssue" class="form-select form-select-sm" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label text-muted small fw-bold">บทบาทหน่วยงาน สดท.</label>
+                        <div class="col-6 col-md-3">
+                            <label class="form-label text-muted small fw-bold mb-1">บทบาท สดท.</label>
                             <select id="filterRole" class="form-select form-select-sm" onchange="applyFilters()">
                                 <option value="all">ทั้งหมด</option>
-                                <option value="host">H : เจ้าภาพหลัก</option>
-                                <option value="relative">R : หน่วยงานร่วม</option>
+                                <option value="host">H: เจ้าภาพหลัก</option>
+                                <option value="relative">R: ร่วม</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label text-muted small fw-bold">ค้นหารหัส / ชื่อ KR</label>
-                            <input type="text" id="filterSearch" class="form-control form-select-sm" placeholder="พิมพ์คำค้นหา..." onkeyup="applyFilters()">
+                        <div class="col-6 col-md-3">
+                            <label class="form-label text-muted small fw-bold mb-1">ค้นหารหัส / ชื่อ KR</label>
+                            <input type="text" id="filterSearch" class="form-control form-select-sm" placeholder="พิมพ์ค้นหา..." onkeyup="applyFilters()">
                         </div>
                     </div>
                 </div>
 
-                <div class="content-card">
+                <!-- Main Data Table -->
+                <div class="content-card p-0 p-md-3">
+                    <div class="p-3 pb-0 d-md-none swipe-hint"><i class="bi bi-arrow-left-right"></i> เลื่อนตารางซ้าย-ขวา เพื่อดูข้อมูลครบถ้วน</div>
                     <div class="table-responsive">
                         <table class="table-custom">
                             <thead>
                                 <tr>
-                                    <th style="width: 45%;">ยุทธศาสตร์ (KRs) / โครงการ</th>
-                                    <th style="width: 15%;">เป้าหมาย / หน่วยนับ</th>
-                                    <th style="width: 15%;">ความคืบหน้า (ผลสำเร็จ)</th>
-                                    <th style="width: 15%;">งบประมาณ (เบิกจ่าย)</th>
-                                    <th style="width: 10%; text-align: center;">เอกสาร</th>
+                                    <th style="min-width: 320px;">ยุทธศาสตร์ (KRs) / โครงการ</th>
+                                    <th style="min-width: 140px;">เป้าหมาย / หน่วยนับ</th>
+                                    <th style="min-width: 160px;">ความคืบหน้า (ผลสำเร็จ)</th>
+                                    <th style="min-width: 160px;">งบประมาณ (เบิกจ่าย)</th>
+                                    <th style="min-width: 90px; text-align: center;">เอกสาร</th>
                                 </tr>
                             </thead>
                             <tbody id="projectTableBody">
@@ -345,12 +384,17 @@
         processData(filteredData);
     }
 
+    function formatNumberAbbr(num) {
+        if(num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+        if(num >= 10000) return (num / 1000).toFixed(0) + 'k';
+        return num.toLocaleString();
+    }
+
     function processData(data) {
         let krGroups = {}; 
         let totalBudget = 0; let totalSpent = 0; let totalProjectsCount = 0;
         let chartBudget = {}; let chartProgress = {};
 
-        // 1. นำข้อมูลเข้าสู่ Group
         data.forEach(row => {
             let krTitle = String(row[cols.krName] || '').trim();
             if(!krTitle || krTitle === 'NaN' || krTitle === 'None') return;
@@ -400,39 +444,32 @@
                     budget: pBudget, spent: pSpent,
                     target: pTarget, actual: pActual, progress: pProgress,
                     calcFlag: calcFlag, 
-                    doc: row[cols.docProj] // ลิงก์ไฟล์โครงการ
+                    doc: row[cols.docProj]
                 });
             }
         });
 
-        // 2. แปลง Group เป็น Array เพื่อนำมาจัดเรียง (Sort) สำหรับหน้า Overview
         let krArray = Object.values(krGroups);
         krArray.sort((a, b) => {
-            // เรียงตาม รหัส KR ก่อน ถ้าไม่มีรหัส ให้เรียงตามด้าน
-            let idA = a.id || 'ZZZ'; // ตัวที่ไม่มีรหัสให้ไปอยู่ล่างสุด
+            let idA = a.id || 'ZZZ'; 
             let idB = b.id || 'ZZZ';
-            if (idA === idB) {
-                return a.category.localeCompare(b.category);
-            }
+            if (idA === idB) return a.category.localeCompare(b.category);
             return idA.localeCompare(idB);
         });
 
-        // 3. สร้าง HTML สำหรับ TAB 1 (สรุป KRs เรียงลำดับ)
+        // Overview Table (TAB 1)
         let overviewHTML = '';
         krArray.forEach(group => {
             let krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
-            
             overviewHTML += `
                 <tr>
-                    <td><span class="badge-sub"><i class="bi bi-tags"></i> ${group.category}</span></td>
+                    <td><span class="badge-sub text-wrap text-start"><i class="bi bi-tags"></i> ${group.category}</span></td>
                     <td>${group.id ? `<span class="kr-badge bg-light text-dark border">${group.id}</span>` : '<span class="text-muted">-</span>'}</td>
-                    <td>
-                        <div class="fw-bold text-dark">${group.title}</div>
-                    </td>
+                    <td><div class="fw-bold text-dark" style="font-size:0.9rem;">${group.title}</div></td>
                     <td>
                         <div class="d-flex align-items-center">
                             <span class="me-2 fw-bold ${krProgressPercent == 100 ? 'text-success' : 'text-primary'}">${krProgressPercent.toFixed(1)}%</span>
-                            <div class="progress flex-grow-1" style="height: 8px;">
+                            <div class="progress flex-grow-1" style="height: 6px;">
                                 <div class="progress-bar ${krProgressPercent == 100 ? 'bg-success' : 'bg-primary'}" style="width: ${krProgressPercent}%;"></div>
                             </div>
                         </div>
@@ -442,17 +479,12 @@
         });
         document.getElementById('overviewKrTableBody').innerHTML = overviewHTML;
 
-
-        // 4. สร้าง HTML สำหรับ TAB 2 (ตารางข้อมูลแจกแจงแบบกาง/พับได้)
-        let tableHTML = ''; 
-        let krCount = 0;
+        // Detail Table (TAB 2)
+        let tableHTML = ''; let krCount = 0;
         
-        // ใช้ Array ที่ Sort แล้วมาแสดงผลเช่นกัน
         krArray.forEach(group => {
             krCount++;
-            const hasProjects = group.projects.length > 0;
             const krRowId = `kr-${krCount}`;
-
             let krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
             
             let cat = group.category;
@@ -462,27 +494,27 @@
             let budgetPercent = group.krBudget > 0 ? Math.min((group.krSpent / group.krBudget) * 100, 100) : 0;
 
             let roleBadge = '';
-            if (group.isH) roleBadge += `<span class="badge text-bg-primary ms-2">H</span>`;
-            if (group.isR) roleBadge += `<span class="badge text-bg-warning ms-2">R</span>`;
+            if (group.isH) roleBadge += `<span class="badge text-bg-primary ms-1">H</span>`;
+            if (group.isR) roleBadge += `<span class="badge text-bg-warning ms-1">R</span>`;
             
             let policyBadge = '';
             if(group.policy && group.policy !== 'NaN' && group.policy !== '-') {
-                policyBadge = `<span class="badge-sub text-info border-info ms-2" style="background:#f0f9ff;"><i class="bi bi-link-45deg"></i> นโยบาย 261+: ${group.policy}</span>`;
+                policyBadge = `<span class="badge-sub text-info border-info mt-2"><i class="bi bi-link-45deg"></i> 261+: ${group.policy}</span>`;
             }
 
             let krDocButtons = '';
-            if (group.doc1 && String(group.doc1).startsWith('http')) krDocButtons += `<a href="${group.doc1}" target="_blank" class="btn btn-sm btn-primary mb-1 d-block" style="font-size: 0.75rem;"><i class="bi bi-file-earmark-pdf"></i> ปผ.01</a>`;
-            if (group.doc2 && String(group.doc2).startsWith('http')) krDocButtons += `<a href="${group.doc2}" target="_blank" class="btn btn-sm btn-outline-primary d-block" style="font-size: 0.75rem;"><i class="bi bi-file-earmark-pdf"></i> ปผ.02</a>`;
+            if (group.doc1 && String(group.doc1).startsWith('http')) krDocButtons += `<a href="${group.doc1}" target="_blank" class="btn btn-sm btn-primary mb-1 w-100" style="font-size: 0.75rem;"><i class="bi bi-file-earmark-pdf"></i> ปผ.01</a>`;
+            if (group.doc2 && String(group.doc2).startsWith('http')) krDocButtons += `<a href="${group.doc2}" target="_blank" class="btn btn-sm btn-outline-primary w-100" style="font-size: 0.75rem;"><i class="bi bi-file-earmark-pdf"></i> ปผ.02</a>`;
 
             tableHTML += `
-                <tr class="kr-row mb-2" onclick="toggleKR('${krRowId}')">
+                <tr class="kr-row" onclick="toggleKR('${krRowId}')">
                     <td>
                         <div class="d-flex align-items-start">
                             <span class="toggle-icon"><i class="bi bi-chevron-down"></i></span>
                             <div>
-                                <div class="d-flex align-items-center mb-1">
-                                    ${group.id ? `<span class="kr-badge me-2">${group.id}</span>` : ''}
-                                    <div class="fw-bold text-primary fs-6">${group.title}</div>
+                                <div class="mb-1">
+                                    ${group.id ? `<span class="kr-badge me-1">${group.id}</span>` : ''}
+                                    <span class="fw-bold text-primary fs-6">${group.title}</span>
                                     ${roleBadge}
                                 </div>
                                 <span class="badge-sub"><i class="bi bi-tags"></i> ${group.category}</span>
@@ -491,49 +523,47 @@
                         </div>
                     </td>
                     <td>
-                        <div class="text-muted small">เป้าหมายรวม: <strong class="text-dark">${group.target.toLocaleString()}</strong></div>
-                        <div class="text-muted small">หน่วยนับ: <strong class="text-dark">${group.unit}</strong></div>
+                        <div class="text-muted small mb-1">เป้าหมาย: <strong class="text-dark">${group.target.toLocaleString()}</strong></div>
+                        <div class="text-muted small">หน่วย: <strong class="text-dark">${group.unit}</strong></div>
                     </td>
                     <td>
                         <div class="d-flex justify-content-between small fw-bold mb-1">
                             <span>ผลสำเร็จ</span> <span class="${krProgressPercent==100?'text-success':'text-primary'}">${krProgressPercent.toFixed(1)}%</span>
                         </div>
-                        <div class="progress progress-slim"><div class="progress-bar progress-bar-kpi" style="width: ${krProgressPercent}%;"></div></div>
-                        <div class="text-muted small mt-1 text-end">${group.accumulatedActual.toLocaleString()} / ${group.target.toLocaleString()}</div>
+                        <div class="progress progress-slim mb-1"><div class="progress-bar progress-bar-kpi" style="width: ${krProgressPercent}%;"></div></div>
+                        <div class="text-muted text-end" style="font-size:0.75rem;">${group.accumulatedActual.toLocaleString()} / ${group.target.toLocaleString()}</div>
                     </td>
                     <td>
                         <div class="d-flex justify-content-between small fw-bold mb-1">
                             <span>เบิกจ่าย</span> <span class="text-warning">${budgetPercent.toFixed(1)}%</span>
                         </div>
-                        <div class="progress progress-slim"><div class="progress-bar progress-bar-budget" style="width: ${budgetPercent}%;"></div></div>
-                        <div class="text-muted small mt-1 text-end">${group.krSpent.toLocaleString()} / ${group.krBudget.toLocaleString()}</div>
+                        <div class="progress progress-slim mb-1"><div class="progress-bar progress-bar-budget" style="width: ${budgetPercent}%;"></div></div>
+                        <div class="text-muted text-end" style="font-size:0.75rem;">${formatNumberAbbr(group.krSpent)} / ${formatNumberAbbr(group.krBudget)}</div>
                     </td>
                     <td class="text-center align-middle">${krDocButtons || `<span class="text-muted small">-</span>`}</td>
                 </tr>
             `;
 
-            // บรรทัดย่อย (โครงการ)
             group.projects.forEach(proj => {
-                // เหลือแค่ปุ่มไฟล์เอกสารปุ่มเดียวตามที่ผู้ใช้ต้องการ
                 let docBtn = proj.doc && String(proj.doc).startsWith('http') 
-                    ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-secondary w-100" title="ไฟล์โครงการ/กิจกรรม"><i class="bi bi-file-earmark-text"></i> ไฟล์โครงการ</a>` 
+                    ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-secondary w-100" style="font-size: 0.8rem;"><i class="bi bi-file-earmark-text"></i> ไฟล์โครงการ</a>` 
                     : `<span class="text-muted small fst-italic">-</span>`;
                 
                 let pBudgPct = proj.budget > 0 ? Math.min((proj.spent / proj.budget) * 100, 100) : 0;
 
                 tableHTML += `
                     <tr class="proj-row kr-child-${krRowId}">
-                        <td class="ps-5">
-                            <div class="text-dark"><i class="bi bi-arrow-return-right text-muted me-2"></i> ${proj.name}</div>
-                            ${proj.calcFlag === 'คำนวณ' ? `<span class="badge-sub ms-4 text-info"><i class="bi bi-plus"></i> คำนวณเข้า KR</span>` : ''}
+                        <td class="ps-4 ps-md-5">
+                            <div class="text-dark" style="font-size:0.9rem;"><i class="bi bi-arrow-return-right text-muted me-1"></i> ${proj.name}</div>
+                            ${proj.calcFlag === 'คำนวณ' ? `<span class="badge-sub text-info ms-4 mt-1"><i class="bi bi-plus"></i> คำนวณยอดเข้า KR</span>` : ''}
                         </td>
                         <td>
-                            <div class="text-muted small">เป้า: <strong class="text-dark">${proj.target.toLocaleString()}</strong></div>
+                            <div class="text-muted small mb-1">เป้า: <strong class="text-dark">${proj.target.toLocaleString()}</strong></div>
                             <div class="text-muted small">ทำได้: <strong class="text-dark">${proj.actual.toLocaleString()}</strong></div>
                         </td>
                         <td>
                             <div class="d-flex justify-content-between small fw-bold mb-1">
-                                <span class="text-muted">ความคืบหน้า</span>
+                                <span class="text-muted">คืบหน้า</span>
                                 <span class="${proj.progress==100?'text-success':'text-secondary'}">${proj.progress.toFixed(0)}%</span>
                             </div>
                             <div class="progress progress-slim"><div class="progress-bar bg-secondary" style="width: ${proj.progress}%;"></div></div>
@@ -544,21 +574,21 @@
                                 <span class="text-warning">${pBudgPct.toFixed(0)}%</span>
                             </div>
                             <div class="progress progress-slim mb-1"><div class="progress-bar bg-warning" style="width: ${pBudgPct}%;"></div></div>
-                            <div class="text-muted" style="font-size: 0.75rem;">งบ: <strong class="text-dark">${proj.budget.toLocaleString()}</strong></div>
+                            <div class="text-muted" style="font-size: 0.75rem;">งบ: <strong class="text-dark">${formatNumberAbbr(proj.budget)}</strong></div>
                         </td>
-                        <td class="text-center align-middle">
-                            ${docBtn}
-                        </td>
+                        <td class="text-center align-middle">${docBtn}</td>
                     </tr>
                 `;
             });
         });
 
-        // อัปเดตกล่องตัวเลขสถิติด้านบน
+        // อัปเดตสถิติด้านบน (พร้อมย่อตัวเลขหลักล้านให้อ่านง่ายบนมือถือ)
         document.getElementById('statKRs').innerText = krCount.toLocaleString();
         document.getElementById('statProjects').innerText = totalProjectsCount.toLocaleString();
-        document.getElementById('statBudget').innerText = totalBudget.toLocaleString();
-        document.getElementById('statSpent').innerText = totalSpent.toLocaleString();
+        
+        // บนมือถือตัวเลขงบหลักสิบล้านจะยาวไป ใช้ฟังก์ชันย่อ
+        document.getElementById('statBudget').innerText = window.innerWidth < 768 ? formatNumberAbbr(totalBudget) : totalBudget.toLocaleString();
+        document.getElementById('statSpent').innerText = window.innerWidth < 768 ? formatNumberAbbr(totalSpent) : totalSpent.toLocaleString();
         
         let spendPct = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
         document.getElementById('statSpentPercent').innerText = spendPct.toFixed(1) + "%";
@@ -570,10 +600,7 @@
     }
 
     function toggleKR(krId) {
-        if (event.target.tagName.toLowerCase() === 'a' || event.target.parentNode.tagName.toLowerCase() === 'a' || 
-            event.target.tagName.toLowerCase() === 'button' || event.target.parentNode.tagName.toLowerCase() === 'button') {
-            return;
-        }
+        if (event.target.tagName.toLowerCase() === 'a' || event.target.parentNode.tagName.toLowerCase() === 'a') return;
         const krRow = document.querySelector(`tr[onclick="toggleKR('${krId}')"]`);
         krRow.classList.toggle('collapsed');
         document.querySelectorAll(`.kr-child-${krId}`).forEach(child => {
@@ -588,31 +615,23 @@
         const ctxB = document.getElementById('budgetChart').getContext('2d');
         budgetChartInstance = new Chart(ctxB, {
             type: 'doughnut',
-            data: {
-                labels: Object.keys(chartBudget),
-                datasets: [{ data: Object.values(chartBudget), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'] }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
+            data: { labels: Object.keys(chartBudget), datasets: [{ data: Object.values(chartBudget), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'] }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: window.innerWidth < 768 ? 'bottom' : 'right', labels: { boxWidth: 12 } } } }
         });
 
         let pLabels = []; let pData = [];
-        for(let cat in chartProgress) {
-            pLabels.push(cat);
-            pData.push( (chartProgress[cat].sum / chartProgress[cat].count).toFixed(1) );
-        }
+        for(let cat in chartProgress) { pLabels.push(cat); pData.push( (chartProgress[cat].sum / chartProgress[cat].count).toFixed(1) ); }
 
         const ctxP = document.getElementById('progressChart').getContext('2d');
         progressChartInstance = new Chart(ctxP, {
             type: 'bar',
-            data: {
-                labels: pLabels,
-                datasets: [{ label: 'ร้อยละความสำเร็จเฉลี่ยของ KRs', data: pData, backgroundColor: '#3b82f6', borderRadius: 6 }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
+            data: { labels: pLabels, datasets: [{ label: 'ร้อยละความสำเร็จเฉลี่ยของ KRs', data: pData, backgroundColor: '#3b82f6', borderRadius: 4 }] },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { maxRotation: 45, minRotation: 45, font: {size: 10} } }, y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false } } }
         });
     }
 
     window.onload = fetchData;
+    window.onresize = () => { if(globalData.length > 0) applyFilters(); }; // Re-render for responsive texts on resize
 </script>
 </body>
 </html>
