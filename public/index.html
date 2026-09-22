@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dashboard ยุทธศาสตร์ | สำนักดิจิทัล กทม.</title>
+    <title>Dashboard ยุทธศาสตร์ | สยป. กทม.</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -14,11 +14,12 @@
         :root { --primary-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
         body { font-family: 'Sarabun', sans-serif; background-color: #f1f5f9; color: #1e293b; overflow-x: hidden; }
         
-        /* Navbar */
+        /* Navbar & Logo */
         .navbar-custom { background: var(--primary-gradient); padding: 0.8rem 0; }
-        .nav-brand-text { line-height: 1.2; }
+        .nav-brand-text { line-height: 1.3; }
+        .logo-img { height: 55px; object-fit: contain; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         
-        /* Tabs - Mobile Swipeable */
+        /* Tabs */
         .nav-tabs { border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
         .nav-tabs::-webkit-scrollbar { display: none; }
         .nav-tabs .nav-link { border: none; color: #64748b; font-weight: 600; font-size: 1rem; padding: 12px 20px; transition: 0.3s; background: transparent; }
@@ -32,7 +33,7 @@
 
         .filter-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; margin-bottom: 20px; }
         
-        /* Table Responsive Styles */
+        /* Table Styles */
         .table-responsive { -webkit-overflow-scrolling: touch; border-radius: 8px; }
         .table-custom { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 850px; }
         .table-custom th { background: #f8fafc; color: #475569; font-weight: 600; padding: 12px 15px; border-bottom: 2px solid #e2e8f0; font-size: 0.9rem; white-space: nowrap; }
@@ -54,9 +55,26 @@
         .badge-sub { font-size: 0.75rem; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-top: 4px;}
         .kr-badge { font-size: 0.9rem; font-weight: 700; background: #e2e8f0; color: #0f172a; padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1; white-space: nowrap; }
 
+        /* 🌟 ป้ายนโยบาย 261+ แบบใหม่ (โดดเด่นและพรีเมียม) */
+        .badge-policy {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            color: white;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            box-shadow: 0 2px 5px rgba(139, 92, 246, 0.3);
+            border: none;
+            margin-top: 4px;
+        }
+
+        /* Mobile Adjustments */
         @media (max-width: 768px) {
             .navbar-custom .container-fluid { flex-direction: column; align-items: stretch !important; gap: 10px; }
-            .navbar-brand { justify-content: center; margin-bottom: 5px; }
+            .navbar-brand { justify-content: center; margin-bottom: 5px; text-align: center; flex-direction: column; }
+            .logo-img { height: 45px; margin-right: 0 !important; margin-bottom: 10px; }
+            .nav-brand-text { text-align: center !important; }
             .nav-brand-text .fs-4 { font-size: 1.25rem !important; }
             .nav-brand-text .fs-6 { font-size: 0.8rem !important; }
             
@@ -82,14 +100,16 @@
 
 <nav class="navbar navbar-dark navbar-custom shadow-sm">
     <div class="container-fluid px-4">
+        <!-- Logo & Branding -->
         <a class="navbar-brand d-flex align-items-center m-0" href="#">
-            <i class="bi bi-layers-fill fs-2 text-primary me-2"></i>
+            <img src="logo.png" alt="สยป. กทม." class="logo-img me-3">
             <div class="nav-brand-text text-start">
                 <div class="fs-4 fw-bold">ระบบติดตามแผนปฏิบัติราชการ</div>
-                <div class="fs-6 fw-light text-light opacity-75">สำนักดิจิทัล กรุงเทพมหานคร</div>
+                <div class="fs-6 fw-light text-light opacity-75">กองยุทธศาสตร์พัฒนาโครงสร้างพื้นฐานเมือง | สำนักยุทธศาสตร์และประเมินผล</div>
             </div>
         </a>
-        <div class="d-flex align-items-center year-selector-container">
+        
+        <div class="d-flex align-items-center year-selector-container mt-2 mt-md-0">
             <label class="text-white me-2 fw-medium mb-0 small">ปีงบประมาณ</label>
             <select id="yearSelect" class="form-select form-select-sm border-0 fw-bold text-primary shadow-sm" style="width: 100px; border-radius: 6px;" onchange="fetchData()">
                 <option value="2570">2570</option>
@@ -206,7 +226,6 @@
             <!-- TAB 2: DATA TABLE -->
             <div class="tab-pane fade" id="detail">
                 
-                <!-- Filters -->
                 <div class="filter-section shadow-sm">
                     <h6 class="fw-bold text-primary mb-3 fs-6"><i class="bi bi-funnel-fill me-2"></i>ตัวกรองข้อมูลเชิงลึก</h6>
                     <div class="row g-2">
@@ -219,7 +238,7 @@
                             <select id="filterIssue" class="form-select form-select-sm" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
                         </div>
                         <div class="col-6 col-md-3">
-                            <label class="form-label text-muted small fw-bold mb-1">บทบาท สดท.</label>
+                            <label class="form-label text-muted small fw-bold mb-1">บทบาท สยป.</label>
                             <select id="filterRole" class="form-select form-select-sm" onchange="applyFilters()">
                                 <option value="all">ทั้งหมด</option>
                                 <option value="host">H: เจ้าภาพหลัก</option>
@@ -257,7 +276,7 @@
     </div>
 </div>
 
-<!-- ================= Modal: Project Details (Report Note) ================= -->
+<!-- Modal: Project Details (Report Note) -->
 <div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content border-0 shadow-lg">
@@ -265,9 +284,7 @@
         <h5 class="modal-title fw-bold" id="projectModalLabel"><i class="bi bi-file-text-fill me-2"></i>รายละเอียดผลการดำเนินงาน</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body bg-light" id="projectModalBody">
-        <!-- JS จะสร้างเนื้อหาและใส่มาในนี้ -->
-      </div>
+      <div class="modal-body bg-light" id="projectModalBody"></div>
       <div class="modal-footer border-0">
         <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">ปิดหน้าต่าง</button>
       </div>
@@ -279,7 +296,7 @@
 <script>
     let globalData = [];
     let cols = {};
-    let projectDetailsDb = {}; // เก็บข้อมูล Report Note
+    let projectDetailsDb = {}; 
     let budgetChartInstance = null;
     let progressChartInstance = null;
 
@@ -331,7 +348,7 @@
             projActual: keys.find(k => k.includes('ผลการดำเนินงานตามค่าเป้าหมายของโครงการ') || k.includes('ผลการดำเนินงาน')),
             calcToKR: keys.find(k => k.includes('การคำนวณเข้า KR')),
             
-            reportNote: keys.find(k => k.includes('รายละเอียดผลการดำเนินงาน')), // ตรวจจับคอลัมน์ Report Note
+            reportNote: keys.find(k => k.includes('รายละเอียดผลการดำเนินงาน')), 
             docProj: keys.find(k => k.includes('ลิงก์ไฟล์เอกสารโครงการ') || k.includes('ลิงก์ไฟล์เอกสาร'))
         };
     }
@@ -357,8 +374,9 @@
     function checkRole(row) {
         let hText = String(row[cols.hostDept] || '');
         let rText = String(row[cols.relDept] || '');
-        let isH = hText.includes('สดท') || hText.includes('สำนักดิจิทัล');
-        let isR = rText.includes('สดท') || rText.includes('สำนักดิจิทัล');
+        // รองรับคำว่า สยป, สำนักยุทธศาสตร์, สดท (เผื่อของเดิม)
+        let isH = hText.includes('สยป') || hText.includes('ยุทธศาสตร์') || hText.includes('สดท');
+        let isR = rText.includes('สยป') || rText.includes('ยุทธศาสตร์') || rText.includes('สดท');
         return { isH, isR };
     }
 
@@ -404,7 +422,7 @@
         let krGroups = {}; 
         let totalBudget = 0; let totalSpent = 0; let totalProjectsCount = 0;
         let chartBudget = {}; let chartProgress = {};
-        projectDetailsDb = {}; // ล้างข้อมูลเก่าก่อน
+        projectDetailsDb = {}; 
 
         data.forEach(row => {
             let krTitle = String(row[cols.krName] || '').trim();
@@ -450,7 +468,6 @@
                 let calcFlag = String(row[cols.calcToKR] || '').trim();
                 if(calcFlag === 'คำนวณ') krGroups[krKey].accumulatedActual += pActual;
 
-                // จัดเก็บข้อมูลลงฐานข้อมูลชั่วคราวสำหรับ Modal
                 let projId = 'proj-' + Object.keys(projectDetailsDb).length;
                 let pData = {
                     id: projId,
@@ -460,7 +477,7 @@
                     target: pTarget, actual: pActual, progress: pProgress,
                     calcFlag: calcFlag, 
                     doc: row[cols.docProj],
-                    reportNote: String(row[cols.reportNote] || '').trim() // ดึง Report Note
+                    reportNote: String(row[cols.reportNote] || '').trim() 
                 };
                 krGroups[krKey].projects.push(pData);
                 projectDetailsDb[projId] = pData;
@@ -479,11 +496,20 @@
         let overviewHTML = '';
         krArray.forEach(group => {
             let krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
+            
+            // ป้ายนโยบายในหน้าแรก
+            let policyBadgeOverview = '';
+            if(group.policy && group.policy !== 'NaN' && group.policy !== '-') {
+                policyBadgeOverview = `<div class="mt-1"><span class="badge-policy"><i class="bi bi-star-fill me-1"></i> นโยบาย 261+: ${group.policy}</span></div>`;
+            }
+
             overviewHTML += `
                 <tr>
                     <td><span class="badge-sub text-wrap text-start"><i class="bi bi-tags"></i> ${group.category}</span></td>
                     <td>${group.id ? `<span class="kr-badge bg-light text-dark border">${group.id}</span>` : '<span class="text-muted">-</span>'}</td>
-                    <td><div class="fw-bold text-dark" style="font-size:0.9rem;">${group.title}</div></td>
+                    <td>
+                        <div class="fw-bold text-dark" style="font-size:0.95rem;">${group.title}</div>${policyBadgeOverview}
+                    </td>
                     <td>
                         <div class="d-flex align-items-center">
                             <span class="me-2 fw-bold ${krProgressPercent == 100 ? 'text-success' : 'text-primary'}">${krProgressPercent.toFixed(1)}%</span>
@@ -512,12 +538,13 @@
             let budgetPercent = group.krBudget > 0 ? Math.min((group.krSpent / group.krBudget) * 100, 100) : 0;
 
             let roleBadge = '';
-            if (group.isH) roleBadge += `<span class="badge text-bg-primary ms-1">H</span>`;
-            if (group.isR) roleBadge += `<span class="badge text-bg-warning ms-1">R</span>`;
+            if (group.isH) roleBadge += `<span class="badge text-bg-primary ms-2">H</span>`;
+            if (group.isR) roleBadge += `<span class="badge text-bg-warning ms-2">R</span>`;
             
+            // ป้ายนโยบายในตารางลึก
             let policyBadge = '';
             if(group.policy && group.policy !== 'NaN' && group.policy !== '-') {
-                policyBadge = `<span class="badge-sub text-info border-info mt-2"><i class="bi bi-link-45deg"></i> 261+: ${group.policy}</span>`;
+                policyBadge = `<span class="badge-policy ms-2 mt-2 mt-md-0 d-inline-block"><i class="bi bi-star-fill me-1"></i> นโยบาย 261+: ${group.policy}</span>`;
             }
 
             let krDocButtons = '';
@@ -532,9 +559,9 @@
                             <div>
                                 <div class="mb-1">
                                     ${group.id ? `<span class="kr-badge me-1">${group.id}</span>` : ''}
-                                    <span class="fw-bold text-primary fs-6">${group.title}</span>${roleBadge}
+                                    <span class="fw-bold text-primary fs-6 lh-base">${group.title}</span>${roleBadge}
                                 </div>
-                                <span class="badge-sub"><i class="bi bi-tags"></i> ${group.category}</span>${policyBadge}
+                                <span class="badge-sub mt-1"><i class="bi bi-tags"></i> ${group.category}</span>${policyBadge}
                             </div>
                         </div>
                     </td>
@@ -561,9 +588,7 @@
             `;
 
             group.projects.forEach(proj => {
-                // สร้างปุ่มรายละเอียด (เรียก Modal)
                 let detailBtn = `<button class="btn btn-sm btn-info text-white w-100 mb-1" style="font-size: 0.8rem;" onclick="openProjectModal('${proj.id}')"><i class="bi bi-search"></i> รายละเอียด</button>`;
-                // สร้างปุ่มไฟล์โครงการ (ถ้ามีลิงก์)
                 let docBtn = proj.doc && String(proj.doc).startsWith('http') 
                     ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-secondary w-100" style="font-size: 0.8rem;"><i class="bi bi-file-earmark-text"></i> ไฟล์โครงการ</a>` 
                     : ``;
@@ -573,8 +598,8 @@
                 tableHTML += `
                     <tr class="proj-row kr-child-${krRowId}">
                         <td class="ps-4 ps-md-5">
-                            <div class="text-dark" style="font-size:0.9rem;"><i class="bi bi-arrow-return-right text-muted me-1"></i> ${proj.name}</div>
-                            ${proj.calcFlag === 'คำนวณ' ? `<span class="badge-sub text-info ms-4 mt-1"><i class="bi bi-plus"></i> คำนวณยอดเข้า KR</span>` : ''}
+                            <div class="text-dark" style="font-size:0.95rem;"><i class="bi bi-arrow-return-right text-muted me-1"></i> ${proj.name}</div>
+                            ${proj.calcFlag === 'คำนวณ' ? `<span class="badge-sub text-info ms-4 mt-1 border-info"><i class="bi bi-plus"></i> คำนวณยอดเข้า KR</span>` : ''}
                         </td>
                         <td>
                             <div class="text-muted small mb-1">เป้า: <strong class="text-dark">${proj.target.toLocaleString()}</strong></div>
@@ -619,7 +644,6 @@
         drawCharts(chartBudget, chartProgress);
     }
 
-    // ฟังก์ชันเปิด Modal เพื่อดู Report Note
     function openProjectModal(projId) {
         const p = projectDetailsDb[projId];
         if(!p) return;
@@ -673,9 +697,7 @@
         modal.show();
     }
 
-    // Smart Click-handler (ไม่กาง/พับแถว ถ้าคลิกปุ่ม)
     function toggleKR(krId) {
-        // เช็คว่าที่กดคือปุ่ม (button), ลิงก์ (a), หรือไอคอนข้างในปุ่ม (i) หรือไม่
         const targetTag = event.target.tagName.toLowerCase();
         const parentTag = event.target.parentNode.tagName.toLowerCase();
         const closestBtn = event.target.closest('button, a');
