@@ -34,7 +34,7 @@
         
         /* Table Responsive Styles */
         .table-responsive { -webkit-overflow-scrolling: touch; border-radius: 8px; }
-        .table-custom { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 850px; /* บังคับกว้างเพื่อให้ตารางไม่เบียดบนมือถือ */ }
+        .table-custom { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 850px; }
         .table-custom th { background: #f8fafc; color: #475569; font-weight: 600; padding: 12px 15px; border-bottom: 2px solid #e2e8f0; font-size: 0.9rem; white-space: nowrap; }
         .table-custom td { padding: 12px 15px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
         
@@ -54,28 +54,22 @@
         .badge-sub { font-size: 0.75rem; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-top: 4px;}
         .kr-badge { font-size: 0.9rem; font-weight: 700; background: #e2e8f0; color: #0f172a; padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1; white-space: nowrap; }
 
-        /* Media Queries for Mobile (Smartphones) */
         @media (max-width: 768px) {
             .navbar-custom .container-fluid { flex-direction: column; align-items: stretch !important; gap: 10px; }
             .navbar-brand { justify-content: center; margin-bottom: 5px; }
             .nav-brand-text .fs-4 { font-size: 1.25rem !important; }
             .nav-brand-text .fs-6 { font-size: 0.8rem !important; }
             
-            /* Year selector full width on mobile */
             .year-selector-container { justify-content: space-between; background: rgba(255,255,255,0.1); padding: 8px 15px !important; border-radius: 8px; }
             .year-selector-container select { width: 120px !important; }
 
             .stat-box h3 { font-size: 1.5rem; }
             .content-card { padding: 15px; }
             
-            /* Table adjustments for mobile */
             .table-custom th, .table-custom td { padding: 10px; font-size: 0.85rem; }
             .kr-badge { font-size: 0.8rem; padding: 3px 6px; }
-            
-            /* Chart Container */
             .chart-container { height: 250px !important; }
             
-            /* Show swipe hint on mobile */
             .swipe-hint { display: block !important; }
         }
         
@@ -114,7 +108,6 @@
 
     <div id="dashboardContent" class="d-none">
         
-        <!-- Swipeable Tabs -->
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button"><i class="bi bi-pie-chart-fill me-2"></i>ภาพรวมแดชบอร์ด</button>
@@ -166,7 +159,6 @@
                     </div>
                 </div>
 
-                <!-- Charts -->
                 <div class="row g-3 mb-4">
                     <div class="col-lg-6">
                         <div class="content-card h-100">
@@ -186,7 +178,6 @@
                     </div>
                 </div>
 
-                <!-- Overview Table -->
                 <div class="row g-3">
                     <div class="col-12">
                         <div class="content-card">
@@ -242,7 +233,6 @@
                     </div>
                 </div>
 
-                <!-- Main Data Table -->
                 <div class="content-card p-0 p-md-3">
                     <div class="p-3 pb-0 d-md-none swipe-hint"><i class="bi bi-arrow-left-right"></i> เลื่อนตารางซ้าย-ขวา เพื่อดูข้อมูลครบถ้วน</div>
                     <div class="table-responsive">
@@ -253,7 +243,7 @@
                                     <th style="min-width: 140px;">เป้าหมาย / หน่วยนับ</th>
                                     <th style="min-width: 160px;">ความคืบหน้า (ผลสำเร็จ)</th>
                                     <th style="min-width: 160px;">งบประมาณ (เบิกจ่าย)</th>
-                                    <th style="min-width: 90px; text-align: center;">เอกสาร</th>
+                                    <th style="min-width: 110px; text-align: center;">จัดการ / เอกสาร</th>
                                 </tr>
                             </thead>
                             <tbody id="projectTableBody">
@@ -267,10 +257,29 @@
     </div>
 </div>
 
+<!-- ================= Modal: Project Details (Report Note) ================= -->
+<div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-primary text-white border-0">
+        <h5 class="modal-title fw-bold" id="projectModalLabel"><i class="bi bi-file-text-fill me-2"></i>รายละเอียดผลการดำเนินงาน</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body bg-light" id="projectModalBody">
+        <!-- JS จะสร้างเนื้อหาและใส่มาในนี้ -->
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">ปิดหน้าต่าง</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     let globalData = [];
     let cols = {};
+    let projectDetailsDb = {}; // เก็บข้อมูล Report Note
     let budgetChartInstance = null;
     let progressChartInstance = null;
 
@@ -322,6 +331,7 @@
             projActual: keys.find(k => k.includes('ผลการดำเนินงานตามค่าเป้าหมายของโครงการ') || k.includes('ผลการดำเนินงาน')),
             calcToKR: keys.find(k => k.includes('การคำนวณเข้า KR')),
             
+            reportNote: keys.find(k => k.includes('รายละเอียดผลการดำเนินงาน')), // ตรวจจับคอลัมน์ Report Note
             docProj: keys.find(k => k.includes('ลิงก์ไฟล์เอกสารโครงการ') || k.includes('ลิงก์ไฟล์เอกสาร'))
         };
     }
@@ -394,6 +404,7 @@
         let krGroups = {}; 
         let totalBudget = 0; let totalSpent = 0; let totalProjectsCount = 0;
         let chartBudget = {}; let chartProgress = {};
+        projectDetailsDb = {}; // ล้างข้อมูลเก่าก่อน
 
         data.forEach(row => {
             let krTitle = String(row[cols.krName] || '').trim();
@@ -439,13 +450,20 @@
                 let calcFlag = String(row[cols.calcToKR] || '').trim();
                 if(calcFlag === 'คำนวณ') krGroups[krKey].accumulatedActual += pActual;
 
-                krGroups[krKey].projects.push({
+                // จัดเก็บข้อมูลลงฐานข้อมูลชั่วคราวสำหรับ Modal
+                let projId = 'proj-' + Object.keys(projectDetailsDb).length;
+                let pData = {
+                    id: projId,
+                    krParentName: krTitle,
                     name: pName, 
                     budget: pBudget, spent: pSpent,
                     target: pTarget, actual: pActual, progress: pProgress,
                     calcFlag: calcFlag, 
-                    doc: row[cols.docProj]
-                });
+                    doc: row[cols.docProj],
+                    reportNote: String(row[cols.reportNote] || '').trim() // ดึง Report Note
+                };
+                krGroups[krKey].projects.push(pData);
+                projectDetailsDb[projId] = pData;
             }
         });
 
@@ -507,23 +525,21 @@
             if (group.doc2 && String(group.doc2).startsWith('http')) krDocButtons += `<a href="${group.doc2}" target="_blank" class="btn btn-sm btn-outline-primary w-100" style="font-size: 0.75rem;"><i class="bi bi-file-earmark-pdf"></i> ปผ.02</a>`;
 
             tableHTML += `
-                <tr class="kr-row" onclick="toggleKR('${krRowId}')">
+                <tr class="kr-row mb-2" onclick="toggleKR('${krRowId}')">
                     <td>
                         <div class="d-flex align-items-start">
                             <span class="toggle-icon"><i class="bi bi-chevron-down"></i></span>
                             <div>
                                 <div class="mb-1">
                                     ${group.id ? `<span class="kr-badge me-1">${group.id}</span>` : ''}
-                                    <span class="fw-bold text-primary fs-6">${group.title}</span>
-                                    ${roleBadge}
+                                    <span class="fw-bold text-primary fs-6">${group.title}</span>${roleBadge}
                                 </div>
-                                <span class="badge-sub"><i class="bi bi-tags"></i> ${group.category}</span>
-                                ${policyBadge}
+                                <span class="badge-sub"><i class="bi bi-tags"></i> ${group.category}</span>${policyBadge}
                             </div>
                         </div>
                     </td>
                     <td>
-                        <div class="text-muted small mb-1">เป้าหมาย: <strong class="text-dark">${group.target.toLocaleString()}</strong></div>
+                        <div class="text-muted small mb-1">เป้าหมายรวม: <strong class="text-dark">${group.target.toLocaleString()}</strong></div>
                         <div class="text-muted small">หน่วย: <strong class="text-dark">${group.unit}</strong></div>
                     </td>
                     <td>
@@ -531,23 +547,26 @@
                             <span>ผลสำเร็จ</span> <span class="${krProgressPercent==100?'text-success':'text-primary'}">${krProgressPercent.toFixed(1)}%</span>
                         </div>
                         <div class="progress progress-slim mb-1"><div class="progress-bar progress-bar-kpi" style="width: ${krProgressPercent}%;"></div></div>
-                        <div class="text-muted text-end" style="font-size:0.75rem;">${group.accumulatedActual.toLocaleString()} / ${group.target.toLocaleString()}</div>
+                        <div class="text-muted text-end" style="font-size:0.75rem;">${group.accumulatedActual.toLocaleString()} /${group.target.toLocaleString()}</div>
                     </td>
                     <td>
                         <div class="d-flex justify-content-between small fw-bold mb-1">
                             <span>เบิกจ่าย</span> <span class="text-warning">${budgetPercent.toFixed(1)}%</span>
                         </div>
                         <div class="progress progress-slim mb-1"><div class="progress-bar progress-bar-budget" style="width: ${budgetPercent}%;"></div></div>
-                        <div class="text-muted text-end" style="font-size:0.75rem;">${formatNumberAbbr(group.krSpent)} / ${formatNumberAbbr(group.krBudget)}</div>
+                        <div class="text-muted text-end" style="font-size:0.75rem;">${formatNumberAbbr(group.krSpent)} /${formatNumberAbbr(group.krBudget)}</div>
                     </td>
                     <td class="text-center align-middle">${krDocButtons || `<span class="text-muted small">-</span>`}</td>
                 </tr>
             `;
 
             group.projects.forEach(proj => {
+                // สร้างปุ่มรายละเอียด (เรียก Modal)
+                let detailBtn = `<button class="btn btn-sm btn-info text-white w-100 mb-1" style="font-size: 0.8rem;" onclick="openProjectModal('${proj.id}')"><i class="bi bi-search"></i> รายละเอียด</button>`;
+                // สร้างปุ่มไฟล์โครงการ (ถ้ามีลิงก์)
                 let docBtn = proj.doc && String(proj.doc).startsWith('http') 
                     ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-secondary w-100" style="font-size: 0.8rem;"><i class="bi bi-file-earmark-text"></i> ไฟล์โครงการ</a>` 
-                    : `<span class="text-muted small fst-italic">-</span>`;
+                    : ``;
                 
                 let pBudgPct = proj.budget > 0 ? Math.min((proj.spent / proj.budget) * 100, 100) : 0;
 
@@ -576,17 +595,18 @@
                             <div class="progress progress-slim mb-1"><div class="progress-bar bg-warning" style="width: ${pBudgPct}%;"></div></div>
                             <div class="text-muted" style="font-size: 0.75rem;">งบ: <strong class="text-dark">${formatNumberAbbr(proj.budget)}</strong></div>
                         </td>
-                        <td class="text-center align-middle">${docBtn}</td>
+                        <td class="text-center align-middle">
+                            ${detailBtn}
+                            ${docBtn}
+                        </td>
                     </tr>
                 `;
             });
         });
 
-        // อัปเดตสถิติด้านบน (พร้อมย่อตัวเลขหลักล้านให้อ่านง่ายบนมือถือ)
         document.getElementById('statKRs').innerText = krCount.toLocaleString();
         document.getElementById('statProjects').innerText = totalProjectsCount.toLocaleString();
         
-        // บนมือถือตัวเลขงบหลักสิบล้านจะยาวไป ใช้ฟังก์ชันย่อ
         document.getElementById('statBudget').innerText = window.innerWidth < 768 ? formatNumberAbbr(totalBudget) : totalBudget.toLocaleString();
         document.getElementById('statSpent').innerText = window.innerWidth < 768 ? formatNumberAbbr(totalSpent) : totalSpent.toLocaleString();
         
@@ -599,8 +619,71 @@
         drawCharts(chartBudget, chartProgress);
     }
 
+    // ฟังก์ชันเปิด Modal เพื่อดู Report Note
+    function openProjectModal(projId) {
+        const p = projectDetailsDb[projId];
+        if(!p) return;
+
+        let hasReport = p.reportNote && p.reportNote !== 'NaN' && p.reportNote !== '';
+        
+        let html = `
+            <div class="bg-white p-3 p-md-4 rounded border mb-4 shadow-sm">
+                <h6 class="fw-bold text-muted mb-2"><i class="bi bi-briefcase-fill me-1"></i> ชื่อโครงการ/กิจกรรม</h6>
+                <div class="fs-5 text-dark fw-bold mb-3">${p.name}</div>
+                
+                <h6 class="fw-bold text-muted mb-2"><i class="bi bi-link-45deg me-1"></i> ตอบสนองตัวชี้วัด (KR)</h6>
+                <div class="text-primary fw-medium">${p.krParentName}</div>
+            </div>
+            
+            <div class="row g-2 g-md-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="p-2 p-md-3 bg-white rounded border text-center shadow-sm h-100">
+                        <div class="small text-muted mb-1">เป้าหมาย</div>
+                        <div class="fw-bold fs-5 fs-md-4">${p.target.toLocaleString()}</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-2 p-md-3 bg-white rounded border text-center shadow-sm h-100">
+                        <div class="small text-muted mb-1">ทำได้จริง</div>
+                        <div class="fw-bold fs-5 fs-md-4 text-success">${p.actual.toLocaleString()} <br class="d-md-none"><span class="fs-6 text-muted">(${p.progress.toFixed(0)}%)</span></div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-2 p-md-3 bg-white rounded border text-center shadow-sm h-100">
+                        <div class="small text-muted mb-1">งบประมาณ</div>
+                        <div class="fw-bold fs-6 fs-md-5">${p.budget.toLocaleString()}</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-2 p-md-3 bg-white rounded border text-center shadow-sm h-100">
+                        <div class="small text-muted mb-1">เบิกจ่ายจริง</div>
+                        <div class="fw-bold fs-6 fs-md-5 text-warning">${p.spent.toLocaleString()}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-3 p-md-4 rounded border shadow-sm">
+                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="bi bi-card-text text-primary me-2"></i>รายละเอียดผลการดำเนินงาน (Report Note)</h6>
+                <div style="min-height: 100px; white-space: pre-wrap; font-size: 0.95rem; color: #333; line-height: 1.6;">${hasReport ? p.reportNote : '<div class="text-center text-muted py-4"><i class="bi bi-journal-x fs-1 mb-2 d-block"></i>ยังไม่มีการบันทึกรายงาน</div>'}</div>
+            </div>
+        `;
+        
+        document.getElementById('projectModalBody').innerHTML = html;
+        const modal = new bootstrap.Modal(document.getElementById('projectModal'));
+        modal.show();
+    }
+
+    // Smart Click-handler (ไม่กาง/พับแถว ถ้าคลิกปุ่ม)
     function toggleKR(krId) {
-        if (event.target.tagName.toLowerCase() === 'a' || event.target.parentNode.tagName.toLowerCase() === 'a') return;
+        // เช็คว่าที่กดคือปุ่ม (button), ลิงก์ (a), หรือไอคอนข้างในปุ่ม (i) หรือไม่
+        const targetTag = event.target.tagName.toLowerCase();
+        const parentTag = event.target.parentNode.tagName.toLowerCase();
+        const closestBtn = event.target.closest('button, a');
+        
+        if (targetTag === 'a' || parentTag === 'a' || targetTag === 'button' || parentTag === 'button' || closestBtn) {
+            return;
+        }
+        
         const krRow = document.querySelector(`tr[onclick="toggleKR('${krId}')"]`);
         krRow.classList.toggle('collapsed');
         document.querySelectorAll(`.kr-child-${krId}`).forEach(child => {
@@ -631,7 +714,7 @@
     }
 
     window.onload = fetchData;
-    window.onresize = () => { if(globalData.length > 0) applyFilters(); }; // Re-render for responsive texts on resize
+    window.onresize = () => { if(globalData.length > 0) applyFilters(); };
 </script>
 </body>
 </html>
