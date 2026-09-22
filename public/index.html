@@ -15,28 +15,18 @@
         
         .navbar-custom { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 1rem 0; }
         
-        /* Tab Styles */
         .nav-tabs { border-bottom: 2px solid #e2e8f0; margin-bottom: 25px; }
-        .nav-tabs .nav-link { 
-            border: none; color: #64748b; font-weight: 600; font-size: 1.1rem; 
-            padding: 12px 25px; transition: 0.3s; background: transparent;
-        }
+        .nav-tabs .nav-link { border: none; color: #64748b; font-weight: 600; font-size: 1.1rem; padding: 12px 25px; transition: 0.3s; background: transparent; }
         .nav-tabs .nav-link:hover { color: #0f172a; }
-        .nav-tabs .nav-link.active { 
-            color: #2563eb; background: transparent; 
-            border-bottom: 3px solid #2563eb; 
-        }
+        .nav-tabs .nav-link.active { color: #2563eb; background: transparent; border-bottom: 3px solid #2563eb; }
 
-        /* Card Styles */
         .content-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
         .stat-box { padding: 20px; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); }
         .stat-box h3 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0; }
         .stat-icon { position: absolute; right: -15px; bottom: -20px; font-size: 5rem; opacity: 0.15; }
 
-        /* Filter Section */
         .filter-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 25px; }
         
-        /* Table Styles */
         .table-custom { border-collapse: separate; border-spacing: 0; width: 100%; }
         .table-custom th { background: #f8fafc; color: #475569; font-weight: 600; padding: 15px; border-bottom: 2px solid #e2e8f0; font-size: 0.95rem; }
         .table-custom td { padding: 15px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
@@ -45,7 +35,7 @@
         .kr-row:hover { background-color: #f8fafc; }
         .proj-row { background-color: #fdfdfd; border-left: 4px solid #cbd5e1; }
         
-        .toggle-icon { display: inline-flex; width: 24px; height: 24px; border-radius: 50%; background: #e2e8f0; align-items: center; justify-content: center; color: #475569; transition: 0.3s; margin-right: 15px; }
+        .toggle-icon { display: inline-flex; width: 24px; height: 24px; border-radius: 50%; background: #e2e8f0; align-items: center; justify-content: center; color: #475569; transition: 0.3s; margin-right: 15px; flex-shrink: 0;}
         .kr-row.collapsed .toggle-icon { transform: rotate(-90deg); }
 
         .progress-slim { height: 6px; border-radius: 10px; background-color: #e2e8f0; margin-top: 5px; }
@@ -53,6 +43,7 @@
         .progress-bar-kpi { background: linear-gradient(90deg, #3b82f6, #2563eb); }
         
         .badge-sub { font-size: 0.75rem; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 3px 8px; border-radius: 4px; }
+        .kr-badge { font-size: 1rem; font-weight: 700; background: #e2e8f0; color: #0f172a; padding: 5px 12px; border-radius: 6px; border: 1px solid #cbd5e1; white-space: nowrap; }
     </style>
 </head>
 <body>
@@ -85,7 +76,6 @@
 
     <div id="dashboardContent" class="d-none">
         
-        <!-- Navigation Tabs -->
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button"><i class="bi bi-pie-chart-fill me-2"></i>ภาพรวมแดชบอร์ด (Overview)</button>
@@ -97,9 +87,8 @@
 
         <div class="tab-content" id="myTabContent">
             
-            <!-- ================= TAB 1: OVERVIEW ================= -->
+            <!-- TAB 1: OVERVIEW -->
             <div class="tab-pane fade show active" id="overview">
-                <!-- Stat Cards -->
                 <div class="row g-4 mb-4">
                     <div class="col-xl-3 col-md-6">
                         <div class="stat-box bg-primary text-white shadow-sm">
@@ -137,7 +126,6 @@
                     </div>
                 </div>
 
-                <!-- Charts -->
                 <div class="row g-4">
                     <div class="col-lg-6">
                         <div class="content-card h-100">
@@ -158,10 +146,9 @@
                 </div>
             </div>
 
-            <!-- ================= TAB 2: DATA TABLE ================= -->
+            <!-- TAB 2: DATA TABLE -->
             <div class="tab-pane fade" id="detail">
                 
-                <!-- Multi-level Filters -->
                 <div class="filter-section shadow-sm">
                     <h6 class="fw-bold text-primary mb-3"><i class="bi bi-funnel-fill me-2"></i>ตัวกรองข้อมูลเชิงลึก</h6>
                     <div class="row g-3">
@@ -192,16 +179,15 @@
                     </div>
                 </div>
 
-                <!-- Data Table -->
                 <div class="content-card">
                     <div class="table-responsive">
                         <table class="table-custom">
                             <thead>
                                 <tr>
-                                    <th style="width: 40%;">ยุทธศาสตร์ (KRs) / โครงการ</th>
-                                    <th style="width: 20%;">เป้าหมาย / หน่วยนับ</th>
+                                    <th style="width: 45%;">ยุทธศาสตร์ (KRs) / โครงการ</th>
+                                    <th style="width: 15%;">เป้าหมาย / หน่วยนับ</th>
                                     <th style="width: 15%;">ความคืบหน้า (ผลสำเร็จ)</th>
-                                    <th style="width: 15%;">งบประมาณ / เบิกจ่าย</th>
+                                    <th style="width: 15%;">งบประมาณ (เบิกจ่าย)</th>
                                     <th style="width: 10%; text-align: center;">เอกสาร</th>
                                 </tr>
                             </thead>
@@ -238,7 +224,7 @@
                 if(globalData.length > 0) {
                     setupColumns(globalData[0]);
                     populateDropdownFilters(globalData);
-                    applyFilters(); // Process both Overview & Table
+                    applyFilters(); 
                 }
             } else { alert("เกิดข้อผิดพลาด: " + result.error); }
         } catch (error) {
@@ -318,12 +304,11 @@
                 searchMatch = krCode.includes(fSearch) || krTitle.includes(fSearch);
             }
 
-            // ถ้าบรรทัดนั้นเป็น KR แต่ไม่ตรงเงื่อนไข ก็กรองออก (โครงการย่อยจะหายไปด้วย)
             let isKRRow = String(row[cols.krName] || '').trim() !== '' && String(row[cols.krName] || '').trim() !== 'NaN';
             if (isKRRow) {
                 return catMatch && issueMatch && roleMatch && searchMatch;
             }
-            return true; // ถ้าเป็นบรรทัดโครงการ ให้ตาม KR ตัวบนไป (เดี๋ยวค่อยจัดกลุ่ม)
+            return true; 
         });
 
         processData(filteredData);
@@ -385,7 +370,6 @@
             }
         });
 
-        // Generate Table HTML & Chart Data
         let tableHTML = ''; let krCount = 0;
         
         for (const key in krGroups) {
@@ -394,31 +378,32 @@
             const hasProjects = group.projects.length > 0;
             const krRowId = `kr-${krCount}`;
 
-            // KPI Progress
             let krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
             
-            // For Chart Progress (Average per category)
             let cat = group.category;
             if(!chartProgress[cat]) chartProgress[cat] = { sum: 0, count: 0 };
             chartProgress[cat].sum += krProgressPercent;
             chartProgress[cat].count += 1;
 
-            // Budget Progress
             let budgetPercent = group.krBudget > 0 ? Math.min((group.krSpent / group.krBudget) * 100, 100) : 0;
 
             let roleBadge = '';
             if (group.isH) roleBadge += `<span class="badge text-bg-primary ms-2">H</span>`;
             if (group.isR) roleBadge += `<span class="badge text-bg-warning ms-2">R</span>`;
 
+            // KR Row - แสดง รหัส KR คู่กับชื่ออย่างชัดเจน
             tableHTML += `
                 <tr class="kr-row mb-2" onclick="toggleKR('${krRowId}')">
                     <td>
                         <div class="d-flex align-items-start">
                             <span class="toggle-icon"><i class="bi bi-chevron-down"></i></span>
                             <div>
-                                ${group.id ? `<span class="badge bg-secondary mb-1">${group.id}</span>` : ''}
-                                <div class="fw-bold text-primary">${group.title} ${roleBadge}</div>
-                                <span class="badge-sub mt-1"><i class="bi bi-tags"></i> ${group.category}</span>
+                                <div class="d-flex align-items-center mb-1">
+                                    ${group.id ? `<span class="kr-badge me-2">${group.id}</span>` : ''}
+                                    <div class="fw-bold text-primary fs-6">${group.title}</div>
+                                    ${roleBadge}
+                                </div>
+                                <span class="badge-sub"><i class="bi bi-tags"></i> ${group.category}</span>
                             </div>
                         </div>
                     </td>
@@ -444,6 +429,7 @@
                 </tr>
             `;
 
+            // Project Rows - แจกแจงงบประมาณจริงของแต่ละโครงการ
             group.projects.forEach(proj => {
                 let docBtn = proj.doc && String(proj.doc).startsWith('http') 
                     ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-secondary"><i class="bi bi-file-earmark-text"></i></a>` : `-`;
@@ -457,19 +443,24 @@
                             ${proj.calcFlag === 'คำนวณ' ? `<span class="badge-sub ms-4 text-info"><i class="bi bi-plus"></i> คำนวณเข้า KR</span>` : ''}
                         </td>
                         <td>
-                            <div class="text-muted small">เป้าหมาย: <strong class="text-dark">${proj.target.toLocaleString()}</strong></div>
+                            <div class="text-muted small">เป้า: <strong class="text-dark">${proj.target.toLocaleString()}</strong></div>
+                            <div class="text-muted small">ทำได้: <strong class="text-dark">${proj.actual.toLocaleString()}</strong></div>
                         </td>
                         <td>
-                            <div class="d-flex align-items-center">
-                                <span class="small fw-bold me-2 w-25">${proj.progress.toFixed(0)}%</span>
-                                <div class="progress progress-slim w-75"><div class="progress-bar bg-secondary" style="width: ${proj.progress}%;"></div></div>
+                            <div class="d-flex justify-content-between small fw-bold mb-1">
+                                <span class="text-muted">ความคืบหน้า</span>
+                                <span class="${proj.progress==100?'text-success':'text-secondary'}">${proj.progress.toFixed(0)}%</span>
                             </div>
+                            <div class="progress progress-slim"><div class="progress-bar bg-secondary" style="width: ${proj.progress}%;"></div></div>
                         </td>
                         <td>
-                            <div class="d-flex align-items-center">
-                                <span class="small fw-bold me-2 w-25">${pBudgPct.toFixed(0)}%</span>
-                                <div class="progress progress-slim w-75"><div class="progress-bar bg-warning" style="width: ${pBudgPct}%;"></div></div>
+                            <div class="d-flex justify-content-between small fw-bold mb-1">
+                                <span class="text-muted">เบิกจ่าย</span>
+                                <span class="text-warning">${pBudgPct.toFixed(0)}%</span>
                             </div>
+                            <div class="progress progress-slim mb-1"><div class="progress-bar bg-warning" style="width: ${pBudgPct}%;"></div></div>
+                            <div class="text-muted" style="font-size: 0.75rem;">งบตั้งต้น: <strong class="text-dark">${proj.budget.toLocaleString()}</strong></div>
+                            <div class="text-muted" style="font-size: 0.75rem;">เบิกจ่าย: <strong class="text-dark">${proj.spent.toLocaleString()}</strong></div>
                         </td>
                         <td class="text-center">${docBtn}</td>
                     </tr>
@@ -477,7 +468,6 @@
             });
         }
 
-        // Update Stat Cards (Overview Tab)
         document.getElementById('statKRs').innerText = krCount.toLocaleString();
         document.getElementById('statProjects').innerText = totalProjectsCount.toLocaleString();
         document.getElementById('statBudget').innerText = totalBudget.toLocaleString();
@@ -489,7 +479,6 @@
 
         document.getElementById('projectTableBody').innerHTML = tableHTML;
         
-        // Draw Charts
         drawCharts(chartBudget, chartProgress);
     }
 
