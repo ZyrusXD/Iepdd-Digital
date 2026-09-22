@@ -11,8 +11,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        :root { --primary-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        /* BMA Official Color System */
+        :root { 
+            --bma-green: #00744b;
+            --bma-green-dark: #205a41;
+            --bma-blue: #0071ce;
+            --bma-light-green: #67a33b;
+            --bma-orange: #ffb449;
+            --primary-gradient: linear-gradient(135deg, var(--bma-green-dark) 0%, var(--bma-green) 100%); 
+        }
+        
         body { font-family: 'Sarabun', sans-serif; background-color: #f1f5f9; color: #1e293b; overflow-x: hidden; }
+        
+        /* Overrides Bootstrap Colors to BMA Theme */
+        .text-primary { color: var(--bma-green) !important; }
+        .bg-primary { background-color: var(--bma-green) !important; }
+        .btn-primary { background-color: var(--bma-green); border-color: var(--bma-green); }
+        .btn-primary:hover { background-color: var(--bma-green-dark); border-color: var(--bma-green-dark); }
+        .btn-outline-primary { color: var(--bma-green); border-color: var(--bma-green); }
+        .btn-outline-primary:hover { background-color: var(--bma-green); color: white; }
         
         /* Navbar & Logo */
         .navbar-custom { background: var(--primary-gradient); padding: 0.8rem 0; }
@@ -23,7 +40,7 @@
         .nav-tabs { border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
         .nav-tabs::-webkit-scrollbar { display: none; }
         .nav-tabs .nav-link { border: none; color: #64748b; font-weight: 600; font-size: 1rem; padding: 12px 20px; transition: 0.3s; background: transparent; }
-        .nav-tabs .nav-link.active { color: #2563eb; border-bottom: 3px solid #2563eb; }
+        .nav-tabs .nav-link.active { color: var(--bma-green); border-bottom: 3px solid var(--bma-green); }
 
         /* Cards */
         .content-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
@@ -36,12 +53,12 @@
         /* Table Styles */
         .table-responsive { -webkit-overflow-scrolling: touch; border-radius: 8px; }
         .table-custom { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 850px; }
-        .table-custom th { background: #f8fafc; color: #475569; font-weight: 600; padding: 12px 15px; border-bottom: 2px solid #e2e8f0; font-size: 0.9rem; white-space: nowrap; }
+        .table-custom th { background: #f8fafc; color: var(--bma-green-dark); font-weight: 600; padding: 12px 15px; border-bottom: 2px solid #e2e8f0; font-size: 0.9rem; white-space: nowrap; }
         .table-custom td { padding: 12px 15px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
         
         .overview-table { min-width: 600px; }
         
-        .kr-row { background-color: #ffffff; border-left: 4px solid #2563eb; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .kr-row { background-color: #ffffff; border-left: 4px solid var(--bma-green); cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .kr-row:hover { background-color: #f8fafc; }
         .proj-row { background-color: #fdfdfd; border-left: 4px solid #cbd5e1; }
         
@@ -50,22 +67,32 @@
 
         .progress-slim { height: 6px; border-radius: 10px; background-color: #e2e8f0; margin-top: 5px; }
         .progress-bar-budget { background: linear-gradient(90deg, #f59e0b, #d97706); }
-        .progress-bar-kpi { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+        .progress-bar-kpi { background: linear-gradient(90deg, var(--bma-green-dark), var(--bma-green)); }
         
         .badge-sub { font-size: 0.75rem; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-top: 4px;}
-        .kr-badge { font-size: 0.9rem; font-weight: 700; background: #e2e8f0; color: #0f172a; padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1; white-space: nowrap; }
+        .kr-badge { font-size: 0.9rem; font-weight: 700; background: #e2e8f0; color: var(--bma-green-dark); padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1; white-space: nowrap; }
 
-        /* 🌟 ป้ายนโยบาย 261+ แบบใหม่ (โดดเด่นและพรีเมียม) */
+        /* 🌟 ป้ายนโยบาย 261+ (แยกกรณี) */
         .badge-policy {
-            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            background: var(--bma-blue); /* สีฟ้ารองของ กทม. */
             color: white;
             font-weight: 600;
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.8rem;
             display: inline-block;
-            box-shadow: 0 2px 5px rgba(139, 92, 246, 0.3);
-            border: none;
+            box-shadow: 0 2px 4px rgba(0, 113, 206, 0.2);
+            margin-top: 4px;
+        }
+        .badge-policy-none {
+            background: #e2e8f0; /* สีเทา */
+            color: #64748b;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            border: 1px solid #cbd5e1;
             margin-top: 4px;
         }
 
@@ -141,35 +168,35 @@
             
             <!-- TAB 1: OVERVIEW -->
             <div class="tab-pane fade show active" id="overview">
-                <!-- Stat Cards -->
+                <!-- Stat Cards (ใช้สี BMA Color System) -->
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-md-3">
-                        <div class="stat-box bg-primary text-white shadow-sm h-100">
+                        <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-green);">
                             <p class="mb-1 opacity-75 fw-medium small">ตัวชี้วัด (KRs)</p>
                             <h3 id="statKRs">0</h3>
                             <i class="bi bi-flag-fill stat-icon text-white"></i>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="stat-box bg-info text-white shadow-sm h-100">
+                        <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-blue);">
                             <p class="mb-1 opacity-75 fw-medium small">โครงการ</p>
                             <h3 id="statProjects">0</h3>
                             <i class="bi bi-diagram-3-fill stat-icon text-white"></i>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="stat-box h-100" style="background: #10b981; color: white;">
+                        <div class="stat-box h-100" style="background-color: var(--bma-light-green); color: white;">
                             <p class="mb-1 opacity-75 fw-medium small">งบรวม (บาท)</p>
                             <h3 id="statBudget" class="fs-4">0</h3>
                             <i class="bi bi-cash-coin stat-icon text-white"></i>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="stat-box h-100" style="background: #f59e0b; color: white;">
+                        <div class="stat-box h-100" style="background-color: var(--bma-orange); color: white;">
                             <p class="mb-1 opacity-75 fw-medium small">เบิกจ่ายสะสม</p>
                             <h3 id="statSpent" class="fs-4">0</h3>
                             <div class="mt-1 d-flex align-items-center">
-                                <div class="progress flex-grow-1 me-2" style="height: 4px; background: rgba(255,255,255,0.2);">
+                                <div class="progress flex-grow-1 me-2" style="height: 4px; background: rgba(255,255,255,0.3);">
                                     <div id="statSpentBar" class="progress-bar bg-white" style="width: 0%"></div>
                                 </div>
                                 <small id="statSpentPercent" class="fw-bold" style="font-size: 0.75rem;">0%</small>
@@ -229,15 +256,19 @@
                 <div class="filter-section shadow-sm">
                     <h6 class="fw-bold text-primary mb-3 fs-6"><i class="bi bi-funnel-fill me-2"></i>ตัวกรองข้อมูลเชิงลึก</h6>
                     <div class="row g-2">
-                        <div class="col-6 col-md-3">
+                        <div class="col-6 col-lg">
                             <label class="form-label text-muted small fw-bold mb-1">ด้านยุทธศาสตร์</label>
                             <select id="filterCategory" class="form-select form-select-sm" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
                         </div>
-                        <div class="col-6 col-md-3">
+                        <div class="col-6 col-lg">
                             <label class="form-label text-muted small fw-bold mb-1">ประเด็นพัฒนา</label>
                             <select id="filterIssue" class="form-select form-select-sm" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
                         </div>
-                        <div class="col-6 col-md-3">
+                        <div class="col-6 col-lg">
+                            <label class="form-label text-muted small fw-bold mb-1">นโยบาย 261+</label>
+                            <select id="filterPolicy" class="form-select form-select-sm" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
+                        </div>
+                        <div class="col-6 col-lg">
                             <label class="form-label text-muted small fw-bold mb-1">บทบาท สยป.</label>
                             <select id="filterRole" class="form-select form-select-sm" onchange="applyFilters()">
                                 <option value="all">ทั้งหมด</option>
@@ -245,7 +276,7 @@
                                 <option value="relative">R: ร่วม</option>
                             </select>
                         </div>
-                        <div class="col-6 col-md-3">
+                        <div class="col-12 col-lg">
                             <label class="form-label text-muted small fw-bold mb-1">ค้นหารหัส / ชื่อ KR</label>
                             <input type="text" id="filterSearch" class="form-control form-select-sm" placeholder="พิมพ์ค้นหา..." onkeyup="applyFilters()">
                         </div>
@@ -280,7 +311,7 @@
 <div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content border-0 shadow-lg">
-      <div class="modal-header bg-primary text-white border-0">
+      <div class="modal-header text-white border-0" style="background-color: var(--bma-green);">
         <h5 class="modal-title fw-bold" id="projectModalLabel"><i class="bi bi-file-text-fill me-2"></i>รายละเอียดผลการดำเนินงาน</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -356,12 +387,15 @@
     function populateDropdownFilters(data) {
         const catSelect = document.getElementById('filterCategory');
         const issueSelect = document.getElementById('filterIssue');
+        const policySelect = document.getElementById('filterPolicy');
         const categories = new Set();
         const issues = new Set();
+        const policies = new Set();
 
         data.forEach(row => {
             if(row[cols.category] && row[cols.category] !== 'NaN') categories.add(String(row[cols.category]).trim());
             if(row[cols.issue] && row[cols.issue] !== 'NaN') issues.add(String(row[cols.issue]).trim());
+            if(row[cols.policy] && row[cols.policy] !== 'NaN' && row[cols.policy] !== '-') policies.add(String(row[cols.policy]).trim());
         });
 
         catSelect.innerHTML = '<option value="all">ทั้งหมด</option>';
@@ -369,12 +403,14 @@
         
         issueSelect.innerHTML = '<option value="all">ทั้งหมด</option>';
         issues.forEach(i => { issueSelect.innerHTML += `<option value="${i}">${i}</option>`; });
+
+        policySelect.innerHTML = '<option value="all">ทั้งหมด</option>';
+        policies.forEach(p => { policySelect.innerHTML += `<option value="${p}">${p}</option>`; });
     }
 
     function checkRole(row) {
         let hText = String(row[cols.hostDept] || '');
         let rText = String(row[cols.relDept] || '');
-        // รองรับคำว่า สยป, สำนักยุทธศาสตร์, สดท (เผื่อของเดิม)
         let isH = hText.includes('สยป') || hText.includes('ยุทธศาสตร์') || hText.includes('สดท');
         let isR = rText.includes('สยป') || rText.includes('ยุทธศาสตร์') || rText.includes('สดท');
         return { isH, isR };
@@ -383,12 +419,14 @@
     function applyFilters() {
         const fCat = document.getElementById('filterCategory').value;
         const fIssue = document.getElementById('filterIssue').value;
+        const fPolicy = document.getElementById('filterPolicy').value;
         const fRole = document.getElementById('filterRole').value;
         const fSearch = document.getElementById('filterSearch').value.toLowerCase();
 
         let filteredData = globalData.filter(row => {
             let catMatch = fCat === 'all' || String(row[cols.category] || '').trim() === fCat;
             let issueMatch = fIssue === 'all' || String(row[cols.issue] || '').trim() === fIssue;
+            let policyMatch = fPolicy === 'all' || String(row[cols.policy] || '').trim() === fPolicy;
             
             let roles = checkRole(row);
             let roleMatch = true;
@@ -404,7 +442,7 @@
 
             let isKRRow = String(row[cols.krName] || '').trim() !== '' && String(row[cols.krName] || '').trim() !== 'NaN';
             if (isKRRow) {
-                return catMatch && issueMatch && roleMatch && searchMatch;
+                return catMatch && issueMatch && policyMatch && roleMatch && searchMatch;
             }
             return true; 
         });
@@ -416,6 +454,16 @@
         if(num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
         if(num >= 10000) return (num / 1000).toFixed(0) + 'k';
         return num.toLocaleString();
+    }
+
+    function getPolicyBadgeHTML(policyText) {
+        if(!policyText || policyText === 'NaN' || policyText === '-') return '';
+        // หากมีคำว่า "ไม่สอดคล้อง" ให้แสดงป้ายสีเทา
+        if(policyText.includes('ไม่สอดคล้อง')) {
+            return `<span class="badge-policy-none ms-2 mt-2 mt-md-0"><i class="bi bi-x-circle me-1"></i> ${policyText}</span>`;
+        } else {
+            return `<span class="badge-policy ms-2 mt-2 mt-md-0"><i class="bi bi-star-fill me-1"></i> นโยบาย 261+: ${policyText}</span>`;
+        }
     }
 
     function processData(data) {
@@ -496,19 +544,15 @@
         let overviewHTML = '';
         krArray.forEach(group => {
             let krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
-            
-            // ป้ายนโยบายในหน้าแรก
-            let policyBadgeOverview = '';
-            if(group.policy && group.policy !== 'NaN' && group.policy !== '-') {
-                policyBadgeOverview = `<div class="mt-1"><span class="badge-policy"><i class="bi bi-star-fill me-1"></i> นโยบาย 261+: ${group.policy}</span></div>`;
-            }
+            let policyBadgeOverview = getPolicyBadgeHTML(group.policy);
 
             overviewHTML += `
                 <tr>
                     <td><span class="badge-sub text-wrap text-start"><i class="bi bi-tags"></i> ${group.category}</span></td>
                     <td>${group.id ? `<span class="kr-badge bg-light text-dark border">${group.id}</span>` : '<span class="text-muted">-</span>'}</td>
                     <td>
-                        <div class="fw-bold text-dark" style="font-size:0.95rem;">${group.title}</div>${policyBadgeOverview}
+                        <div class="fw-bold text-dark" style="font-size:0.95rem;">${group.title}</div>
+                        <div class="mt-1">${policyBadgeOverview}</div>
                     </td>
                     <td>
                         <div class="d-flex align-items-center">
@@ -538,14 +582,10 @@
             let budgetPercent = group.krBudget > 0 ? Math.min((group.krSpent / group.krBudget) * 100, 100) : 0;
 
             let roleBadge = '';
-            if (group.isH) roleBadge += `<span class="badge text-bg-primary ms-2">H</span>`;
-            if (group.isR) roleBadge += `<span class="badge text-bg-warning ms-2">R</span>`;
+            if (group.isH) roleBadge += `<span class="badge text-bg-primary ms-2" style="background-color: var(--bma-green) !important;">H</span>`;
+            if (group.isR) roleBadge += `<span class="badge text-bg-warning ms-2" style="background-color: var(--bma-orange) !important;">R</span>`;
             
-            // ป้ายนโยบายในตารางลึก
-            let policyBadge = '';
-            if(group.policy && group.policy !== 'NaN' && group.policy !== '-') {
-                policyBadge = `<span class="badge-policy ms-2 mt-2 mt-md-0 d-inline-block"><i class="bi bi-star-fill me-1"></i> นโยบาย 261+: ${group.policy}</span>`;
-            }
+            let policyBadge = getPolicyBadgeHTML(group.policy);
 
             let krDocButtons = '';
             if (group.doc1 && String(group.doc1).startsWith('http')) krDocButtons += `<a href="${group.doc1}" target="_blank" class="btn btn-sm btn-primary mb-1 w-100" style="font-size: 0.75rem;"><i class="bi bi-file-earmark-pdf"></i> ปผ.01</a>`;
@@ -588,7 +628,7 @@
             `;
 
             group.projects.forEach(proj => {
-                let detailBtn = `<button class="btn btn-sm btn-info text-white w-100 mb-1" style="font-size: 0.8rem;" onclick="openProjectModal('${proj.id}')"><i class="bi bi-search"></i> รายละเอียด</button>`;
+                let detailBtn = `<button class="btn btn-sm btn-info text-white w-100 mb-1" style="font-size: 0.8rem; background-color: var(--bma-blue); border-color: var(--bma-blue);" onclick="openProjectModal('${proj.id}')"><i class="bi bi-search"></i> รายละเอียด</button>`;
                 let docBtn = proj.doc && String(proj.doc).startsWith('http') 
                     ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-secondary w-100" style="font-size: 0.8rem;"><i class="bi bi-file-earmark-text"></i> ไฟล์โครงการ</a>` 
                     : ``;
@@ -641,6 +681,7 @@
 
         document.getElementById('projectTableBody').innerHTML = tableHTML;
         
+        // ใช้งาน BMA Color System ใน Chart
         drawCharts(chartBudget, chartProgress);
     }
 
@@ -717,10 +758,13 @@
         if(budgetChartInstance) budgetChartInstance.destroy();
         if(progressChartInstance) progressChartInstance.destroy();
 
+        // ใช้สี BMA Color System ในกราฟ
+        const bmaColors = ['#00744b', '#00c08b', '#67a33b', '#ffb449', '#0071ce', '#ec3faa'];
+
         const ctxB = document.getElementById('budgetChart').getContext('2d');
         budgetChartInstance = new Chart(ctxB, {
             type: 'doughnut',
-            data: { labels: Object.keys(chartBudget), datasets: [{ data: Object.values(chartBudget), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'] }] },
+            data: { labels: Object.keys(chartBudget), datasets: [{ data: Object.values(chartBudget), backgroundColor: bmaColors }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: window.innerWidth < 768 ? 'bottom' : 'right', labels: { boxWidth: 12 } } } }
         });
 
@@ -730,7 +774,7 @@
         const ctxP = document.getElementById('progressChart').getContext('2d');
         progressChartInstance = new Chart(ctxP, {
             type: 'bar',
-            data: { labels: pLabels, datasets: [{ label: 'ร้อยละความสำเร็จเฉลี่ยของ KRs', data: pData, backgroundColor: '#3b82f6', borderRadius: 4 }] },
+            data: { labels: pLabels, datasets: [{ label: 'ร้อยละความสำเร็จเฉลี่ยของ KRs', data: pData, backgroundColor: '#00744b', borderRadius: 4 }] },
             options: { responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { maxRotation: 45, minRotation: 45, font: {size: 10} } }, y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false } } }
         });
     }
