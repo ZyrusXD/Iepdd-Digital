@@ -3,82 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BMA Digital Strategy Dashboard</title>
+    <title>Dashboard แผนปฏิบัติราชการ | สำนักดิจิทัล กทม.</title>
+    
+    <!-- Bootstrap 5 & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts: Sarabun -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Sarabun', sans-serif; background-color: #f8f9fa; }
-        .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .table-responsive { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        body { 
+            font-family: 'Sarabun', sans-serif; 
+            background-color: #f4f6f9; 
+            color: #333;
+        }
+        /* Navbar */
+        .navbar-custom { background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); }
         
-        .kr-row { background-color: #f1f3f5 !important; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .kr-row:hover { background-color: #e9ecef !important; }
-        .toggle-icon::before { content: "▼"; display: inline-block; margin-right: 8px; font-size: 0.8em; color: #6c757d; }
-        .kr-row.collapsed .toggle-icon::before { content: "▶"; }
+        /* Stats Cards */
+        .stat-card {
+            border: none;
+            border-radius: 12px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.2;
+            position: absolute;
+            right: -10px;
+            bottom: -10px;
+        }
+
+        /* Table & Container */
+        .content-box { 
+            background: white; 
+            border-radius: 16px; 
+            padding: 25px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
+        }
+        .table > :not(caption) > * > * { padding: 1rem 0.75rem; }
         
-        .badge-host { background-color: #0d6efd; color: white; } /* สีน้ำเงิน H */
-        .badge-relative { background-color: #fd7e14; color: white; } /* สีส้ม R */
+        /* KR Row Styles */
+        .kr-row { 
+            background-color: #eef2f7 !important; 
+            font-weight: 600; 
+            cursor: pointer; 
+            border-bottom: 2px solid #fff;
+            transition: background-color 0.2s;
+        }
+        .kr-row:hover { background-color: #e2e8f0 !important; }
+        
+        .toggle-icon {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 24px; height: 24px; border-radius: 50%;
+            background-color: #fff; color: #0d6efd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-right: 12px;
+            transition: transform 0.3s;
+        }
+        .kr-row.collapsed .toggle-icon { transform: rotate(-90deg); }
+        
+        /* Badges */
+        .badge-host { background-color: #e0ebff; color: #0d6efd; border: 1px solid #0d6efd; }
+        .badge-relative { background-color: #fff3cd; color: #fd7e14; border: 1px solid #fd7e14; }
+        .badge-plan { font-size: 0.8rem; font-weight: 500; background: #f8f9fa; border: 1px solid #dee2e6; color: #6c757d; }
+
+        /* Progress Bar */
+        .progress { height: 8px; border-radius: 10px; background-color: #e9ecef; }
+        .progress-bar { border-radius: 10px; }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-    <div class="container-fluid">
-        <span class="navbar-brand mb-0 h1 fw-bold">📍 Dashboard ยุทธศาสตร์ สดท.</span>
-        <select id="yearSelect" class="form-select w-auto" onchange="fetchData()">
-            <option value="2570">ปีงบประมาณ 2570</option>
-            <option value="2571">ปีงบประมาณ 2571</option>
-        </select>
+<!-- Header -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow-sm py-3">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand mb-0 h1 fw-bold d-flex align-items-center" href="#">
+            <i class="bi bi-bar-chart-fill me-2 fs-3"></i>
+            <div>
+                <div class="fs-5">Dashboard ผลการดำเนินงานตามยุทธศาสตร์</div>
+                <div class="fs-6 fw-normal" style="opacity: 0.8;">สำนักดิจิทัล กรุงเทพมหานคร</div>
+            </div>
+        </a>
+        <div class="d-flex align-items-center">
+            <label class="text-white me-2 fw-medium">ปีงบประมาณ :</label>
+            <select id="yearSelect" class="form-select border-0 shadow-sm" style="width: 140px; border-radius: 8px;" onchange="fetchData()">
+                <option value="2570">2570</option>
+                <option value="2571">2571</option>
+            </select>
+        </div>
     </div>
 </nav>
 
 <div class="container-fluid py-4 px-4">
-    <div id="loading" class="text-center my-5">
-        <div class="spinner-border text-primary" role="status"></div>
-        <p class="mt-3 fw-bold text-muted">กำลังซิงค์ข้อมูลล่าสุด...</p>
+    <!-- Loading Spinner -->
+    <div id="loading" class="text-center my-5 py-5">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status"></div>
+        <h5 class="mt-4 fw-bold text-muted">กำลังซิงค์ข้อมูลจาก Google Sheets...</h5>
     </div>
 
     <div id="dashboardContent" class="d-none">
         
-        <!-- ตัวกรองบทบาทของ สดท. (H / R) -->
-        <div class="row mb-4 align-items-end">
-            <div class="col-md-6">
-                <label class="form-label fw-bold text-muted">บทบาทของ สดท. (สำนักดิจิทัลฯ)</label><br>
-                <div class="btn-group" role="group">
-                    <input type="radio" class="btn-check" name="roleFilter" id="roleAll" value="all" autocomplete="off" checked onchange="applyFilters()">
-                    <label class="btn btn-outline-primary" for="roleAll">ดูทั้งหมด</label>
+        <!-- Filter Controls -->
+        <div class="content-box mb-4">
+            <div class="row align-items-end">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <label class="form-label fw-bold text-secondary"><i class="bi bi-funnel-fill me-1"></i> กรองตามบทบาทของ สดท.</label>
+                    <div class="d-flex gap-2">
+                        <input type="radio" class="btn-check" name="roleFilter" id="roleAll" value="all" autocomplete="off" checked onchange="applyFilters()">
+                        <label class="btn btn-outline-primary rounded-pill px-4" for="roleAll">ทั้งหมด</label>
 
-                    <input type="radio" class="btn-check" name="roleFilter" id="roleHost" value="host" autocomplete="off" onchange="applyFilters()">
-                    <label class="btn btn-outline-primary" for="roleHost">H: เจ้าภาพหลัก</label>
+                        <input type="radio" class="btn-check" name="roleFilter" id="roleHost" value="host" autocomplete="off" onchange="applyFilters()">
+                        <label class="btn btn-outline-primary rounded-pill px-4" for="roleHost">H: เจ้าภาพหลัก</label>
 
-                    <input type="radio" class="btn-check" name="roleFilter" id="roleRel" value="relative" autocomplete="off" onchange="applyFilters()">
-                    <label class="btn btn-outline-primary" for="roleRel">R: หน่วยงานร่วม</label>
+                        <input type="radio" class="btn-check" name="roleFilter" id="roleRel" value="relative" autocomplete="off" onchange="applyFilters()">
+                        <label class="btn btn-outline-primary rounded-pill px-4" for="roleRel">R: หน่วยงานร่วม</label>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label fw-bold text-muted">ประเภทแผน</label>
-                <select id="planTypeFilter" class="form-select" onchange="applyFilters()">
-                    <option value="all">ทุกประเภทแผน</option>
-                </select>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold text-secondary">กรองประเภทแผน</label>
+                    <select id="planTypeFilter" class="form-select rounded-pill" onchange="applyFilters()">
+                        <option value="all">แสดงทั้งหมด</option>
+                    </select>
+                </div>
             </div>
         </div>
 
-        <!-- 3. ตารางข้อมูลแบบซ้อน (Nested Table) -->
-        <div class="table-responsive">
-            <h5 class="fw-bold mb-3">ความเชื่อมโยงยุทธศาสตร์ (KRs) และ โครงการ</h5>
-            <table class="table table-bordered align-middle">
-                <thead class="table-dark">
-                    <tr>
-                        <th style="width: 45%;">ยุทธศาสตร์ / โครงการ</th>
-                        <th>ประเภทแผน</th>
-                        <th>ผลสำเร็จ (%)</th>
-                        <th>งบประมาณ (บาท)</th>
-                        <th>เอกสารหลักฐาน</th>
-                    </tr>
-                </thead>
-                <tbody id="projectTableBody">
-                    <!-- โค้ดสร้างตารางจะถูกใส่ตรงนี้ -->
-                </tbody>
-            </table>
+        <!-- 4 Stat Cards -->
+        <div class="row mb-4 g-3">
+            <div class="col-xl-3 col-sm-6">
+                <div class="card stat-card bg-primary text-white h-100">
+                    <div class="card-body position-relative">
+                        <p class="mb-1 opacity-75 fw-medium">เป้าหมาย (KRs) ทั้งหมด</p>
+                        <h2 id="totalKRs" class="mb-0 fw-bold display-6">0</h2>
+                        <i class="bi bi-bullseye stat-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6">
+                <div class="card stat-card bg-info text-white h-100">
+                    <div class="card-body position-relative">
+                        <p class="mb-1 opacity-75 fw-medium">โครงการที่ดำเนินงาน</p>
+                        <h2 id="totalProjects" class="mb-0 fw-bold display-6">0</h2>
+                        <i class="bi bi-kanban stat-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6">
+                <div class="card stat-card bg-success text-white h-100">
+                    <div class="card-body position-relative">
+                        <p class="mb-1 opacity-75 fw-medium">งบประมาณจัดสรรรวม</p>
+                        <h2 class="mb-0 fw-bold fs-2"><span id="totalBudget">0</span> <span class="fs-6 fw-normal">บาท</span></h2>
+                        <i class="bi bi-cash-stack stat-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6">
+                <div class="card stat-card bg-warning text-dark h-100">
+                    <div class="card-body position-relative">
+                        <p class="mb-1 opacity-75 fw-medium">ผลการเบิกจ่ายสะสม</p>
+                        <h2 class="mb-0 fw-bold fs-2"><span id="totalSpent">0</span> <span class="fs-6 fw-normal">บาท</span></h2>
+                        <i class="bi bi-graph-up-arrow stat-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Data Table -->
+        <div class="content-box">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold text-secondary mb-0"><i class="bi bi-list-task me-2"></i>ความเชื่อมโยงยุทธศาสตร์ (KRs) และ โครงการ</h5>
+                <small class="text-muted"><i class="bi bi-info-circle me-1"></i>คลิกที่แถว KRs เพื่อกาง/พับดูรายชื่อโครงการ</small>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr class="text-secondary" style="border-bottom: 2px solid #dee2e6;">
+                            <th style="width: 45%;">ยุทธศาสตร์ (KRs) / ชื่อโครงการ</th>
+                            <th style="width: 15%;">สถานะ / ประเภทแผน</th>
+                            <th style="width: 15%;">ความคืบหน้า</th>
+                            <th style="width: 15%;" class="text-end">งบประมาณ (บาท)</th>
+                            <th style="width: 10%;" class="text-center">หลักฐาน</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectTableBody" style="border-top: none;">
+                        <!-- JS renders content here -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -102,9 +221,11 @@
                     setupColumns(globalData[0]);
                     populateFilters(globalData);
                     applyFilters(); 
+                } else {
+                    alert("ไม่พบข้อมูลใน Sheet ปี " + year);
                 }
             } else {
-                alert("เกิดข้อผิดพลาด: " + result.error);
+                alert("เกิดข้อผิดพลาดจาก Backend: " + result.error);
             }
         } catch (error) {
             console.error(error);
@@ -115,24 +236,27 @@
         }
     }
 
+    // ฟังก์ชันจับคู่ชื่อคอลัมน์ให้แม่นยำ (รองรับการเปลี่ยนแปลงที่คุณทำล่าสุด)
     function setupColumns(row) {
         const keys = Object.keys(row);
         cols = {
             krID: keys.find(k => k.includes('รหัส KRs')) || keys[1],
             krName: keys.find(k => k.includes('KEY RESULT')) || keys[5],
             
-            // รองรับทั้งคอลัมน์ชื่อโครงการเก่า และ คอลัมน์ "ชื่อโครงการ" แบบใหม่
-            projectName: keys.find(k => k.includes('ชื่อโครงการ') || (k.includes('โครงการ/กิจกรรม') && k.includes('หน่วยงาน'))) || keys[14],
-            // รองรับคอลัมน์ "ประเภทของแผน" (ถ้ามี)
-            planType: keys.find(k => k.includes('ประเภทของแผน') || k.includes('ประเภทแผน')),
+            // หาคอลัมน์ชื่อ "โครงการ/กิจกรรม"
+            projectName: keys.find(k => k.includes('โครงการ/กิจกรรม') || k.includes('ชื่อโครงการ')) || keys[13],
+            // หาคอลัมน์ "ประเภทของแผน"
+            planType: keys.find(k => k.includes('ประเภทของแผน') || k.includes('ประเภทแผน')) || keys[14],
             
             hostDept: keys.find(k => k.includes('หน่วยงาน (H)')),
             relDept: keys.find(k => k.includes('หน่วยงาน (R)')),
-            budget: keys.find(k => k.includes('งบประมาณจัดสรร')) || keys[19],
-            target: keys.find(k => k.includes('ค่าเป้าหมายของโครงการ')) || keys[16],
-            actual: keys.find(k => k.includes('ผลการดำเนินงาน')) || keys[18],
-            doc: keys.find(k => k.includes('ลิงก์ไฟล์เอกสาร')) || keys[22]
+            budget: keys.find(k => k.includes('งบประมาณจัดสรร')),
+            spent: keys.find(k => k.includes('ผลการเบิกจ่ายจริง')),
+            target: keys.find(k => k.includes('ค่าเป้าหมายของโครงการ')),
+            actual: keys.find(k => k.includes('ผลการดำเนินงานตามค่าเป้าหมายของโครงการ')),
+            doc: keys.find(k => k.includes('ลิงก์ไฟล์เอกสารโครงการ'))
         };
+        console.log("Column Mapping Mapped:", cols);
     }
 
     function populateFilters(data) {
@@ -142,24 +266,21 @@
         if(cols.planType) {
             data.forEach(row => {
                 let p = row[cols.planType];
-                if(p && String(p).trim() !== '') plans.add(String(p).trim());
+                if(p && String(p).trim() !== '' && p !== 'NaN') plans.add(String(p).trim());
             });
-            planSelect.innerHTML = '<option value="all">ทุกประเภทแผน</option>';
+            planSelect.innerHTML = '<option value="all">แสดงทั้งหมด</option>';
             plans.forEach(p => {
                 let opt = document.createElement('option');
                 opt.value = p; opt.innerText = p;
                 planSelect.appendChild(opt);
             });
-        } else {
-            planSelect.disabled = true;
-            planSelect.innerHTML = '<option>ยังไม่มีคอลัมน์ประเภทแผน</option>';
         }
     }
 
-    // ฟังก์ชันเช็กว่า สดท. เป็น H หรือ R
     function checkRole(row) {
         let hText = String(row[cols.hostDept] || '');
         let rText = String(row[cols.relDept] || '');
+        // ค้นหาคำว่า สดท หรือ สำนักดิจิทัล
         let isH = hText.includes('สดท') || hText.includes('สำนักดิจิทัล');
         let isR = rText.includes('สดท') || rText.includes('สำนักดิจิทัล');
         return { isH, isR };
@@ -173,20 +294,16 @@
             let roleMatch = true;
             let roles = checkRole(row);
             
-            // กรองตามบทบาท H/R ของ KR นั้นๆ
             if (roleFilter === 'host' && !roles.isH) roleMatch = false;
             if (roleFilter === 'relative' && !roles.isR) roleMatch = false;
 
-            // กรองประเภทแผน (ถ้ามี)
             let planMatch = true;
             if (planFilter !== 'all' && cols.planType) {
                 let pName = String(row[cols.projectName] || '').trim();
-                // บรรทัดที่เป็นโครงการเท่านั้นถึงกรองแผน บรรทัด KR เปล่าๆ ให้ปล่อยผ่าน
-                if (pName !== '' && String(row[cols.planType] || '').trim() !== planFilter) {
+                if (pName && pName !== 'NaN' && String(row[cols.planType] || '').trim() !== planFilter) {
                     planMatch = false;
                 }
             }
-
             return roleMatch && planMatch;
         });
 
@@ -195,6 +312,9 @@
 
     function processDashboardData(data) {
         let krGroups = {}; 
+        let totalBudget = 0;
+        let totalSpent = 0;
+        let totalProjectsCount = 0;
 
         data.forEach((row) => {
             let krTitle = String(row[cols.krName] || '').trim();
@@ -206,7 +326,7 @@
             if(!krGroups[krKey]) {
                 krGroups[krKey] = {
                     title: krTitle,
-                    id: row[cols.krID] || '-',
+                    id: String(row[cols.krID] || '').trim() !== 'NaN' ? row[cols.krID] : '',
                     isH: roles.isH,
                     isR: roles.isR,
                     projects: [],
@@ -216,13 +336,18 @@
 
             let pName = String(row[cols.projectName] || '').trim();
             if(pName && pName !== 'NaN' && pName !== 'None') {
+                totalProjectsCount++;
                 let pBudget = parseFloat(String(row[cols.budget] || '0').replace(/,/g, '')) || 0;
+                let pSpent = parseFloat(String(row[cols.spent] || '0').replace(/,/g, '')) || 0;
+                
                 krGroups[krKey].krBudget += pBudget;
+                totalBudget += pBudget;
+                totalSpent += pSpent;
 
                 let pTarget = parseFloat(row[cols.target]) || 1;
                 let pActual = parseFloat(row[cols.actual]) || 0;
-                let pProgress = Math.min((pActual / pTarget) * 100, 100).toFixed(2);
-                let pType = cols.planType ? (row[cols.planType] || '-') : '-';
+                let pProgress = Math.min((pActual / pTarget) * 100, 100).toFixed(0);
+                let pType = row[cols.planType] && row[cols.planType] !== 'NaN' ? row[cols.planType] : '-';
 
                 krGroups[krKey].projects.push({
                     name: pName,
@@ -243,49 +368,63 @@
             const hasProjects = group.projects.length > 0;
             const krRowId = `kr-${krCount}`;
 
-            // ป้ายกำกับ บทบาท
             let roleBadge = '';
-            if (group.isH) roleBadge += `<span class="badge badge-host ms-2">H: เจ้าภาพหลัก</span>`;
-            if (group.isR) roleBadge += `<span class="badge badge-relative ms-2">R: หน่วยงานร่วม</span>`;
+            if (group.isH) roleBadge += `<span class="badge badge-host ms-2"><i class="bi bi-star-fill me-1"></i>H</span>`;
+            if (group.isR) roleBadge += `<span class="badge badge-relative ms-2"><i class="bi bi-people-fill me-1"></i>R</span>`;
 
+            // KR Row
             tableHTML += `
                 <tr class="kr-row ${hasProjects ? '' : 'text-danger'}" onclick="toggleKR('${krRowId}')">
                     <td colspan="3">
-                        <span class="toggle-icon"></span>
-                        <span class="badge bg-secondary me-2">${group.id}</span>
-                        ${group.title} 
-                        ${roleBadge}
-                        ${!hasProjects ? '<span class="badge bg-danger ms-2">ยังไม่มีโครงการ</span>' : ''}
+                        <div class="d-flex align-items-start">
+                            <span class="toggle-icon"><i class="bi bi-chevron-down"></i></span>
+                            <div>
+                                ${group.id ? `<span class="badge bg-secondary me-2">${group.id}</span>` : ''}
+                                <span class="fw-bold">${group.title}</span>
+                                ${roleBadge}
+                                ${!hasProjects ? '<span class="badge bg-danger ms-2"><i class="bi bi-exclamation-triangle-fill"></i> ไม่มีโครงการ</span>' : ''}
+                            </div>
+                        </div>
                     </td>
-                    <td class="text-end fw-bold">${group.krBudget.toLocaleString()}</td>
+                    <td class="text-end fw-bold text-primary">${group.krBudget.toLocaleString()}</td>
                     <td></td>
                 </tr>
             `;
 
+            // Project Rows
             group.projects.forEach(proj => {
                 let docButton = proj.doc && String(proj.doc).startsWith('http') 
-                    ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-primary">📂 เอกสาร</a>`
-                    : `<span class="text-muted" style="font-size:0.85em;">-</span>`;
+                    ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3"><i class="bi bi-file-earmark-text"></i> ไฟล์</a>`
+                    : `<span class="text-muted fst-italic" style="font-size:0.85em;">-</span>`;
 
                 tableHTML += `
-                    <tr class="project-row kr-child-${krRowId}">
-                        <td class="ps-5 text-primary">↳ ${proj.name}</td>
-                        <td><span class="badge bg-light text-dark border">${proj.type}</span></td>
-                        <td>
+                    <tr class="kr-child-${krRowId} bg-white">
+                        <td class="ps-5 align-middle border-start border-3 border-primary">
+                            <span class="text-dark"><i class="bi bi-arrow-return-right text-muted me-2"></i> ${proj.name}</span>
+                        </td>
+                        <td class="align-middle">
+                            <span class="badge badge-plan px-2 py-1">${proj.type}</span>
+                        </td>
+                        <td class="align-middle">
                             <div class="d-flex align-items-center">
-                                <span class="me-2">${proj.progress}%</span>
-                                <div class="progress w-100" style="height: 6px;">
-                                    <div class="progress-bar ${proj.progress == 100 ? 'bg-success' : 'bg-primary'}" style="width: ${proj.progress}%;"></div>
+                                <span class="me-2 fw-medium ${proj.progress == 100 ? 'text-success' : 'text-primary'}">${proj.progress}%</span>
+                                <div class="progress flex-grow-1 shadow-sm">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated ${proj.progress == 100 ? 'bg-success' : 'bg-primary'}" style="width: ${proj.progress}%;"></div>
                                 </div>
                             </div>
                         </td>
-                        <td class="text-end">${proj.budget.toLocaleString()}</td>
-                        <td class="text-center">${docButton}</td>
+                        <td class="text-end align-middle text-dark fw-medium">${proj.budget.toLocaleString()}</td>
+                        <td class="text-center align-middle">${docButton}</td>
                     </tr>
                 `;
             });
         }
 
+        document.getElementById('totalKRs').innerText = krCount.toLocaleString();
+        document.getElementById('totalProjects').innerText = totalProjectsCount.toLocaleString();
+        document.getElementById('totalBudget').innerText = totalBudget.toLocaleString();
+        document.getElementById('totalSpent').innerText = totalSpent.toLocaleString();
+        
         document.getElementById('projectTableBody').innerHTML = tableHTML;
     }
 
