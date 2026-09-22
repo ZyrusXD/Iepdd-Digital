@@ -236,27 +236,26 @@
         }
     }
 
-    // ฟังก์ชันจับคู่ชื่อคอลัมน์ให้แม่นยำ (รองรับการเปลี่ยนแปลงที่คุณทำล่าสุด)
     function setupColumns(row) {
         const keys = Object.keys(row);
         cols = {
             krID: keys.find(k => k.includes('รหัส KRs')) || keys[1],
             krName: keys.find(k => k.includes('KEY RESULT')) || keys[5],
+            krTarget: keys.find(k => k.includes('ค่าเป้าหมายของ KRs')) || keys[7], // ดึงเป้าหมายรวมของ KR
             
-            // หาคอลัมน์ชื่อ "โครงการ/กิจกรรม"
             projectName: keys.find(k => k.includes('โครงการ/กิจกรรม') || k.includes('ชื่อโครงการ')) || keys[13],
-            // หาคอลัมน์ "ประเภทของแผน"
             planType: keys.find(k => k.includes('ประเภทของแผน') || k.includes('ประเภทแผน')) || keys[14],
             
             hostDept: keys.find(k => k.includes('หน่วยงาน (H)')),
             relDept: keys.find(k => k.includes('หน่วยงาน (R)')),
             budget: keys.find(k => k.includes('งบประมาณจัดสรร')),
             spent: keys.find(k => k.includes('ผลการเบิกจ่ายจริง')),
-            target: keys.find(k => k.includes('ค่าเป้าหมายของโครงการ')),
-            actual: keys.find(k => k.includes('ผลการดำเนินงานตามค่าเป้าหมายของโครงการ')),
+            
+            projTarget: keys.find(k => k.includes('ค่าเป้าหมายของโครงการ')),
+            projActual: keys.find(k => k.includes('ผลการดำเนินงานตามค่าเป้าหมายของโครงการ')),
+            calcToKR: keys.find(k => k.includes('การคำนวณเข้า KR')), // ดึงสถานะว่านำไปคำนวณหรือไม่
             doc: keys.find(k => k.includes('ลิงก์ไฟล์เอกสารโครงการ'))
         };
-        console.log("Column Mapping Mapped:", cols);
     }
 
     function populateFilters(data) {
@@ -280,7 +279,6 @@
     function checkRole(row) {
         let hText = String(row[cols.hostDept] || '');
         let rText = String(row[cols.relDept] || '');
-        // ค้นหาคำว่า สดท หรือ สำนักดิจิทัล
         let isH = hText.includes('สดท') || hText.includes('สำนักดิจิทัล');
         let isR = rText.includes('สดท') || rText.includes('สำนักดิจิทัล');
         return { isH, isR };
@@ -316,6 +314,7 @@
         let totalSpent = 0;
         let totalProjectsCount = 0;
 
+        // 1. จัดกลุ่มและคำนวณค่าสะสม
         data.forEach((row) => {
             let krTitle = String(row[cols.krName] || '').trim();
             if(!krTitle || krTitle === 'NaN' || krTitle === 'None') return;
@@ -323,10 +322,14 @@
             let krKey = row[cols.krID] || krTitle; 
             let roles = checkRole(row);
             
+            // สร้างกลุ่ม KR ถ้ายังไม่มี
             if(!krGroups[krKey]) {
+                let targetKR = parseFloat(String(row[cols.krTarget]).replace(/,/g, '')) || 0;
                 krGroups[krKey] = {
                     title: krTitle,
                     id: String(row[cols.krID] || '').trim() !== 'NaN' ? row[cols.krID] : '',
+                    target: targetKR, // เป้าหมายสูงสุดของ KR (เช่น 1500)
+                    accumulatedActual: 0, // ผลรวมจริงของทุกโครงการที่เอามาคิดรวม
                     isH: roles.isH,
                     isR: roles.isR,
                     projects: [],
@@ -334,6 +337,7 @@
                 };
             }
 
+            // จัดการข้อมูลโครงการ
             let pName = String(row[cols.projectName] || '').trim();
             if(pName && pName !== 'NaN' && pName !== 'None') {
                 totalProjectsCount++;
@@ -344,21 +348,34 @@
                 totalBudget += pBudget;
                 totalSpent += pSpent;
 
-                let pTarget = parseFloat(row[cols.target]) || 1;
-                let pActual = parseFloat(row[cols.actual]) || 0;
-                let pProgress = Math.min((pActual / pTarget) * 100, 100).toFixed(0);
+                let pTarget = parseFloat(String(row[cols.projTarget]).replace(/,/g, '')) || 0;
+                let pActual = parseFloat(String(row[cols.projActual]).replace(/,/g, '')) || 0;
+                
+                // คำนวณเปอร์เซ็นต์ของโครงการเดี่ยวๆ
+                let pProgress = 0;
+                if(pTarget > 0) pProgress = Math.min((pActual / pTarget) * 100, 100).toFixed(0);
+                
                 let pType = row[cols.planType] && row[cols.planType] !== 'NaN' ? row[cols.planType] : '-';
+                
+                // เช็กว่าโครงการนี้ ให้นำไปสะท้อนยอด KR หรือไม่ (ดูจากคอลัมน์ "การคำนวณเข้า KR")
+                let calcFlag = String(row[cols.calcToKR] || '').trim();
+                if(calcFlag === 'คำนวณ') {
+                    // เอา "ผลการดำเนินงานจริง" ของโครงการ ไปบวกสะสมให้ KR
+                    krGroups[krKey].accumulatedActual += pActual;
+                }
 
                 krGroups[krKey].projects.push({
                     name: pName,
                     type: pType,
                     budget: pBudget,
-                    progress: isNaN(pProgress) ? 0 : pProgress,
+                    progress: pProgress,
+                    calcFlag: calcFlag, // เก็บสถานะไว้แสดง
                     doc: row[cols.doc]
                 });
             }
         });
 
+        // 2. สร้างตาราง HTML
         let tableHTML = '';
         let krCount = 0;
 
@@ -368,39 +385,68 @@
             const hasProjects = group.projects.length > 0;
             const krRowId = `kr-${krCount}`;
 
+            // ป้ายกำกับ H/R
             let roleBadge = '';
             if (group.isH) roleBadge += `<span class="badge badge-host ms-2"><i class="bi bi-star-fill me-1"></i>H</span>`;
             if (group.isR) roleBadge += `<span class="badge badge-relative ms-2"><i class="bi bi-people-fill me-1"></i>R</span>`;
 
-            // KR Row
+            // คำนวณร้อยละความสำเร็จของ KR หลัก (เทียบเป้าหมาย KR)
+            let krProgressPercent = 0;
+            if (group.target > 0) {
+                krProgressPercent = Math.min((group.accumulatedActual / group.target) * 100, 100).toFixed(2);
+            }
+
+            // หลอด Progress ของ KR หลัก
+            let krProgressBar = '';
+            if (hasProjects) {
+                krProgressBar = `
+                    <div class="d-flex align-items-center">
+                        <span class="me-2 fw-bold text-dark">${krProgressPercent}%</span>
+                        <div class="progress flex-grow-1" style="height: 10px; box-shadow: inset 0 1px 2px rgba(0,0,0,.1);">
+                            <div class="progress-bar ${krProgressPercent >= 100 ? 'bg-success' : 'bg-dark'}" style="width: ${krProgressPercent}%;"></div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: #6c757d; margin-top: 2px;">
+                        ทำได้รวม: ${group.accumulatedActual.toLocaleString()} / เป้าหมายรวม: ${group.target.toLocaleString()}
+                    </div>
+                `;
+            }
+
+            // แถว KR (เพิ่มคอลัมน์แสดง Progress ของ KR)
             tableHTML += `
                 <tr class="kr-row ${hasProjects ? '' : 'text-danger'}" onclick="toggleKR('${krRowId}')">
-                    <td colspan="3">
+                    <td colspan="2">
                         <div class="d-flex align-items-start">
                             <span class="toggle-icon"><i class="bi bi-chevron-down"></i></span>
                             <div>
                                 ${group.id ? `<span class="badge bg-secondary me-2">${group.id}</span>` : ''}
                                 <span class="fw-bold">${group.title}</span>
-                                ${roleBadge}
-                                ${!hasProjects ? '<span class="badge bg-danger ms-2"><i class="bi bi-exclamation-triangle-fill"></i> ไม่มีโครงการ</span>' : ''}
+                                ${roleBadge}${!hasProjects ? '<span class="badge bg-danger ms-2"><i class="bi bi-exclamation-triangle-fill"></i> ไม่มีโครงการ</span>' : ''}
                             </div>
                         </div>
                     </td>
-                    <td class="text-end fw-bold text-primary">${group.krBudget.toLocaleString()}</td>
+                    <td class="align-middle">${krProgressBar}</td>
+                    <td class="text-end fw-bold text-primary align-middle">${group.krBudget.toLocaleString()}</td>
                     <td></td>
                 </tr>
             `;
 
-            // Project Rows
+            // แถวโครงการย่อย
             group.projects.forEach(proj => {
                 let docButton = proj.doc && String(proj.doc).startsWith('http') 
                     ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3"><i class="bi bi-file-earmark-text"></i> ไฟล์</a>`
                     : `<span class="text-muted fst-italic" style="font-size:0.85em;">-</span>`;
+                    
+                // ป้ายแสดงสถานะการคำนวณเข้า KR
+                let calcBadge = proj.calcFlag === 'คำนวณ' 
+                    ? `<span class="badge bg-info text-dark" style="font-size:0.7rem;" title="ยอดของโครงการนี้ถูกนำไปรวมกับเป้าหมาย KR"><i class="bi bi-plus-circle"></i> คิดยอดรวม</span>` 
+                    : ``;
 
                 tableHTML += `
                     <tr class="kr-child-${krRowId} bg-white">
                         <td class="ps-5 align-middle border-start border-3 border-primary">
                             <span class="text-dark"><i class="bi bi-arrow-return-right text-muted me-2"></i> ${proj.name}</span>
+                            <div class="mt-1">${calcBadge}</div>
                         </td>
                         <td class="align-middle">
                             <span class="badge badge-plan px-2 py-1">${proj.type}</span>
