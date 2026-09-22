@@ -72,9 +72,9 @@
         .badge-sub { font-size: 0.75rem; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-top: 4px;}
         .kr-badge { font-size: 0.9rem; font-weight: 700; background: #e2e8f0; color: var(--bma-green-dark); padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1; white-space: nowrap; }
 
-        /* 🌟 ป้ายนโยบาย 261+ (แยกกรณี) */
+        /* ป้ายนโยบาย 261+ */
         .badge-policy {
-            background: var(--bma-blue); /* สีฟ้ารองของ กทม. */
+            background: var(--bma-blue);
             color: white;
             font-weight: 600;
             padding: 4px 12px;
@@ -85,7 +85,7 @@
             margin-top: 4px;
         }
         .badge-policy-none {
-            background: #e2e8f0; /* สีเทา */
+            background: #e2e8f0; 
             color: #64748b;
             font-weight: 600;
             padding: 4px 12px;
@@ -127,7 +127,6 @@
 
 <nav class="navbar navbar-dark navbar-custom shadow-sm">
     <div class="container-fluid px-4">
-        <!-- Logo & Branding -->
         <a class="navbar-brand d-flex align-items-center m-0" href="#">
             <img src="logo.png" alt="สยป. กทม." class="logo-img me-3">
             <div class="nav-brand-text text-start">
@@ -168,7 +167,6 @@
             
             <!-- TAB 1: OVERVIEW -->
             <div class="tab-pane fade show active" id="overview">
-                <!-- Stat Cards (ใช้สี BMA Color System) -->
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-md-3">
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-green);">
@@ -375,7 +373,9 @@
             relDept: keys.find(k => k.includes('หน่วยงาน (R)')),
             budget: keys.find(k => k.includes('งบประมาณจัดสรร')),
             spent: keys.find(k => k.includes('ผลการเบิกจ่ายจริง')),
+            
             projTarget: keys.find(k => k.includes('ค่าเป้าหมายของโครงการ')),
+            projUnit: keys.find(k => k.includes('หน่วยนับของค่าเป้าหมายโครงการ')), // <--- ดึงหน่วยนับโครงการ
             projActual: keys.find(k => k.includes('ผลการดำเนินงานตามค่าเป้าหมายของโครงการ') || k.includes('ผลการดำเนินงาน')),
             calcToKR: keys.find(k => k.includes('การคำนวณเข้า KR')),
             
@@ -458,7 +458,6 @@
 
     function getPolicyBadgeHTML(policyText) {
         if(!policyText || policyText === 'NaN' || policyText === '-') return '';
-        // หากมีคำว่า "ไม่สอดคล้อง" ให้แสดงป้ายสีเทา
         if(policyText.includes('ไม่สอดคล้อง')) {
             return `<span class="badge-policy-none ms-2 mt-2 mt-md-0"><i class="bi bi-x-circle me-1"></i> ${policyText}</span>`;
         } else {
@@ -511,6 +510,7 @@
 
                 let pTarget = parseFloat(String(row[cols.projTarget]).replace(/,/g, '')) || 0;
                 let pActual = parseFloat(String(row[cols.projActual]).replace(/,/g, '')) || 0;
+                let pUnit = row[cols.projUnit] && row[cols.projUnit] !== 'NaN' ? String(row[cols.projUnit]).trim() : '-';
                 let pProgress = pTarget > 0 ? Math.min((pActual / pTarget) * 100, 100) : 0;
                 
                 let calcFlag = String(row[cols.calcToKR] || '').trim();
@@ -522,7 +522,9 @@
                     krParentName: krTitle,
                     name: pName, 
                     budget: pBudget, spent: pSpent,
-                    target: pTarget, actual: pActual, progress: pProgress,
+                    target: pTarget, actual: pActual, 
+                    unit: pUnit, // เก็บหน่วยนับโครงการ
+                    progress: pProgress,
                     calcFlag: calcFlag, 
                     doc: row[cols.docProj],
                     reportNote: String(row[cols.reportNote] || '').trim() 
@@ -634,6 +636,7 @@
                     : ``;
                 
                 let pBudgPct = proj.budget > 0 ? Math.min((proj.spent / proj.budget) * 100, 100) : 0;
+                let unitLabel = proj.unit !== '-' ? ` <span class="text-muted">(${proj.unit})</span>` : '';
 
                 tableHTML += `
                     <tr class="proj-row kr-child-${krRowId}">
@@ -642,8 +645,8 @@
                             ${proj.calcFlag === 'คำนวณ' ? `<span class="badge-sub text-info ms-4 mt-1 border-info"><i class="bi bi-plus"></i> คำนวณยอดเข้า KR</span>` : ''}
                         </td>
                         <td>
-                            <div class="text-muted small mb-1">เป้า: <strong class="text-dark">${proj.target.toLocaleString()}</strong></div>
-                            <div class="text-muted small">ทำได้: <strong class="text-dark">${proj.actual.toLocaleString()}</strong></div>
+                            <div class="text-muted small mb-1">เป้า: <strong class="text-dark">${proj.target.toLocaleString()}</strong>${unitLabel}</div>
+                            <div class="text-muted small">ทำได้: <strong class="text-dark">${proj.actual.toLocaleString()}</strong>${unitLabel}</div>
                         </td>
                         <td>
                             <div class="d-flex justify-content-between small fw-bold mb-1">
@@ -681,7 +684,6 @@
 
         document.getElementById('projectTableBody').innerHTML = tableHTML;
         
-        // ใช้งาน BMA Color System ใน Chart
         drawCharts(chartBudget, chartProgress);
     }
 
@@ -690,6 +692,7 @@
         if(!p) return;
 
         let hasReport = p.reportNote && p.reportNote !== 'NaN' && p.reportNote !== '';
+        let unitLabel = p.unit !== '-' ? `<span class="fs-6 text-muted ms-1">${p.unit}</span>` : '';
         
         let html = `
             <div class="bg-white p-3 p-md-4 rounded border mb-4 shadow-sm">
@@ -704,13 +707,13 @@
                 <div class="col-6 col-md-3">
                     <div class="p-2 p-md-3 bg-white rounded border text-center shadow-sm h-100">
                         <div class="small text-muted mb-1">เป้าหมาย</div>
-                        <div class="fw-bold fs-5 fs-md-4">${p.target.toLocaleString()}</div>
+                        <div class="fw-bold fs-5 fs-md-4">${p.target.toLocaleString()} ${unitLabel}</div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="p-2 p-md-3 bg-white rounded border text-center shadow-sm h-100">
                         <div class="small text-muted mb-1">ทำได้จริง</div>
-                        <div class="fw-bold fs-5 fs-md-4 text-success">${p.actual.toLocaleString()} <br class="d-md-none"><span class="fs-6 text-muted">(${p.progress.toFixed(0)}%)</span></div>
+                        <div class="fw-bold fs-5 fs-md-4 text-success">${p.actual.toLocaleString()} ${unitLabel} <br class="d-md-none"><span class="fs-6 text-muted">(${p.progress.toFixed(0)}%)</span></div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
@@ -758,7 +761,7 @@
         if(budgetChartInstance) budgetChartInstance.destroy();
         if(progressChartInstance) progressChartInstance.destroy();
 
-        // ใช้สี BMA Color System ในกราฟ
+        // BMA Color System 
         const bmaColors = ['#00744b', '#00c08b', '#67a33b', '#ffb449', '#0071ce', '#ec3faa'];
 
         const ctxB = document.getElementById('budgetChart').getContext('2d');
