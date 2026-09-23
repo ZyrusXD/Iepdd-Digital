@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import gspread
@@ -8,7 +8,6 @@ import json
 
 app = FastAPI()
 
-# อนุญาตให้ Frontend เรียกใช้งาน API ได้
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,7 +19,6 @@ app.add_middleware(
 @app.get("/api/data")
 def get_dashboard_data(year: str = "2570"):
     try:
-        # 1. โหลด Key จาก Environment Variable ของ Vercel
         google_creds_str = os.environ.get("GOOGLE_CREDENTIALS")
         if not google_creds_str:
             return JSONResponse(status_code=500, content={"error": "Missing GOOGLE_CREDENTIALS"})
@@ -30,16 +28,28 @@ def get_dashboard_data(year: str = "2570"):
         creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
         client = gspread.authorize(creds)
         
-        # 2. อ่าน Spreadsheet ID จาก Environment Variable
         spreadsheet_id = os.environ.get("SPREADSHEET_ID")
         if not spreadsheet_id:
             return JSONResponse(status_code=500, content={"error": "Missing SPREADSHEET_ID"})
         
-        # 3. เปิดไฟล์และดึงข้อมูลตามปีงบประมาณ (ชื่อ Tab)
+        # 1. ดึงข้อมูลแผนยุทธศาสตร์ตามปี
         sheet = client.open_by_key(spreadsheet_id).worksheet(year)
-        records = sheet.get_all_records() # ดึงข้อมูลทั้งหมดมาเป็น List of Dictionaries
+        records = sheet.get_all_records()
         
-        return {"status": "success", "year": year, "data": records}
+        # 2. ดึงข้อมูลพจนานุกรมนโยบายจากชีท "policyDictionary"
+        policy_dict_records = []
+        try:
+            policy_sheet = client.open_by_key(spreadsheet_id).worksheet("policyDictionary")
+            policy_dict_records = policy_sheet.get_all_records()
+        except Exception:
+            pass # หากหาชีท policyDictionary ไม่เจอให้ปล่อยผ่านไปก่อน ไม่ให้ระบบพัง
+        
+        return {
+            "status": "success", 
+            "year": year, 
+            "data": records, 
+            "policy_dict": policy_dict_records
+        }
         
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})

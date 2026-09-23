@@ -11,19 +11,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* BMA Official Color System */
         :root { 
-            --bma-green: #00744b;
-            --bma-green-dark: #205a41;
-            --bma-blue: #0071ce;
-            --bma-light-green: #67a33b;
-            --bma-orange: #ffb449;
+            --bma-green: #00744b; --bma-green-dark: #205a41;
+            --bma-blue: #0071ce; --bma-light-green: #67a33b; --bma-orange: #ffb449;
             --primary-gradient: linear-gradient(135deg, var(--bma-green-dark) 0%, var(--bma-green) 100%); 
         }
         
-        body { font-family: 'Sarabun', sans-serif; background-color: #f1f5f9; color: #1e293b; overflow-x: hidden; }
+        body { font-family: 'Sarabun', sans-serif; background-color: #f4f7f6; color: #1e293b; overflow-x: hidden; }
         
-        /* Overrides Bootstrap Colors to BMA Theme */
         .text-primary { color: var(--bma-green) !important; }
         .bg-primary { background-color: var(--bma-green) !important; }
         .btn-primary { background-color: var(--bma-green); border-color: var(--bma-green); }
@@ -31,96 +26,73 @@
         .btn-outline-primary { color: var(--bma-green); border-color: var(--bma-green); }
         .btn-outline-primary:hover { background-color: var(--bma-green); color: white; }
         
-        /* Navbar & Logo */
-        .navbar-custom { background: var(--primary-gradient); padding: 0.8rem 0; }
-        .nav-brand-text { line-height: 1.4; white-space: normal; } /* รองรับการขึ้นบรรทัดใหม่ */
+        .navbar-custom { background: var(--primary-gradient); padding: 0.8rem 0; border-bottom: 3px solid var(--bma-orange); }
+        .nav-brand-text { line-height: 1.4; white-space: normal; } 
         .logo-img { height: 55px; object-fit: contain; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex-shrink: 0;}
         
-        /* Tabs */
-        .nav-tabs { border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .nav-tabs { border-bottom: 2px solid #e2e8f0; margin-bottom: 25px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
         .nav-tabs::-webkit-scrollbar { display: none; }
-        .nav-tabs .nav-link { border: none; color: #64748b; font-weight: 600; font-size: 1rem; padding: 12px 20px; transition: 0.3s; background: transparent; }
-        .nav-tabs .nav-link.active { color: var(--bma-green); border-bottom: 3px solid var(--bma-green); }
+        .nav-tabs .nav-link { border: none; color: #64748b; font-weight: 600; font-size: 1.05rem; padding: 12px 25px; transition: 0.3s; background: transparent; }
+        .nav-tabs .nav-link:hover { color: var(--bma-green); }
+        .nav-tabs .nav-link.active { color: var(--bma-green); border-bottom: 3px solid var(--bma-green); background-color: transparent;}
 
-        /* Cards */
-        .content-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .content-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; }
         .stat-box { padding: 20px; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); }
-        .stat-box h3 { font-size: 2rem; font-weight: 700; margin-bottom: 0; }
-        .stat-icon { position: absolute; right: -10px; bottom: -15px; font-size: 4.5rem; opacity: 0.15; }
+        .stat-box h3 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0; }
+        .stat-icon { position: absolute; right: -10px; bottom: -15px; font-size: 5rem; opacity: 0.15; transition: transform 0.3s;}
+        .stat-box:hover .stat-icon { transform: scale(1.1) rotate(-5deg); }
 
-        .filter-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; margin-bottom: 20px; }
+        .area-card { background: white; border-radius: 12px; padding: 15px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.3s; display: flex; align-items: center; gap: 15px; }
+        .area-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,116,75,0.1); border-color: var(--bma-green); }
+        .area-icon { width: 50px; height: 50px; object-fit: contain; }
+        .area-title { font-weight: 700; color: #1e293b; font-size: 1.05rem; margin-bottom: 2px; }
+        .area-stats { font-size: 0.85rem; color: #64748b; }
         
-        /* Table Styles */
+        .dict-card { background: #fff; border-left: 4px solid var(--bma-blue); border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: 0.2s; height: 100%;}
+        .dict-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.08); transform: translateY(-2px); }
+        .dict-code { font-weight: 800; color: var(--bma-blue); font-size: 1.1rem; }
+        .dict-desc { font-size: 0.95rem; color: #475569; margin-top: 5px; line-height: 1.5; }
+
+        .filter-section { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
         .table-responsive { -webkit-overflow-scrolling: touch; border-radius: 8px; }
-        .table-custom { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 850px; }
-        .table-custom th { background: #f8fafc; color: var(--bma-green-dark); font-weight: 600; padding: 12px 15px; border-bottom: 2px solid #e2e8f0; font-size: 0.9rem; white-space: nowrap; }
-        .table-custom td { padding: 12px 15px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+        .table-custom { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 900px; }
+        .table-custom th { background: #f8fafc; color: var(--bma-green-dark); font-weight: 700; padding: 15px; border-bottom: 2px solid #e2e8f0; font-size: 0.95rem; white-space: nowrap; }
+        .table-custom td { padding: 15px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
         
-        .overview-table { min-width: 600px; }
-        
-        .kr-row { background-color: #ffffff; border-left: 4px solid var(--bma-green); cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .kr-row { background-color: #ffffff; border-left: 4px solid var(--bma-green); cursor: pointer; transition: 0.2s; }
         .kr-row:hover { background-color: #f8fafc; }
         .proj-row { background-color: #fdfdfd; border-left: 4px solid #cbd5e1; }
         
-        .toggle-icon { display: inline-flex; width: 24px; height: 24px; border-radius: 50%; background: #e2e8f0; align-items: center; justify-content: center; color: #475569; transition: 0.3s; margin-right: 12px; flex-shrink: 0; }
+        .toggle-icon { display: inline-flex; width: 26px; height: 26px; border-radius: 50%; background: #e2e8f0; align-items: center; justify-content: center; color: #475569; transition: 0.3s; margin-right: 15px; flex-shrink: 0; }
         .kr-row.collapsed .toggle-icon { transform: rotate(-90deg); }
 
-        .progress-slim { height: 6px; border-radius: 10px; background-color: #e2e8f0; margin-top: 5px; }
+        .progress-slim { height: 8px; border-radius: 10px; background-color: #e2e8f0; margin-top: 6px; overflow: hidden; }
         .progress-bar-budget { background: linear-gradient(90deg, #f59e0b, #d97706); }
         .progress-bar-kpi { background: linear-gradient(90deg, var(--bma-green-dark), var(--bma-green)); }
         
-        .badge-sub { font-size: 0.75rem; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-top: 4px;}
-        .kr-badge { font-size: 0.9rem; font-weight: 700; background: #e2e8f0; color: var(--bma-green-dark); padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1; white-space: nowrap; }
+        .badge-sub { font-size: 0.75rem; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-top: 4px;}
+        .kr-badge { font-size: 0.95rem; font-weight: 700; background: #e2e8f0; color: var(--bma-green-dark); padding: 5px 12px; border-radius: 6px; border: 1px solid #cbd5e1; white-space: nowrap; }
+        
+        .badge-policy { background: var(--bma-blue); color: white; font-weight: 600; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; display: inline-block; box-shadow: 0 2px 4px rgba(0, 113, 206, 0.2); margin-top: 4px; }
+        .badge-policy-none { background: #e2e8f0; color: #64748b; font-weight: 600; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; display: inline-block; border: 1px solid #cbd5e1; margin-top: 4px; }
 
-        /* ป้ายนโยบาย 261+ */
-        .badge-policy {
-            background: var(--bma-blue);
-            color: white;
-            font-weight: 600;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            display: inline-block;
-            box-shadow: 0 2px 4px rgba(0, 113, 206, 0.2);
-            margin-top: 4px;
-        }
-        .badge-policy-none {
-            background: #e2e8f0; 
-            color: #64748b;
-            font-weight: 600;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            display: inline-block;
-            border: 1px solid #cbd5e1;
-            margin-top: 4px;
-        }
-
-        /* 📱 Mobile Adjustments */
         @media (max-width: 768px) {
-            .navbar-custom .container-fluid { flex-direction: column; align-items: center !important; gap: 10px; padding-top: 10px; padding-bottom: 10px; }
+            .navbar-custom .container-fluid { flex-direction: column; align-items: center !important; gap: 10px; padding-top: 15px; padding-bottom: 15px; }
             .navbar-brand { flex-direction: column; text-align: center; margin: 0; width: 100%; }
             .logo-img { height: 50px; margin: 0 0 10px 0 !important; }
-            
-            /* แก้ปัญหาชื่อยาวล้นหน้าจอ */
             .nav-brand-text { width: 100%; text-align: center !important; padding: 0 5px; }
-            .nav-brand-text .fs-4 { font-size: 1.15rem !important; margin-bottom: 5px; word-wrap: break-word; }
+            .nav-brand-text .fs-4 { font-size: 1.15rem !important; margin-bottom: 5px; }
             .nav-brand-text .fs-6 { font-size: 0.75rem !important; opacity: 0.85; }
             
-            .year-selector-container { justify-content: center; width: 100%; background: rgba(255,255,255,0.1); padding: 8px !important; border-radius: 8px; margin-top: 5px; }
-            .year-selector-container select { width: 120px !important; }
-
-            .stat-box h3 { font-size: 1.5rem; }
+            .year-selector-container { justify-content: center; width: 100%; background: rgba(255,255,255,0.1); padding: 10px !important; border-radius: 8px; margin-top: 5px; }
+            .stat-box h3 { font-size: 1.6rem; }
             .content-card { padding: 15px; }
-            
-            .table-custom th, .table-custom td { padding: 10px; font-size: 0.85rem; }
-            .kr-badge { font-size: 0.8rem; padding: 3px 6px; }
+            .table-custom th, .table-custom td { padding: 12px 10px; font-size: 0.85rem; }
             .chart-container { height: 250px !important; }
-            
             .swipe-hint { display: block !important; }
         }
         
-        .swipe-hint { display: none; font-size: 0.8rem; color: #64748b; margin-bottom: 8px; text-align: right; }
+        .swipe-hint { display: none; font-size: 0.8rem; color: var(--bma-blue); margin-bottom: 8px; text-align: right; font-weight: 600;}
         .swipe-hint i { animation: swipe-anim 2s infinite; display: inline-block; }
         @keyframes swipe-anim { 0% { transform: translateX(0); } 50% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
     </style>
@@ -129,15 +101,13 @@
 
 <nav class="navbar navbar-dark navbar-custom shadow-sm">
     <div class="container-fluid px-4">
-        <!-- Logo & Branding -->
         <a class="navbar-brand d-flex align-items-center m-0" href="#">
-            <img src="logo.png" alt="สยป. กทม." class="logo-img me-3">
+            <img src="logo.png" alt="สยป. กทม." class="logo-img me-3" onerror="this.src='https://upload.wikimedia.org/wikipedia/th/thumb/7/7b/Seal_of_Bangkok.svg/150px-Seal_of_Bangkok.svg.png'">
             <div class="nav-brand-text text-start">
                 <div class="fs-4 fw-bold">ระบบบริหารจัดการแผนยุทธศาสตร์ สำนักดิจิทัลกรุงเทพมหานคร</div>
                 <div class="fs-6 fw-light text-light">กองยุทธศาสตร์พัฒนาโครงสร้างพื้นฐานเมือง | สำนักยุทธศาสตร์และประเมินผล</div>
             </div>
         </a>
-        
         <div class="d-flex align-items-center year-selector-container mt-2 mt-md-0">
             <label class="text-white me-2 fw-medium mb-0 small">ปีงบประมาณ</label>
             <select id="yearSelect" class="form-select form-select-sm border-0 fw-bold text-primary shadow-sm" style="width: 100px; border-radius: 6px;" onchange="fetchData()">
@@ -148,11 +118,11 @@
     </div>
 </nav>
 
-<div class="container-fluid py-3 px-3 px-md-4">
+<div class="container-fluid py-4 px-3 px-md-4">
     
     <div id="loading" class="text-center my-5 py-5">
-        <div class="spinner-border text-primary" style="width: 2.5rem; height: 2.5rem;" role="status"></div>
-        <h6 class="mt-3 fw-bold text-muted">กำลังดึงข้อมูล...</h6>
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status"></div>
+        <h6 class="mt-3 fw-bold text-muted">กำลังซิงค์ข้อมูลยุทธศาสตร์...</h6>
     </div>
 
     <div id="dashboardContent" class="d-none">
@@ -164,13 +134,16 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="detail-tab" data-bs-toggle="tab" data-bs-target="#detail" type="button"><i class="bi bi-table me-2"></i>ตารางข้อมูลแจกแจง</button>
             </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="policy-tab" data-bs-toggle="tab" data-bs-target="#policy" type="button"><i class="bi bi-book-half me-2"></i>บรรณานุกรมนโยบาย 261+</button>
+            </li>
         </ul>
 
         <div class="tab-content" id="myTabContent">
             
             <!-- TAB 1: OVERVIEW -->
             <div class="tab-pane fade show active" id="overview">
-                <!-- Stat Cards -->
+                
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-md-3">
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-green);">
@@ -181,14 +154,14 @@
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-blue);">
-                            <p class="mb-1 opacity-75 fw-medium small">โครงการ</p>
+                            <p class="mb-1 opacity-75 fw-medium small">โครงการ/กิจกรรม</p>
                             <h3 id="statProjects">0</h3>
                             <i class="bi bi-diagram-3-fill stat-icon text-white"></i>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="stat-box h-100" style="background-color: var(--bma-light-green); color: white;">
-                            <p class="mb-1 opacity-75 fw-medium small">งบรวม (บาท)</p>
+                            <p class="mb-1 opacity-75 fw-medium small">งบประมาณรวม (บาท)</p>
                             <h3 id="statBudget" class="fs-4">0</h3>
                             <i class="bi bi-cash-coin stat-icon text-white"></i>
                         </div>
@@ -208,7 +181,10 @@
                     </div>
                 </div>
 
-                <div class="row g-3 mb-4">
+                <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-grid-fill me-2 text-primary"></i>สรุปผลตามยุทธศาสตร์ 9 ด้าน</h5>
+                <div class="row g-3 mb-4" id="areaCardsContainer"></div>
+
+                <div class="row g-4 mb-4">
                     <div class="col-lg-6">
                         <div class="content-card h-100">
                             <h6 class="fw-bold mb-3 text-secondary"><i class="bi bi-donut-chart me-2 text-primary"></i>สัดส่วนงบประมาณแยกตามยุทธศาสตร์</h6>
@@ -219,33 +195,9 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="content-card h-100">
-                            <h6 class="fw-bold mb-3 text-secondary"><i class="bi bi-bar-chart-steps me-2 text-primary"></i>ร้อยละความสำเร็จของ KRs แยกตามด้าน</h6>
+                            <h6 class="fw-bold mb-3 text-secondary"><i class="bi bi-bar-chart-steps me-2 text-primary"></i>ร้อยละความสำเร็จของ KRs เฉลี่ยแยกตามด้าน</h6>
                             <div class="chart-container" style="height: 300px; position: relative;">
                                 <canvas id="progressChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row g-3">
-                    <div class="col-12">
-                        <div class="content-card">
-                            <h5 class="fw-bold mb-3 text-secondary fs-6"><i class="bi bi-list-stars me-2 text-primary"></i>สรุปสถานะตัวชี้วัด (KRs) ทั้งหมด</h5>
-                            <div class="swipe-hint"><i class="bi bi-arrow-left-right"></i> เลื่อนซ้าย-ขวา เพื่อดูข้อมูล</div>
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle border overview-table">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th style="width: 15%;">ด้าน</th>
-                                            <th style="width: 15%;">รหัส KRs</th>
-                                            <th style="width: 45%;">ชื่อตัวชี้วัด (KEY RESULT)</th>
-                                            <th style="width: 25%;">ระดับความสำเร็จ</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="overviewKrTableBody">
-                                        <!-- Injected by JS -->
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
                     </div>
@@ -257,44 +209,44 @@
                 
                 <div class="filter-section shadow-sm">
                     <h6 class="fw-bold text-primary mb-3 fs-6"><i class="bi bi-funnel-fill me-2"></i>ตัวกรองข้อมูลเชิงลึก</h6>
-                    <div class="row g-2">
+                    <div class="row g-3">
                         <div class="col-6 col-lg">
                             <label class="form-label text-muted small fw-bold mb-1">ด้านยุทธศาสตร์</label>
-                            <select id="filterCategory" class="form-select form-select-sm" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
+                            <select id="filterCategory" class="form-select" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
                         </div>
                         <div class="col-6 col-lg">
                             <label class="form-label text-muted small fw-bold mb-1">ประเด็นพัฒนา</label>
-                            <select id="filterIssue" class="form-select form-select-sm" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
+                            <select id="filterIssue" class="form-select" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
                         </div>
                         <div class="col-6 col-lg">
                             <label class="form-label text-muted small fw-bold mb-1">นโยบาย 261+</label>
-                            <select id="filterPolicy" class="form-select form-select-sm" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
+                            <select id="filterPolicy" class="form-select" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
                         </div>
                         <div class="col-6 col-lg">
                             <label class="form-label text-muted small fw-bold mb-1">บทบาท สดท.</label>
-                            <select id="filterRole" class="form-select form-select-sm" onchange="applyFilters()">
+                            <select id="filterRole" class="form-select" onchange="applyFilters()">
                                 <option value="all">ทั้งหมด</option>
                                 <option value="host">H: เจ้าภาพหลัก</option>
-                                <option value="relative">R: ร่วม</option>
+                                <option value="relative">R: ร่วมสนับสนุน</option>
                             </select>
                         </div>
                         <div class="col-12 col-lg">
                             <label class="form-label text-muted small fw-bold mb-1">ค้นหารหัส / ชื่อ KR</label>
-                            <input type="text" id="filterSearch" class="form-control form-select-sm" placeholder="พิมพ์ค้นหา..." onkeyup="applyFilters()">
+                            <input type="text" id="filterSearch" class="form-control" placeholder="พิมพ์คำค้นหา..." onkeyup="applyFilters()">
                         </div>
                     </div>
                 </div>
 
                 <div class="content-card p-0 p-md-3">
-                    <div class="p-3 pb-0 d-md-none swipe-hint"><i class="bi bi-arrow-left-right"></i> เลื่อนตารางซ้าย-ขวา เพื่อดูข้อมูลครบถ้วน</div>
+                    <div class="p-3 pb-0 d-md-none swipe-hint"><i class="bi bi-hand-index-thumb"></i> เลื่อนตารางซ้าย-ขวา เพื่อดูข้อมูลเพิ่มเติม</div>
                     <div class="table-responsive">
                         <table class="table-custom">
                             <thead>
                                 <tr>
-                                    <th style="min-width: 320px;">ยุทธศาสตร์ (KRs) / โครงการ</th>
+                                    <th style="min-width: 350px;">ยุทธศาสตร์ (KRs) / โครงการ</th>
                                     <th style="min-width: 140px;">เป้าหมาย / หน่วยนับ</th>
-                                    <th style="min-width: 160px;">ความคืบหน้า (ผลสำเร็จ)</th>
-                                    <th style="min-width: 160px;">งบประมาณ (เบิกจ่าย)</th>
+                                    <th style="min-width: 170px;">ความคืบหน้า (ผลสำเร็จ)</th>
+                                    <th style="min-width: 170px;">งบประมาณ (เบิกจ่าย)</th>
                                     <th style="min-width: 110px; text-align: center;">จัดการ / เอกสาร</th>
                                 </tr>
                             </thead>
@@ -305,20 +257,45 @@
                     </div>
                 </div>
             </div>
+
+            <!-- TAB 3: POLICY GLOSSARY -->
+            <div class="tab-pane fade" id="policy">
+                <div class="content-card mb-4 bg-primary text-white border-0 shadow" style="background: var(--primary-gradient) !important;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="fw-bold mb-1"><i class="bi bi-book-half me-2"></i>บรรณานุกรมนโยบาย 261+</h4>
+                            <p class="mb-0 opacity-75">รวบรวมและอธิบายชื่อเต็มนโยบายของผู้ว่าราชการกรุงเทพมหานคร</p>
+                        </div>
+                        <i class="bi bi-journal-bookmark text-white opacity-25" style="font-size: 4rem;"></i>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="input-group shadow-sm">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                        <input type="text" id="glossarySearch" class="form-control border-start-0 py-3" placeholder="ค้นหารหัสนโยบาย (เช่น P190) หรือคีย์เวิร์ด..." onkeyup="filterGlossary()">
+                    </div>
+                </div>
+
+                <div class="row g-3" id="glossaryContainer">
+                    <!-- Policy Cards injected here -->
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 
-<!-- Modal: Project Details (Report Note) -->
-<div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
+<!-- Modal: Project Details -->
+<div class="modal fade" id="projectModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content border-0 shadow-lg">
       <div class="modal-header text-white border-0" style="background-color: var(--bma-green);">
-        <h5 class="modal-title fw-bold" id="projectModalLabel"><i class="bi bi-file-text-fill me-2"></i>รายละเอียดผลการดำเนินงาน</h5>
+        <h5 class="modal-title fw-bold"><i class="bi bi-file-text-fill me-2"></i>รายละเอียดผลการดำเนินงาน</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body bg-light" id="projectModalBody"></div>
-      <div class="modal-footer border-0">
+      <div class="modal-footer border-0 bg-white">
         <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">ปิดหน้าต่าง</button>
       </div>
     </div>
@@ -332,6 +309,21 @@
     let projectDetailsDb = {}; 
     let budgetChartInstance = null;
     let progressChartInstance = null;
+    
+    // ตัวแปรเก็บพจนานุกรมที่จะดึงจาก Sheet ทับลงไป
+    let policyDictionary = {};
+
+    const areaMapping = [
+        { key: 'เดินทาง', name: '1. ด้านเดินทางดี', img: 'bma_icon01.png' },
+        { key: 'ปลอดภัย', name: '2. ด้านปลอดภัยดี', img: 'bma_icon02.png' },
+        { key: 'โปร่งใส', name: '3. ด้านโปร่งใสดี', img: 'bma_icon03.png' },
+        { key: 'สิ่งแวดล้อม', name: '4. ด้านสิ่งแวดล้อมดี', img: 'bma_icon04.png' },
+        { key: 'สุขภาพ', name: '5. ด้านสุขภาพดี', img: 'bma_icon05.png' },
+        { key: 'เรียน', name: '6. ด้านเรียนดี', img: 'bma_icon06.png' },
+        { key: 'เศรษฐกิจ', name: '7. ด้านเศรษฐกิจดี', img: 'bma_icon07.png' },
+        { key: 'สังคม', name: '8. ด้านสังคมดี', img: 'bma_icon08.png' },
+        { key: 'บริหารจัดการ', name: '9. ด้านบริหารจัดการดี', img: 'bma_icon09.png' }
+    ];
 
     async function fetchData() {
         const year = document.getElementById('yearSelect').value;
@@ -344,14 +336,28 @@
             
             if(result.status === 'success') {
                 globalData = result.data;
+                
+                // 🌟 ดึง Policy Dictionary จาก Backend (ข้อมูลจาก Sheet policyDictionary)
+                policyDictionary = {};
+                if (result.policy_dict && result.policy_dict.length > 0) {
+                    result.policy_dict.forEach(item => {
+                        let code = item['Policy_No'];
+                        let name = item['Policy_Name'];
+                        if (code && name) {
+                            policyDictionary[String(code).trim()] = String(name).trim();
+                        }
+                    });
+                }
+
                 if(globalData.length > 0) {
                     setupColumns(globalData[0]);
                     populateDropdownFilters(globalData);
                     applyFilters(); 
+                    renderPolicyGlossary();
                 }
             } else { alert("เกิดข้อผิดพลาด: " + result.error); }
         } catch (error) {
-            console.error(error); alert("ไม่สามารถเชื่อมต่อได้");
+            console.error(error); alert("ไม่สามารถเชื่อมต่อฐานข้อมูลได้");
         } finally {
             document.getElementById('loading').classList.add('d-none');
             document.getElementById('dashboardContent').classList.remove('d-none');
@@ -367,24 +373,20 @@
             krName: keys.find(k => k.includes('KEY RESULT')) || keys[5],
             unit: keys.find(k => k.includes('หน่วยนับ')) || keys[6],
             krTarget: keys.find(k => k.includes('ค่าเป้าหมายของ KRs')) || keys[7],
-            
-            docKR1: keys.find(k => k.includes('ปผ.กทม. 01') || k.includes('ปผ.กทม.01') || k.includes('ปผ.01')),
-            docKR2: keys.find(k => k.includes('ปผ.กทม. 02') || k.includes('ปผ.กทม.02') || k.includes('ปผ.02')),
+            docKR1: keys.find(k => k.includes('ปผ.01') || k.includes('ปผ.กทม.01') || k.includes('ปผ.กทม. 01')),
+            docKR2: keys.find(k => k.includes('ปผ.02') || k.includes('ปผ.กทม.02') || k.includes('ปผ.กทม. 02')),
             policy: keys.find(k => k.includes('การเชื่อมโยงนโยบาย 261+')),
-
             projectName: keys.find(k => k.includes('โครงการ/กิจกรรม') || k.includes('ชื่อโครงการ')) || keys[13],
             hostDept: keys.find(k => k.includes('หน่วยงาน (H)')),
             relDept: keys.find(k => k.includes('หน่วยงาน (R)')),
             budget: keys.find(k => k.includes('งบประมาณจัดสรร')),
             spent: keys.find(k => k.includes('ผลการเบิกจ่ายจริง')),
-            
             projTarget: keys.find(k => k.includes('ค่าเป้าหมายของโครงการ')),
             projUnit: keys.find(k => k.includes('หน่วยนับของค่าเป้าหมายโครงการ')),
-            projActual: keys.find(k => k.includes('ผลการดำเนินงานตามค่าเป้าหมายของโครงการ') || k.includes('ผลการดำเนินงาน')),
+            projActual: keys.find(k => k.includes('ผลการดำเนินงาน')),
             calcToKR: keys.find(k => k.includes('การคำนวณเข้า KR')),
-            
             reportNote: keys.find(k => k.includes('รายละเอียดผลการดำเนินงาน')), 
-            docProj: keys.find(k => k.includes('ลิงก์ไฟล์เอกสารโครงการ') || k.includes('ลิงก์ไฟล์เอกสาร'))
+            docProj: keys.find(k => k.includes('ลิงก์ไฟล์เอกสาร'))
         };
     }
 
@@ -392,14 +394,16 @@
         const catSelect = document.getElementById('filterCategory');
         const issueSelect = document.getElementById('filterIssue');
         const policySelect = document.getElementById('filterPolicy');
-        const categories = new Set();
-        const issues = new Set();
-        const policies = new Set();
+        const categories = new Set(); const issues = new Set(); const policies = new Set();
 
         data.forEach(row => {
             if(row[cols.category] && row[cols.category] !== 'NaN') categories.add(String(row[cols.category]).trim());
             if(row[cols.issue] && row[cols.issue] !== 'NaN') issues.add(String(row[cols.issue]).trim());
-            if(row[cols.policy] && row[cols.policy] !== 'NaN' && row[cols.policy] !== '-') policies.add(String(row[cols.policy]).trim());
+            
+            let pRaw = String(row[cols.policy] || '').trim();
+            if(pRaw && pRaw !== 'NaN' && pRaw !== '-') {
+                pRaw.split(',').forEach(p => policies.add(p.trim()));
+            }
         });
 
         catSelect.innerHTML = '<option value="all">ทั้งหมด</option>';
@@ -412,7 +416,6 @@
         policies.forEach(p => { policySelect.innerHTML += `<option value="${p}">${p}</option>`; });
     }
 
-    // ⭐ แก้ไข Logic การตรวจเช็ก H/R ให้เช็กเฉพาะ สดท หรือ สำนักดิจิทัล
     function checkRole(row) {
         let hText = String(row[cols.hostDept] || '');
         let rText = String(row[cols.relDept] || '');
@@ -431,7 +434,8 @@
         let filteredData = globalData.filter(row => {
             let catMatch = fCat === 'all' || String(row[cols.category] || '').trim() === fCat;
             let issueMatch = fIssue === 'all' || String(row[cols.issue] || '').trim() === fIssue;
-            let policyMatch = fPolicy === 'all' || String(row[cols.policy] || '').trim() === fPolicy;
+            let pRaw = String(row[cols.policy] || '').trim();
+            let policyMatch = fPolicy === 'all' || pRaw.includes(fPolicy);
             
             let roles = checkRole(row);
             let roleMatch = true;
@@ -476,6 +480,11 @@
         let chartBudget = {}; let chartProgress = {};
         projectDetailsDb = {}; 
 
+        let areaCounter = {};
+        areaMapping.forEach(a => {
+            areaCounter[a.key] = { name: a.name, img: a.img, krCount: 0, projCount: 0 };
+        });
+
         data.forEach(row => {
             let krTitle = String(row[cols.krName] || '').trim();
             if(!krTitle || krTitle === 'NaN' || krTitle === 'None') return;
@@ -486,17 +495,15 @@
             
             if(!krGroups[krKey]) {
                 krGroups[krKey] = {
-                    title: krTitle,
-                    id: String(row[cols.krID] || '').trim() !== 'NaN' ? row[cols.krID] : '',
-                    category: cat,
-                    policy: String(row[cols.policy] || '').trim(),
+                    title: krTitle, id: String(row[cols.krID] || '').trim() !== 'NaN' ? row[cols.krID] : '',
+                    category: cat, policy: String(row[cols.policy] || '').trim(),
                     unit: String(row[cols.unit] || '-').trim(),
                     target: parseFloat(String(row[cols.krTarget]).replace(/,/g, '')) || 0,
-                    accumulatedActual: 0,
-                    isH: roles.isH, isR: roles.isR,
+                    accumulatedActual: 0, isH: roles.isH, isR: roles.isR,
                     doc1: row[cols.docKR1], doc2: row[cols.docKR2],
                     projects: [], krBudget: 0, krSpent: 0
                 };
+                for (let a of areaMapping) { if(cat.includes(a.key)) { areaCounter[a.key].krCount++; break; } }
             }
 
             let pName = String(row[cols.projectName] || '').trim();
@@ -517,64 +524,50 @@
                 let pActual = parseFloat(String(row[cols.projActual]).replace(/,/g, '')) || 0;
                 let pUnit = row[cols.projUnit] && row[cols.projUnit] !== 'NaN' ? String(row[cols.projUnit]).trim() : '-';
                 let pProgress = pTarget > 0 ? Math.min((pActual / pTarget) * 100, 100) : 0;
-                
                 let calcFlag = String(row[cols.calcToKR] || '').trim();
                 if(calcFlag === 'คำนวณ') krGroups[krKey].accumulatedActual += pActual;
 
                 let projId = 'proj-' + Object.keys(projectDetailsDb).length;
                 let pData = {
-                    id: projId,
-                    krParentName: krTitle,
-                    name: pName, 
-                    budget: pBudget, spent: pSpent,
-                    target: pTarget, actual: pActual, 
-                    unit: pUnit, 
-                    progress: pProgress,
-                    calcFlag: calcFlag, 
-                    doc: row[cols.docProj],
-                    reportNote: String(row[cols.reportNote] || '').trim() 
+                    id: projId, krParentName: krTitle, name: pName, 
+                    budget: pBudget, spent: pSpent, target: pTarget, actual: pActual, 
+                    unit: pUnit, progress: pProgress, calcFlag: calcFlag, 
+                    doc: row[cols.docProj], reportNote: String(row[cols.reportNote] || '').trim() 
                 };
                 krGroups[krKey].projects.push(pData);
                 projectDetailsDb[projId] = pData;
+
+                for (let a of areaMapping) { if(cat.includes(a.key)) { areaCounter[a.key].projCount++; break; } }
             }
         });
 
+        let areaCardsHTML = '';
+        Object.values(areaCounter).forEach(area => {
+            let imgOrIcon = `<img src="${area.img}" class="area-icon" onerror="this.outerHTML='<i class=\\'bi bi-compass text-primary\\' style=\\'font-size: 2.5rem;\\'></i>'">`;
+            areaCardsHTML += `
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="area-card">
+                        ${imgOrIcon}
+                        <div>
+                            <div class="area-title">${area.name}</div>
+                            <div class="area-stats">
+                                <span class="badge bg-secondary me-1">${area.krCount} KR</span>
+                                <span class="badge bg-primary">${area.projCount} โครงการ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        document.getElementById('areaCardsContainer').innerHTML = areaCardsHTML;
+
         let krArray = Object.values(krGroups);
         krArray.sort((a, b) => {
-            let idA = a.id || 'ZZZ'; 
-            let idB = b.id || 'ZZZ';
+            let idA = a.id || 'ZZZ'; let idB = b.id || 'ZZZ';
             if (idA === idB) return a.category.localeCompare(b.category);
             return idA.localeCompare(idB);
         });
 
-        // Overview Table (TAB 1)
-        let overviewHTML = '';
-        krArray.forEach(group => {
-            let krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
-            let policyBadgeOverview = getPolicyBadgeHTML(group.policy);
-
-            overviewHTML += `
-                <tr>
-                    <td><span class="badge-sub text-wrap text-start"><i class="bi bi-tags"></i> ${group.category}</span></td>
-                    <td>${group.id ? `<span class="kr-badge bg-light text-dark border">${group.id}</span>` : '<span class="text-muted">-</span>'}</td>
-                    <td>
-                        <div class="fw-bold text-dark" style="font-size:0.95rem;">${group.title}</div>
-                        <div class="mt-1">${policyBadgeOverview}</div>
-                    </td>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <span class="me-2 fw-bold ${krProgressPercent == 100 ? 'text-success' : 'text-primary'}">${krProgressPercent.toFixed(1)}%</span>
-                            <div class="progress flex-grow-1" style="height: 6px;">
-                                <div class="progress-bar ${krProgressPercent == 100 ? 'bg-success' : 'bg-primary'}" style="width: ${krProgressPercent}%;"></div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        });
-        document.getElementById('overviewKrTableBody').innerHTML = overviewHTML;
-
-        // Detail Table (TAB 2)
         let tableHTML = ''; let krCount = 0;
         
         krArray.forEach(group => {
@@ -593,7 +586,6 @@
             if (group.isR) roleBadge += `<span class="badge text-bg-warning ms-2" style="background-color: var(--bma-orange) !important;">R</span>`;
             
             let policyBadge = getPolicyBadgeHTML(group.policy);
-
             let krDocButtons = '';
             if (group.doc1 && String(group.doc1).startsWith('http')) krDocButtons += `<a href="${group.doc1}" target="_blank" class="btn btn-sm btn-primary mb-1 w-100" style="font-size: 0.75rem;"><i class="bi bi-file-earmark-pdf"></i> ปผ.01</a>`;
             if (group.doc2 && String(group.doc2).startsWith('http')) krDocButtons += `<a href="${group.doc2}" target="_blank" class="btn btn-sm btn-outline-primary w-100" style="font-size: 0.75rem;"><i class="bi bi-file-earmark-pdf"></i> ปผ.02</a>`;
@@ -637,8 +629,7 @@
             group.projects.forEach(proj => {
                 let detailBtn = `<button class="btn btn-sm btn-info text-white w-100 mb-1" style="font-size: 0.8rem; background-color: var(--bma-blue); border-color: var(--bma-blue);" onclick="openProjectModal('${proj.id}')"><i class="bi bi-search"></i> รายละเอียด</button>`;
                 let docBtn = proj.doc && String(proj.doc).startsWith('http') 
-                    ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-secondary w-100" style="font-size: 0.8rem;"><i class="bi bi-file-earmark-text"></i> ไฟล์โครงการ</a>` 
-                    : ``;
+                    ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-secondary w-100" style="font-size: 0.8rem;"><i class="bi bi-file-earmark-text"></i> ไฟล์โครงการ</a>` : ``;
                 
                 let pBudgPct = proj.budget > 0 ? Math.min((proj.spent / proj.budget) * 100, 100) : 0;
                 let unitLabel = proj.unit !== '-' ? ` <span class="text-muted">(${proj.unit})</span>` : '';
@@ -679,17 +670,71 @@
 
         document.getElementById('statKRs').innerText = krCount.toLocaleString();
         document.getElementById('statProjects').innerText = totalProjectsCount.toLocaleString();
-        
         document.getElementById('statBudget').innerText = window.innerWidth < 768 ? formatNumberAbbr(totalBudget) : totalBudget.toLocaleString();
         document.getElementById('statSpent').innerText = window.innerWidth < 768 ? formatNumberAbbr(totalSpent) : totalSpent.toLocaleString();
         
         let spendPct = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
         document.getElementById('statSpentPercent').innerText = spendPct.toFixed(1) + "%";
         document.getElementById('statSpentBar').style.width = spendPct + "%";
-
         document.getElementById('projectTableBody').innerHTML = tableHTML;
         
         drawCharts(chartBudget, chartProgress);
+    }
+
+    // 🌟 ดึงข้อมูลไปแสดงในหน้า บรรณานุกรม 
+    function renderPolicyGlossary() {
+        let glossaryMap = {};
+        
+        // ดึงจากชีท policyDictionary ที่เพิ่งสร้างใหม่
+        for(let code in policyDictionary) {
+            if(!code.includes('ไม่สอดคล้อง')) {
+                glossaryMap[code] = policyDictionary[code];
+            }
+        }
+
+        // หาว่ามีรหัสไหนโผล่มาในชีทหลัก แต่ยังไม่ได้ไปลงใน Dictionary หรือไม่
+        globalData.forEach(row => {
+            let pRaw = String(row[cols.policy] || '').trim();
+            if(pRaw && pRaw !== 'NaN' && pRaw !== '-' && !pRaw.includes('ไม่สอดคล้อง')) {
+                pRaw.split(',').forEach(p => {
+                    let code = p.trim();
+                    if(!glossaryMap[code]) {
+                        glossaryMap[code] = "อยู่ระหว่างการระบุชื่อเต็มนโยบายลงในชีท Dictionary";
+                    }
+                });
+            }
+        });
+
+        let glossaryArray = Object.keys(glossaryMap).map(code => {
+            return { code: code, desc: glossaryMap[code] };
+        });
+
+        if(glossaryArray.length === 0) {
+            document.getElementById('glossaryContainer').innerHTML = '<div class="col-12"><div class="alert alert-warning">ยังไม่พบข้อมูลการอ้างอิงนโยบาย หรือยังไม่ได้สร้างชีท policyDictionary</div></div>';
+            return;
+        }
+
+        window.glossaryData = glossaryArray.sort((a,b) => a.code.localeCompare(b.code));
+        filterGlossary(); 
+    }
+
+    function filterGlossary() {
+        const query = document.getElementById('glossarySearch').value.toLowerCase();
+        let html = '';
+        window.glossaryData.forEach(item => {
+            if(item.code.toLowerCase().includes(query) || item.desc.toLowerCase().includes(query)) {
+                html += `
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="dict-card">
+                            <div class="dict-code">${item.code}</div>
+                            <div class="dict-desc">${item.desc}</div>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+        if(html === '') html = '<div class="col-12 text-center text-muted py-4">ไม่พบข้อมูลที่ค้นหา</div>';
+        document.getElementById('glossaryContainer').innerHTML = html;
     }
 
     function openProjectModal(projId) {
@@ -750,10 +795,7 @@
         const targetTag = event.target.tagName.toLowerCase();
         const parentTag = event.target.parentNode.tagName.toLowerCase();
         const closestBtn = event.target.closest('button, a');
-        
-        if (targetTag === 'a' || parentTag === 'a' || targetTag === 'button' || parentTag === 'button' || closestBtn) {
-            return;
-        }
+        if (targetTag === 'a' || parentTag === 'a' || targetTag === 'button' || parentTag === 'button' || closestBtn) return;
         
         const krRow = document.querySelector(`tr[onclick="toggleKR('${krId}')"]`);
         krRow.classList.toggle('collapsed');
