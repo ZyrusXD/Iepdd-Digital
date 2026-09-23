@@ -11,7 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* BMA Official Color System */
         :root { 
             --bma-green: #00744b; --bma-green-dark: #205a41;
             --bma-blue: #0071ce; --bma-light-green: #67a33b; --bma-orange: #ffb449;
@@ -43,14 +42,17 @@
         .stat-icon { position: absolute; right: -10px; bottom: -15px; font-size: 5rem; opacity: 0.15; transition: transform 0.3s;}
         .stat-box:hover .stat-icon { transform: scale(1.1) rotate(-5deg); }
 
-        /* Status Boxes (Mini Cards) */
-        .status-box { padding: 15px 20px; border-radius: 10px; position: relative; overflow: hidden; color: white; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.2); transition: transform 0.2s; }
-        .status-box:hover { transform: translateY(-3px); }
+        /* 🌟 Status Boxes (Mini Cards) & Interactivity */
+        .status-box { padding: 15px 20px; border-radius: 10px; position: relative; overflow: hidden; color: white; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s; }
         .status-box h3 { font-size: 2rem; font-weight: 800; margin: 0; line-height: 1; }
         .status-box .title { font-size: 0.85rem; font-weight: 600; opacity: 0.9; margin-bottom: 2px; }
         .status-box .subtitle { font-size: 0.75rem; opacity: 0.75; margin: 0; }
-        .status-icon { font-size: 2.5rem; opacity: 0.3; }
+        .status-icon { font-size: 2.5rem; opacity: 0.3; transition: 0.3s; }
         
+        .clickable-box { cursor: pointer; }
+        .clickable-box:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.15); filter: brightness(1.05); }
+        .clickable-box:hover .status-icon { transform: scale(1.2) rotate(5deg); opacity: 0.5; }
+
         .bg-status-red { background: linear-gradient(135deg, #f87171 0%, #ef4444 100%); }
         .bg-status-yellow { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
         .bg-status-green { background: linear-gradient(135deg, #34d399 0%, #10b981 100%); }
@@ -95,6 +97,9 @@
         
         .badge-policy { background: var(--bma-blue); color: white; font-weight: 600; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; display: inline-block; box-shadow: 0 2px 4px rgba(0, 113, 206, 0.2); margin-top: 4px; margin-right: 4px;}
         .badge-policy-none { background: #e2e8f0; color: #64748b; font-weight: 600; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; display: inline-block; border: 1px solid #cbd5e1; margin-top: 4px; }
+
+        .hover-link { cursor: pointer; transition: 0.2s; }
+        .hover-link:hover { color: var(--bma-orange) !important; text-decoration: underline !important; }
 
         @media (max-width: 768px) {
             .navbar-custom .container-fluid { flex-direction: column; align-items: center !important; gap: 10px; padding-top: 15px; padding-bottom: 15px; }
@@ -172,6 +177,7 @@
             <!-- ================= TAB 1: OVERVIEW ================= -->
             <div class="tab-pane fade show active" id="overview">
                 
+                <!-- Stat Cards -->
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-md-3">
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-green);">
@@ -214,13 +220,13 @@
                     </div>
                 </div>
 
-                <!-- 🌟 กล่องสถานะการดำเนินงาน (Traffic Light Badges) -->
-                <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-activity me-2 text-primary"></i>สถานะการดำเนินงาน (ตัวชี้วัด และ โครงการ)</h5>
+                <!-- 🌟 กล่องสถานะ 3 สี (Interactive Clickable) -->
+                <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-activity me-2 text-primary"></i>สถานะการดำเนินงาน (คลิกเพื่อดูรายละเอียด)</h5>
                 
                 <!-- แถว KRs -->
                 <div class="row g-2 g-md-3 mb-2">
                     <div class="col-12 col-md-4">
-                        <div class="status-box bg-status-red">
+                        <div class="status-box bg-status-red clickable-box" onclick="navigateToTabAndFilter('kr_not_started')" title="คลิกเพื่อดูกลุ่มตัวชี้วัดที่ยังไม่เริ่ม">
                             <div>
                                 <div class="title">KRs ยังไม่ดำเนินการ</div>
                                 <div class="subtitle">ความคืบหน้า 0%</div>
@@ -232,7 +238,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-4">
-                        <div class="status-box bg-status-yellow">
+                        <div class="status-box bg-status-yellow clickable-box" onclick="navigateToTabAndFilter('kr_in_progress')" title="คลิกเพื่อดูกลุ่มตัวชี้วัดที่กำลังทำ">
                             <div>
                                 <div class="title">KRs อยู่ระหว่างดำเนินการ</div>
                                 <div class="subtitle">ความคืบหน้ามากกว่า 0%</div>
@@ -244,10 +250,10 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-4">
-                        <div class="status-box bg-status-green">
+                        <div class="status-box bg-status-green clickable-box" onclick="navigateToTabAndFilter('kr_completed')" title="คลิกเพื่อดูกลุ่มตัวชี้วัดที่เสร็จแล้ว">
                             <div>
                                 <div class="title">KRs ดำเนินการแล้วเสร็จ</div>
-                                <div class="subtitle">ความคืบหน้าเท่ากับ 100%</div>
+                                <div class="subtitle">ความคืบหน้า 100%</div>
                             </div>
                             <div class="d-flex align-items-center">
                                 <h3 id="krCompleted" class="me-3">0</h3>
@@ -260,7 +266,7 @@
                 <!-- แถว Projects -->
                 <div class="row g-2 g-md-3 mb-4">
                     <div class="col-12 col-md-4">
-                        <div class="status-box bg-status-red" style="opacity: 0.9;">
+                        <div class="status-box bg-status-red clickable-box" style="opacity: 0.9;" onclick="navigateToTabAndFilter('proj_not_started')">
                             <div>
                                 <div class="title">โครงการ ยังไม่ดำเนินการ</div>
                                 <div class="subtitle">ความคืบหน้า 0%</div>
@@ -272,7 +278,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-4">
-                        <div class="status-box bg-status-yellow" style="opacity: 0.9;">
+                        <div class="status-box bg-status-yellow clickable-box" style="opacity: 0.9;" onclick="navigateToTabAndFilter('proj_in_progress')">
                             <div>
                                 <div class="title">โครงการ อยู่ระหว่างดำเนินการ</div>
                                 <div class="subtitle">ความคืบหน้ามากกว่า 0%</div>
@@ -284,10 +290,10 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-4">
-                        <div class="status-box bg-status-green" style="opacity: 0.9;">
+                        <div class="status-box bg-status-green clickable-box" style="opacity: 0.9;" onclick="navigateToTabAndFilter('proj_completed')">
                             <div>
                                 <div class="title">โครงการ ดำเนินการแล้วเสร็จ</div>
-                                <div class="subtitle">ความคืบหน้าเท่ากับ 100%</div>
+                                <div class="subtitle">ความคืบหน้า 100%</div>
                             </div>
                             <div class="d-flex align-items-center">
                                 <h3 id="projCompleted" class="me-3">0</h3>
@@ -351,12 +357,24 @@
                     <h6 class="fw-bold text-primary mb-3 fs-6"><i class="bi bi-funnel-fill me-2"></i>ตัวกรองข้อมูลโครงย่อย</h6>
                     <div class="row g-3">
                         <div class="col-6 col-lg">
-                            <label class="form-label text-muted small fw-bold mb-1">ด้านยุทธศาสตร์</label>
-                            <select id="filterCategory" class="form-select" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
+                            <label class="form-label text-muted small fw-bold mb-1">สถานะดำเนินการ</label>
+                            <select id="filterStatus" class="form-select" onchange="applyFilters()">
+                                <option value="all">ทั้งหมด</option>
+                                <optgroup label="สถานะตัวชี้วัด (KR)">
+                                    <option value="kr_not_started">KR ยังไม่ดำเนินการ (0%)</option>
+                                    <option value="kr_in_progress">KR กำลังดำเนินการ (>0%)</option>
+                                    <option value="kr_completed">KR แล้วเสร็จ (100%)</option>
+                                </optgroup>
+                                <optgroup label="สถานะโครงการ">
+                                    <option value="proj_not_started">โครงการ ยังไม่ดำเนินการ (0%)</option>
+                                    <option value="proj_in_progress">โครงการ กำลังดำเนินการ (>0%)</option>
+                                    <option value="proj_completed">โครงการ แล้วเสร็จ (100%)</option>
+                                </optgroup>
+                            </select>
                         </div>
                         <div class="col-6 col-lg">
-                            <label class="form-label text-muted small fw-bold mb-1">ประเด็นพัฒนา</label>
-                            <select id="filterIssue" class="form-select" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
+                            <label class="form-label text-muted small fw-bold mb-1">ด้านยุทธศาสตร์</label>
+                            <select id="filterCategory" class="form-select" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
                         </div>
                         <div class="col-6 col-lg">
                             <label class="form-label text-muted small fw-bold mb-1">นโยบาย 261+</label>
@@ -385,7 +403,7 @@
                             <thead>
                                 <tr>
                                     <th style="min-width: 350px;">ยุทธศาสตร์ (KRs) / โครงการ</th>
-                                    <th style="min-width: 140px;">เป้าหมาย / หน่วยนับ</th>
+                                    <th style="min-width: 150px;">เป้าหมาย / หน่วยนับ</th>
                                     <th style="min-width: 170px;">ความคืบหน้า (ผลสำเร็จ)</th>
                                     <th style="min-width: 170px;">งบประมาณ (เบิกจ่าย)</th>
                                     <th style="min-width: 110px; text-align: center;">เอกสารอ้างอิง</th>
@@ -551,13 +569,11 @@
 
     function populateDropdownFilters(data) {
         const catSelect = document.getElementById('filterCategory');
-        const issueSelect = document.getElementById('filterIssue');
         const policySelect = document.getElementById('filterPolicy');
-        const categories = new Set(); const issues = new Set(); const policies = new Set();
+        const categories = new Set(); const policies = new Set();
 
         data.forEach(row => {
             if(row[cols.category] && row[cols.category] !== 'NaN') categories.add(String(row[cols.category]).trim());
-            if(row[cols.issue] && row[cols.issue] !== 'NaN') issues.add(String(row[cols.issue]).trim());
             
             let pRaw = String(row[cols.policy] || '').trim();
             if(pRaw && pRaw !== 'NaN' && pRaw !== '-' && !pRaw.includes('ไม่สอดคล้อง')) {
@@ -570,9 +586,6 @@
 
         catSelect.innerHTML = '<option value="all">ทั้งหมด</option>';
         categories.forEach(c => { catSelect.innerHTML += `<option value="${c}">${c}</option>`; });
-        
-        issueSelect.innerHTML = '<option value="all">ทั้งหมด</option>';
-        issues.forEach(i => { issueSelect.innerHTML += `<option value="${i}">${i}</option>`; });
 
         policySelect.innerHTML = '<option value="all">ทั้งหมด</option>';
         [...policies].sort().forEach(p => { policySelect.innerHTML += `<option value="${p}">${p}</option>`; });
@@ -600,14 +613,13 @@
 
     function applyFilters() {
         const fCat = document.getElementById('filterCategory').value;
-        const fIssue = document.getElementById('filterIssue').value;
         const fPolicy = document.getElementById('filterPolicy').value;
         const fRole = document.getElementById('filterRole').value;
         const fSearch = document.getElementById('filterSearch').value.toLowerCase();
 
+        // 🌟 กรองข้อมูลบรรทัดต่อบรรทัด
         let filteredData = globalData.filter(row => {
             let catMatch = fCat === 'all' || String(row[cols.category] || '').trim() === fCat;
-            let issueMatch = fIssue === 'all' || String(row[cols.issue] || '').trim() === fIssue;
             let pRaw = String(row[cols.policy] || '').trim().toUpperCase();
             let policyMatch = fPolicy === 'all' || pRaw.includes(fPolicy.toUpperCase());
             
@@ -626,12 +638,23 @@
 
             let isKRRow = String(row[cols.krName] || '').trim() !== '' && String(row[cols.krName] || '').trim() !== 'NaN';
             if (isKRRow) {
-                return catMatch && issueMatch && policyMatch && roleMatch && searchMatch;
+                return catMatch && policyMatch && roleMatch && searchMatch;
             }
             return true; 
         });
 
         processData(filteredData);
+    }
+
+    // 🌟 ฟังก์ชันวาร์ปไป TAB 2 และ Filter แบบ Dynamic (คลิกจากป้ายหน้า 1)
+    function navigateToTabAndFilter(statusValue) {
+        const detailTabBtn = document.getElementById('detail-tab');
+        const tab = new bootstrap.Tab(detailTabBtn);
+        tab.show();
+        
+        document.getElementById('filterStatus').value = statusValue;
+        applyFilters(); // เรียกใช้การกรองข้อมูล
+        document.getElementById('filterStatus').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     function formatNumberAbbr(num) {
@@ -658,20 +681,13 @@
 
     function processData(data) {
         let krGroups = {}; 
-        let totalBudget = 0; let totalSpent = 0; let totalProjectsCount = 0;
-        let chartBudget = {}; let chartProgress = {};
-        projectDetailsDb = {}; 
-        krDetailsDb = {}; 
 
         let areaCounter = {};
         areaMapping.forEach(a => {
             areaCounter[a.key] = { name: a.name, img: a.img, krCount: 0, projCount: 0 };
         });
 
-        // 🌟 ตัวนับสถานะ 3 สี (แดง, เหลือง, เขียว)
-        let krNotStarted = 0, krInProgress = 0, krCompleted = 0;
-        let projNotStarted = 0, projInProgress = 0, projCompleted = 0;
-
+        // 1. จัดกลุ่มข้อมูล
         data.forEach(row => {
             let krTitle = String(row[cols.krName] || '').trim();
             if(!krTitle || krTitle === 'NaN' || krTitle === 'None') return;
@@ -691,7 +707,6 @@
                     doc1: row[cols.docKR1], doc2: row[cols.docKR2],
                     projects: [], krBudget: 0, krSpent: 0
                 };
-                for (let a of areaMapping) { if(cat.includes(a.key)) { areaCounter[a.key].krCount++; break; } }
             } else {
                 krGroups[krKey].isH = krGroups[krKey].isH || roles.isH;
                 krGroups[krKey].isCoH = krGroups[krKey].isCoH || roles.isCoH;
@@ -700,23 +715,14 @@
 
             let pName = String(row[cols.projectName] || '').trim();
             if(pName && pName !== 'NaN') {
-                totalProjectsCount++;
                 let pBudget = parseFloat(String(row[cols.budget] || '0').replace(/,/g, '')) || 0;
                 let pSpent = parseFloat(String(row[cols.spent] || '0').replace(/,/g, '')) || 0;
-                
-                krGroups[krKey].krBudget += pBudget;
-                krGroups[krKey].krSpent += pSpent;
-                totalBudget += pBudget;
-                totalSpent += pSpent;
-                
-                if(!chartBudget[cat]) chartBudget[cat] = 0;
-                chartBudget[cat] += pBudget;
-
                 let pTarget = parseFloat(String(row[cols.projTarget]).replace(/,/g, '')) || 0;
                 let pActual = parseFloat(String(row[cols.projActual]).replace(/,/g, '')) || 0;
                 let pUnit = row[cols.projUnit] && row[cols.projUnit] !== 'NaN' ? String(row[cols.projUnit]).trim() : '-';
                 let pProgress = pTarget > 0 ? Math.min((pActual / pTarget) * 100, 100) : 0;
                 let calcFlag = String(row[cols.calcToKR] || '').trim();
+                
                 if(calcFlag === 'คำนวณ') krGroups[krKey].accumulatedActual += pActual;
 
                 let projId = 'proj-' + Object.keys(projectDetailsDb).length;
@@ -728,11 +734,97 @@
                 };
                 krGroups[krKey].projects.push(pData);
                 projectDetailsDb[projId] = pData;
-
-                for (let a of areaMapping) { if(cat.includes(a.key)) { areaCounter[a.key].projCount++; break; } }
             }
         });
 
+        let krArray = Object.values(krGroups);
+
+        // 2. คำนวณความคืบหน้า KR ก่อน เพื่อให้พร้อมรองรับตัวกรองสถานะ
+        krArray.forEach(group => {
+            group.krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
+        });
+
+        // 3. 🌟 ดักจับ Status Filter (ทำงานหลังบ้าน)
+        const fStatus = document.getElementById('filterStatus') ? document.getElementById('filterStatus').value : 'all';
+        if (fStatus !== 'all') {
+            if (fStatus === 'kr_not_started') krArray = krArray.filter(g => g.krProgressPercent === 0);
+            if (fStatus === 'kr_in_progress') krArray = krArray.filter(g => g.krProgressPercent > 0 && g.krProgressPercent < 100);
+            if (fStatus === 'kr_completed') krArray = krArray.filter(g => g.krProgressPercent >= 100);
+            
+            if (fStatus === 'proj_not_started') {
+                krArray.forEach(g => g.projects = g.projects.filter(p => p.progress === 0));
+                krArray = krArray.filter(g => g.projects.length > 0);
+            }
+            if (fStatus === 'proj_in_progress') {
+                krArray.forEach(g => g.projects = g.projects.filter(p => p.progress > 0 && p.progress < 100));
+                krArray = krArray.filter(g => g.projects.length > 0);
+            }
+            if (fStatus === 'proj_completed') {
+                krArray.forEach(g => g.projects = g.projects.filter(p => p.progress >= 100));
+                krArray = krArray.filter(g => g.projects.length > 0);
+            }
+        }
+
+        // 4. คำนวณยอดรวมต่างๆ ใหม่ทั้งหมด
+        let totalBudget = 0; let totalSpent = 0; let totalProjectsCount = 0;
+        let chartBudget = {}; let chartProgress = {};
+        krDetailsDb = {}; 
+
+        let countH = 0, countCoH = 0, countR = 0;
+        let krNotStarted = 0, krInProgress = 0, krCompleted = 0;
+        let projNotStarted = 0, projInProgress = 0, projCompleted = 0;
+
+        krArray.forEach(group => {
+            if (group.isH) countH++;
+            if (group.isCoH) countCoH++;
+            if (group.isR) countR++;
+
+            if (group.krProgressPercent === 0) krNotStarted++;
+            else if (group.krProgressPercent >= 100) krCompleted++;
+            else krInProgress++;
+
+            let gBudget = 0; let gSpent = 0;
+            group.projects.forEach(p => {
+                totalProjectsCount++;
+                gBudget += p.budget;
+                gSpent += p.spent;
+                
+                if (p.progress === 0) projNotStarted++;
+                else if (p.progress >= 100) projCompleted++;
+                else projInProgress++;
+                
+                for (let a of areaMapping) { if(group.category.includes(a.key)) { areaCounter[a.key].projCount++; break; } }
+            });
+
+            group.krBudget = gBudget;
+            group.krSpent = gSpent;
+            totalBudget += gBudget;
+            totalSpent += gSpent;
+            
+            let cat = group.category;
+            if(!chartBudget[cat]) chartBudget[cat] = 0;
+            chartBudget[cat] += gBudget;
+            
+            if(!chartProgress[cat]) chartProgress[cat] = { sum: 0, count: 0 };
+            chartProgress[cat].sum += group.krProgressPercent;
+            chartProgress[cat].count += 1;
+            
+            for (let a of areaMapping) { if(cat.includes(a.key)) { areaCounter[a.key].krCount++; break; } }
+        });
+
+        // 5. อัปเดตกล่องสถิติ (หน้าแรก)
+        document.getElementById('krNotStarted').innerText = krNotStarted;
+        document.getElementById('krInProgress').innerText = krInProgress;
+        document.getElementById('krCompleted').innerText = krCompleted;
+        document.getElementById('projNotStarted').innerText = projNotStarted;
+        document.getElementById('projInProgress').innerText = projInProgress;
+        document.getElementById('projCompleted').innerText = projCompleted;
+
+        document.getElementById('countH').innerText = `H: ${countH}`;
+        document.getElementById('countCoH').innerText = `Co-H: ${countCoH}`;
+        document.getElementById('countR').innerText = `R: ${countR}`;
+
+        // สร้างการ์ดไอคอน 9 ด้าน
         let areaCardsHTML = '';
         Object.values(areaCounter).forEach(area => {
             let imgOrIcon = `<img src="${area.img}" class="area-icon" onerror="this.outerHTML='<i class=\\'bi bi-compass text-primary\\' style=\\'font-size: 2.5rem;\\'></i>'">`;
@@ -753,36 +845,15 @@
         });
         document.getElementById('areaCardsContainer').innerHTML = areaCardsHTML;
 
-        let krArray = Object.values(krGroups);
         krArray.sort((a, b) => {
             let idA = a.id || 'ZZZ'; let idB = b.id || 'ZZZ';
             if (idA === idB) return a.category.localeCompare(b.category);
             return idA.localeCompare(idB);
         });
 
-        let countH = 0, countCoH = 0, countR = 0;
-
-        // 🌟 TAB 1: ตาราง KR และการคำนวณสถานะ 3 สี
+        // 🌟 TAB 1: ตาราง KR ในหน้าแรก (แก้ Spacing แล้ว)
         let overviewHTML = '';
         krArray.forEach((group, index) => {
-            if (group.isH) countH++;
-            if (group.isCoH) countCoH++;
-            if (group.isR) countR++;
-
-            let krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
-            
-            // นับสถานะ KR
-            if (krProgressPercent === 0) krNotStarted++;
-            else if (krProgressPercent >= 100) krCompleted++;
-            else krInProgress++;
-
-            // นับสถานะ Project ใน KR นี้
-            group.projects.forEach(p => {
-                if (p.progress === 0) projNotStarted++;
-                else if (p.progress >= 100) projCompleted++;
-                else projInProgress++;
-            });
-
             let policyBadgeOverview = getPolicyBadgeHTML(group.policy);
             let roleBadgeOverview = getRoleBadge(group.isH, group.isCoH, group.isR);
             
@@ -799,13 +870,13 @@
                     </td>
                     <td>
                         <div class="d-flex align-items-center mb-1">
-                            <span class="me-2 fw-bold ${krProgressPercent == 100 ? 'text-success' : 'text-primary'}">${krProgressPercent.toFixed(1)}%</span>
+                            <span class="me-2 fw-bold ${group.krProgressPercent == 100 ? 'text-success' : 'text-primary'}">${group.krProgressPercent.toFixed(1)}%</span>
                             <div class="progress flex-grow-1" style="height: 6px;">
-                                <div class="progress-bar ${krProgressPercent == 100 ? 'bg-success' : 'bg-primary'}" style="width: ${krProgressPercent}%;"></div>
+                                <div class="progress-bar ${group.krProgressPercent == 100 ? 'bg-success' : 'bg-primary'}" style="width: ${group.krProgressPercent}%;"></div>
                             </div>
                         </div>
                         <div class="text-muted text-end" style="font-size:0.85rem;">
-                            ทำได้ <strong class="text-dark">${group.accumulatedActual.toLocaleString()}</strong> / เป้าหมาย <strong class="text-dark">${group.target.toLocaleString()}</strong> <span class="ms-1 fw-normal">${group.unit}</span>
+                            ทำได้ <strong class="text-dark">${group.accumulatedActual.toLocaleString()}</strong> / เป้าหมาย <strong class="text-dark">${group.target.toLocaleString()}</strong> <span class="ms-1 text-muted fw-normal">${group.unit}</span>
                         </div>
                     </td>
                 </tr>
@@ -813,31 +884,12 @@
         });
         document.getElementById('overviewKrTableBody').innerHTML = overviewHTML;
 
-        // อัปเดตตัวเลขในกล่องสรุปสถานะ
-        document.getElementById('krNotStarted').innerText = krNotStarted;
-        document.getElementById('krInProgress').innerText = krInProgress;
-        document.getElementById('krCompleted').innerText = krCompleted;
-        document.getElementById('projNotStarted').innerText = projNotStarted;
-        document.getElementById('projInProgress').innerText = projInProgress;
-        document.getElementById('projCompleted').innerText = projCompleted;
-
-        document.getElementById('countH').innerText = `H: ${countH}`;
-        document.getElementById('countCoH').innerText = `Co-H: ${countCoH}`;
-        document.getElementById('countR').innerText = `R: ${countR}`;
-
         // 🌟 TAB 2: ตารางข้อมูลโครงการ
         let tableHTML = ''; let krCount = 0;
         krArray.forEach(group => {
             krCount++;
             const krRowId = `kr-${krCount}`;
-            let krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
-            
-            let cat = group.category;
-            if(!chartProgress[cat]) chartProgress[cat] = { sum: 0, count: 0 };
-            chartProgress[cat].sum += krProgressPercent;
-            chartProgress[cat].count += 1;
             let budgetPercent = group.krBudget > 0 ? Math.min((group.krSpent / group.krBudget) * 100, 100) : 0;
-
             let roleBadge = getRoleBadge(group.isH, group.isCoH, group.isR);
             let policyBadge = getPolicyBadgeHTML(group.policy);
 
@@ -864,10 +916,10 @@
                     </td>
                     <td>
                         <div class="d-flex justify-content-between small fw-bold mb-1">
-                            <span>ผลสำเร็จรวม KR</span> <span class="${krProgressPercent==100?'text-success':'text-primary'}">${krProgressPercent.toFixed(1)}%</span>
+                            <span>ผลสำเร็จรวม KR</span> <span class="${group.krProgressPercent==100?'text-success':'text-primary'}">${group.krProgressPercent.toFixed(1)}%</span>
                         </div>
-                        <div class="progress progress-slim mb-1"><div class="progress-bar progress-bar-kpi" style="width: ${krProgressPercent}%;"></div></div>
-                        <div class="text-muted text-end" style="font-size:0.75rem;">ทำได้ <strong class="text-dark">${group.accumulatedActual.toLocaleString()}</strong> / เป้าหมาย <strong class="text-dark">${group.target.toLocaleString()}</strong> <span class="ms-1 fw-normal">${group.unit}</span></div>
+                        <div class="progress progress-slim mb-1"><div class="progress-bar progress-bar-kpi" style="width: ${group.krProgressPercent}%;"></div></div>
+                        <div class="text-muted text-end" style="font-size:0.75rem;">ทำได้ <strong class="text-dark">${group.accumulatedActual.toLocaleString()}</strong> / เป้าหมาย <strong class="text-dark">${group.target.toLocaleString()}</strong> <span class="ms-1 text-muted fw-normal">${group.unit}</span></div>
                     </td>
                     <td>
                         <div class="d-flex justify-content-between small fw-bold mb-1">
@@ -883,10 +935,11 @@
             group.projects.forEach(proj => {
                 let detailBtn = `<button class="btn btn-sm btn-info text-white w-100 mb-1" style="font-size: 0.8rem; background-color: var(--bma-blue); border-color: var(--bma-blue);" onclick="openProjectModal('${proj.id}')"><i class="bi bi-search"></i> รายละเอียดโครงการ</button>`;
                 let docBtn = proj.doc && String(proj.doc).startsWith('http') 
-                    ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-secondary w-100" style="font-size: 0.8rem;"><i class="bi bi-file-earmark-text"></i> ไฟล์หลักฐาน</a>` : ``;
+                    ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-secondary w-100" style="font-size: 0.8rem;"><i class="bi bi-file-earmark-text"></i> ไฟล์หลักฐาน</a>` 
+                    : ``;
                 
                 let pBudgPct = proj.budget > 0 ? Math.min((proj.spent / proj.budget) * 100, 100) : 0;
-                let unitLabel = proj.unit !== '-' ? `<span class="text-muted ms-1 fw-normal">${proj.unit}</span>` : '';
+                let unitLabel = proj.unit !== '-' ? `<span class="ms-1 fw-normal text-muted">${proj.unit}</span>` : '';
 
                 tableHTML += `
                     <tr class="proj-row kr-child-${krRowId}">
@@ -895,8 +948,8 @@
                             ${proj.calcFlag === 'คำนวณ' ? `<span class="badge-sub text-info ms-4 mt-1 border-info"><i class="bi bi-plus"></i> คำนวณยอดเข้า KR</span>` : ''}
                         </td>
                         <td>
-                            <div class="text-muted small mb-1">เป้า: <strong class="text-dark">${proj.target.toLocaleString()}</strong> ${unitLabel}</div>
-                            <div class="text-muted small">ทำได้: <strong class="text-dark">${proj.actual.toLocaleString()}</strong> ${unitLabel}</div>
+                            <div class="text-muted small mb-1">เป้า: <strong class="text-dark">${proj.target.toLocaleString()}</strong>${unitLabel}</div>
+                            <div class="text-muted small">ทำได้: <strong class="text-dark">${proj.actual.toLocaleString()}</strong>${unitLabel}</div>
                         </td>
                         <td>
                             <div class="d-flex justify-content-between small fw-bold mb-1">
@@ -997,6 +1050,7 @@
         document.getElementById('glossaryContainer').innerHTML = html;
     }
 
+    // 🌟 ฟังก์ชันเปิดหน้าต่าง Modal ของ KR (และปรับช่องไฟสวยงาม)
     function openKrModal(krId) {
         const k = krDetailsDb[krId];
         if(!k) return;
@@ -1013,7 +1067,8 @@
                 projectsHTML += `
                     <tr>
                         <td class="text-start">
-                            <div class="text-dark fw-medium">${proj.name}</div>
+                            <a href="javascript:void(0)" onclick="switchModalToProject('${proj.id}')" class="hover-link fw-bold text-dark text-decoration-none">${proj.name}</a>
+                            <br>
                             ${proj.calcFlag === 'คำนวณ' ? `<span class="badge-sub text-info border-info mt-1"><i class="bi bi-plus"></i> คำนวณยอดเข้า KR</span>` : ''}
                         </td>
                         <td class="text-center">
@@ -1077,7 +1132,7 @@
                     <table class="table table-hover table-bordered align-middle mb-0">
                         <thead class="table-light text-center">
                             <tr>
-                                <th style="width: 45%;">ชื่อโครงการ/กิจกรรม</th>
+                                <th style="width: 45%;">ชื่อโครงการ/กิจกรรม (คลิกเพื่อดูรายละเอียด)</th>
                                 <th style="width: 20%;">เป้าหมาย</th>
                                 <th style="width: 20%;">ทำได้จริง</th>
                                 <th style="width: 15%;">ความคืบหน้า</th>
@@ -1093,6 +1148,20 @@
         document.getElementById('krModalBody').innerHTML = html;
         const modal = new bootstrap.Modal(document.getElementById('krModal'));
         modal.show();
+    }
+
+    // 🌟 ฟังก์ชันสลับหน้าต่าง (จาก Modal KR กดไปหา Modal Project)
+    function switchModalToProject(projId) {
+        const krModalEl = document.getElementById('krModal');
+        const krModal = bootstrap.Modal.getInstance(krModalEl);
+        
+        // รอให้ Modal เดิมปิดให้สนิทก่อน แล้วค่อยเปิดอันใหม่ (กันบักจอดำ)
+        const onHidden = function () {
+            krModalEl.removeEventListener('hidden.bs.modal', onHidden);
+            openProjectModal(projId);
+        };
+        krModalEl.addEventListener('hidden.bs.modal', onHidden);
+        if (krModal) krModal.hide();
     }
 
     function openProjectModal(projId) {
