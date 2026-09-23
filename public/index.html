@@ -489,7 +489,7 @@
     let progressChartInstance = null;
     let policyDictionary = {};
     
-    // 🌟 ตัวแปรเก็บค่า Global Stats (ห้ามขยับตาม Filter เด็ดขาด)
+    // 🌟 ตัวแปรเก็บค่า Global Stats (ไม่ขยับตาม Filter)
     let globalStatsData = { budget: 0, spent: 0 };
 
     const areaMapping = [
@@ -553,6 +553,9 @@
                     ['krNotStarted', 'krInProgress', 'krCompleted', 'projNotStarted', 'projInProgress', 'projCompleted'].forEach(id => {
                         document.getElementById(id).innerText = "0";
                     });
+                    
+                    document.getElementById('overviewKrTableBody').innerHTML = '';
+                    document.getElementById('projectTableBody').innerHTML = '';
                 }
             } else { alert("เกิดข้อผิดพลาด: " + result.error); }
         } catch (error) {
@@ -586,18 +589,6 @@
             reportNote: keys.find(k => k.includes('รายละเอียดผลการดำเนินงาน')), 
             docProj: keys.find(k => k.includes('ลิงก์ไฟล์เอกสาร'))
         };
-    }
-
-    function checkRole(row) {
-        let hText = String(row[cols.hostDept] || '');
-        let rText = String(row[cols.relDept] || '');
-        let hasSdtH = hText.includes('สดท') || hText.includes('สำนักดิจิทัล');
-        
-        let isCoH = hasSdtH && (hText.includes('/') || hText.includes(',')); 
-        let isH = hasSdtH && !isCoH;
-        let isR = rText.includes('สดท') || rText.includes('สำนักดิจิทัล');
-        
-        return { isH, isCoH, isR };
     }
 
     // 🌟 ฟังก์ชันคำนวณข้อมูลระดับ Global (ทำครั้งเดียว ไม่สน Filter)
@@ -665,7 +656,7 @@
             else krInProgress++;
         });
 
-        // อัปเดต HTML ด้วยตัวเลข Global
+        // อัปเดตกล่องสถิติ (คงที่ตลอดการทำงาน)
         document.getElementById('statKRs').innerText = krCount.toLocaleString();
         document.getElementById('statProjects').innerText = totalProjectsCount.toLocaleString();
         document.getElementById('statBudget').innerText = window.innerWidth < 768 ? formatNumberAbbr(globalStatsData.budget) : globalStatsData.budget.toLocaleString();
@@ -714,6 +705,18 @@
 
         policySelect.innerHTML = '<option value="all">ทั้งหมด</option>';
         [...policies].sort().forEach(p => { policySelect.innerHTML += `<option value="${p}">${p}</option>`; });
+    }
+
+    function checkRole(row) {
+        let hText = String(row[cols.hostDept] || '');
+        let rText = String(row[cols.relDept] || '');
+        let hasSdtH = hText.includes('สดท') || hText.includes('สำนักดิจิทัล');
+        
+        let isCoH = hasSdtH && (hText.includes('/') || hText.includes(',')); 
+        let isH = hasSdtH && !isCoH;
+        let isR = rText.includes('สดท') || rText.includes('สำนักดิจิทัล');
+        
+        return { isH, isCoH, isR };
     }
 
     function getRoleBadge(isH, isCoH, isR) {
@@ -804,6 +807,7 @@
             areaCounter[a.key] = { name: a.name, img: a.img, krCount: 0, projCount: 0 };
         });
 
+        // จัดกลุ่มข้อมูล
         data.forEach(row => {
             let krTitle = String(row[cols.krName] || '').trim();
             if(!krTitle || krTitle === 'NaN' || krTitle === 'None') return;
@@ -863,7 +867,7 @@
             group.krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
         });
 
-        // ทำงาน Filter สถานะไฟจราจร
+        // ดักจับ Status Filter (ทำงานเฉพาะส่วนแสดงผล)
         const fStatus = document.getElementById('filterStatus') ? document.getElementById('filterStatus').value : 'all';
         if (fStatus !== 'all') {
             if (fStatus === 'kr_not_started') krArray = krArray.filter(g => g.krProgressPercent === 0);
@@ -902,10 +906,11 @@
             });
         });
 
-        // อัปเดตป้ายแจ้งจำนวนที่ถูก Filter
+        // อัปเดตป้ายแจ้งจำนวนที่ถูก Filter บริเวณหัวตาราง
         document.getElementById('filteredOverviewCount').innerText = `แสดงผล: ${krArray.length} KRs`;
         document.getElementById('filteredDetailCount').innerText = `แสดงผล: ${krArray.length} KRs \vert{}${filteredProjCount} โครงการ`;
 
+        // สร้างการ์ดไอคอน 9 ด้าน
         let areaCardsHTML = '';
         Object.values(areaCounter).forEach(area => {
             let imgOrIcon = `<img src="${area.img}" class="area-icon" onerror="this.outerHTML='<i class=\\'bi bi-compass text-primary\\' style=\\'font-size: 2.5rem;\\'></i>'">`;
