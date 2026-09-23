@@ -176,10 +176,11 @@
             <!-- ================= TAB 1: OVERVIEW ================= -->
             <div class="tab-pane fade show active" id="overview">
                 
+                <!-- 🌟 กล่องสถิติหลัก 4 กล่อง (เป็นข้อมูล Global ไม่ขยับตาม Filter) -->
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-md-3">
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-green);">
-                            <p class="mb-1 opacity-75 fw-medium small">ตัวชี้วัด (KRs)</p>
+                            <p class="mb-1 opacity-75 fw-medium small">ตัวชี้วัด (KRs) รวมทั้งหมด</p>
                             <h3 id="statKRs" class="mb-1">0</h3>
                             <div class="d-flex gap-1 flex-wrap" style="font-size: 0.7rem;">
                                 <span id="countH" class="badge bg-white text-dark opacity-100 shadow-sm border">H: 0</span>
@@ -191,21 +192,21 @@
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-blue);">
-                            <p class="mb-1 opacity-75 fw-medium small">โครงการ/กิจกรรม</p>
+                            <p class="mb-1 opacity-75 fw-medium small">โครงการ/กิจกรรม รวมทั้งหมด</p>
                             <h3 id="statProjects">0</h3>
                             <i class="bi bi-diagram-3-fill stat-icon text-white"></i>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="stat-box h-100" style="background-color: var(--bma-light-green); color: white;">
-                            <p class="mb-1 opacity-75 fw-medium small">งบประมาณรวม (บาท)</p>
+                            <p class="mb-1 opacity-75 fw-medium small">งบประมาณรวมทั้งสิ้น (บาท)</p>
                             <h3 id="statBudget" class="fs-4">0</h3>
                             <i class="bi bi-cash-coin stat-icon text-white"></i>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="stat-box h-100" style="background-color: var(--bma-orange); color: white;">
-                            <p class="mb-1 opacity-75 fw-medium small">เบิกจ่ายสะสม</p>
+                            <p class="mb-1 opacity-75 fw-medium small">เบิกจ่ายสะสมทั้งสิ้น</p>
                             <h3 id="statSpent" class="fs-4">0</h3>
                             <div class="mt-1 d-flex align-items-center">
                                 <div class="progress flex-grow-1 me-2" style="height: 4px; background: rgba(255,255,255,0.3);">
@@ -218,8 +219,10 @@
                     </div>
                 </div>
 
-                <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-activity me-2 text-primary"></i>สถานะการดำเนินงาน (คลิกเพื่อดูรายละเอียด)</h5>
+                <!-- 🌟 กล่องสถานะไฟจราจร (Global ไม่ขยับตาม Filter) -->
+                <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-activity me-2 text-primary"></i>สถานะการดำเนินงานรวมทั้งหมด (คลิกเพื่อดูรายละเอียด)</h5>
                 
+                <!-- แถว KRs -->
                 <div class="row g-2 g-md-3 mb-2">
                     <div class="col-12 col-md-4">
                         <div class="status-box bg-status-red clickable-box" onclick="navigateToTabAndFilter('kr_not_started')" title="คลิกเพื่อดูกลุ่มตัวชี้วัดที่ยังไม่เริ่ม">
@@ -259,6 +262,7 @@
                     </div>
                 </div>
 
+                <!-- แถว Projects -->
                 <div class="row g-2 g-md-3 mb-4">
                     <div class="col-12 col-md-4">
                         <div class="status-box bg-status-red clickable-box" style="opacity: 0.9;" onclick="navigateToTabAndFilter('proj_not_started')">
@@ -325,7 +329,8 @@
                         <div class="content-card">
                             <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
                                 <h5 class="fw-bold text-secondary fs-6 mb-0"><i class="bi bi-list-stars me-2 text-primary"></i>สรุปสถานะความสำเร็จของตัวชี้วัด (KRs)</h5>
-                                <span id="filteredOverviewCount" class="badge bg-primary shadow-sm px-3 py-2 fs-6 rounded-pill mt-2 mt-md-0">แสดง 0 KRs</span>
+                                <!-- 🌟 ป้ายสรุปจำนวนเมื่อมีการฟิลเตอร์ -->
+                                <span id="filteredOverviewCount" class="badge bg-primary shadow-sm px-3 py-2 fs-6 rounded-pill mt-2 mt-md-0">แสดงผล 0 KRs</span>
                             </div>
                             <div class="swipe-hint"><i class="bi bi-hand-index-thumb"></i> เลื่อนตารางซ้าย-ขวา เพื่อดูข้อมูลเพิ่มเติม</div>
                             <div class="table-responsive">
@@ -397,7 +402,8 @@
                 <div class="content-card p-0 p-md-3">
                     <div class="d-flex flex-wrap justify-content-between align-items-center p-3 pb-2 border-bottom">
                         <h6 class="fw-bold text-secondary mb-0"><i class="bi bi-table me-2 text-primary"></i>รายการโครงการ/กิจกรรม</h6>
-                        <span id="filteredDetailCount" class="badge bg-primary shadow-sm px-3 py-2 fs-6 rounded-pill mt-2 mt-md-0">แสดง 0 KRs | 0 โครงการ</span>
+                        <!-- 🌟 ป้ายสรุปจำนวนเมื่อมีการฟิลเตอร์ -->
+                        <span id="filteredDetailCount" class="badge bg-primary shadow-sm px-3 py-2 fs-6 rounded-pill mt-2 mt-md-0">แสดงผล 0 KRs | 0 โครงการ</span>
                     </div>
                     <div class="p-3 pb-0 d-md-none swipe-hint mb-0"><i class="bi bi-hand-index-thumb"></i> เลื่อนตารางซ้าย-ขวา เพื่อดูข้อมูลเพิ่มเติม</div>
                     <div class="table-responsive">
@@ -489,7 +495,7 @@
     let progressChartInstance = null;
     let policyDictionary = {};
     
-    // 🌟 ตัวแปรเก็บค่า Global Stats (ไม่ขยับตาม Filter)
+    // 🌟 ตัวแปรเก็บค่า Global Stats (ห้ามขยับตาม Filter เด็ดขาด)
     let globalStatsData = { budget: 0, spent: 0 };
 
     const areaMapping = [
@@ -556,6 +562,8 @@
                     
                     document.getElementById('overviewKrTableBody').innerHTML = '';
                     document.getElementById('projectTableBody').innerHTML = '';
+                    document.getElementById('filteredOverviewCount').innerText = `แสดงผล: 0 KRs`;
+                    document.getElementById('filteredDetailCount').innerText = `แสดงผล: 0 KRs | 0 โครงการ`;
                 }
             } else { alert("เกิดข้อผิดพลาด: " + result.error); }
         } catch (error) {
@@ -589,6 +597,18 @@
             reportNote: keys.find(k => k.includes('รายละเอียดผลการดำเนินงาน')), 
             docProj: keys.find(k => k.includes('ลิงก์ไฟล์เอกสาร'))
         };
+    }
+
+    function checkRole(row) {
+        let hText = String(row[cols.hostDept] || '');
+        let rText = String(row[cols.relDept] || '');
+        let hasSdtH = hText.includes('สดท') || hText.includes('สำนักดิจิทัล');
+        
+        let isCoH = hasSdtH && (hText.includes('/') || hText.includes(',')); 
+        let isH = hasSdtH && !isCoH;
+        let isR = rText.includes('สดท') || rText.includes('สำนักดิจิทัล');
+        
+        return { isH, isCoH, isR };
     }
 
     // 🌟 ฟังก์ชันคำนวณข้อมูลระดับ Global (ทำครั้งเดียว ไม่สน Filter)
@@ -707,18 +727,6 @@
         [...policies].sort().forEach(p => { policySelect.innerHTML += `<option value="${p}">${p}</option>`; });
     }
 
-    function checkRole(row) {
-        let hText = String(row[cols.hostDept] || '');
-        let rText = String(row[cols.relDept] || '');
-        let hasSdtH = hText.includes('สดท') || hText.includes('สำนักดิจิทัล');
-        
-        let isCoH = hasSdtH && (hText.includes('/') || hText.includes(',')); 
-        let isH = hasSdtH && !isCoH;
-        let isR = rText.includes('สดท') || rText.includes('สำนักดิจิทัล');
-        
-        return { isH, isCoH, isR };
-    }
-
     function getRoleBadge(isH, isCoH, isR) {
         let b = '';
         if (isH) b += `<span class="badge ms-2 shadow-sm border" style="background-color: var(--bma-green); color: white;">H</span>`;
@@ -763,6 +771,7 @@
         processData(filteredData);
     }
 
+    // 🌟 ฟังก์ชันวาร์ปไป TAB 2 และ Filter แบบ Dynamic (คลิกจากป้ายหน้า 1)
     function navigateToTabAndFilter(statusValue) {
         const detailTabBtn = document.getElementById('detail-tab');
         const tab = new bootstrap.Tab(detailTabBtn);
@@ -807,7 +816,6 @@
             areaCounter[a.key] = { name: a.name, img: a.img, krCount: 0, projCount: 0 };
         });
 
-        // จัดกลุ่มข้อมูล
         data.forEach(row => {
             let krTitle = String(row[cols.krName] || '').trim();
             if(!krTitle || krTitle === 'NaN' || krTitle === 'None') return;
@@ -906,7 +914,7 @@
             });
         });
 
-        // อัปเดตป้ายแจ้งจำนวนที่ถูก Filter บริเวณหัวตาราง
+        // 🌟 อัปเดตป้ายแจ้งจำนวนที่ถูก Filter บริเวณหัวตาราง
         document.getElementById('filteredOverviewCount').innerText = `แสดงผล: ${krArray.length} KRs`;
         document.getElementById('filteredDetailCount').innerText = `แสดงผล: ${krArray.length} KRs \vert{}${filteredProjCount} โครงการ`;
 
