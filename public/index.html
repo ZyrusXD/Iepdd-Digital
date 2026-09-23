@@ -64,7 +64,7 @@
         
         .dict-card { background: #fff; border-left: 4px solid var(--bma-blue); border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: 0.2s; height: 100%;}
         .dict-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.08); transform: translateY(-2px); }
-        .dict-code { font-weight: 800; color: var(--bma-blue); font-size: 1.1rem; }
+        .dict-code { font-weight: 800; color: var(--bma-blue); font-size: 1.1rem; display: flex; align-items: center; flex-wrap: wrap;}
         .dict-desc { font-size: 0.95rem; color: #475569; margin-top: 5px; line-height: 1.5; }
         .dict-card-sdt { border-left: 5px solid var(--bma-orange) !important; background: #fffdf8; box-shadow: 0 4px 8px rgba(255, 180, 73, 0.15); }
         .dict-card-sdt .dict-code { color: var(--bma-green-dark); }
@@ -82,6 +82,7 @@
             display: inline-flex; align-items: center; margin-top: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);
         }
         
+        /* 🌟 Policy Badges */
         .badge-policy { 
             background: linear-gradient(135deg, #0071ce, #00569d); color: white; font-weight: 600; 
             padding: 5px 14px; border-radius: 20px; font-size: 0.75rem; display: inline-flex; align-items: center; 
@@ -89,7 +90,29 @@
             border: 1px solid rgba(255,255,255,0.2); text-shadow: 0 1px 1px rgba(0,0,0,0.2); transition: all 0.2s; 
         }
         .badge-policy:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0, 113, 206, 0.4); }
-        
+
+        /* 🌟 Policy Host (H) Badge */
+        .badge-policy-host {
+            background: linear-gradient(135deg, #00744b, #134e35) !important;
+            border: 1px solid #ffd700 !important;
+            box-shadow: 0 3px 8px rgba(0, 116, 75, 0.4) !important;
+        }
+        .inner-tag-host {
+            background: #ffd700; color: #134e35; font-weight: 800;
+            padding: 2px 8px; border-radius: 12px; font-size: 0.65rem; margin-left: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* 🌟 Policy Relative (R) Badge */
+        .badge-policy-relative {
+            background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+            border: 1px solid #fde68a !important;
+            box-shadow: 0 3px 8px rgba(245, 158, 11, 0.4) !important;
+        }
+        .inner-tag-relative {
+            background: #ffffff; color: #d97706; font-weight: 800;
+            padding: 2px 8px; border-radius: 12px; font-size: 0.65rem; margin-left: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
         .badge-policy-none { 
             background: #f1f5f9; color: #64748b; font-weight: 600; padding: 5px 14px; border-radius: 20px; 
             font-size: 0.75rem; display: inline-flex; align-items: center; border: 1px solid #cbd5e1; 
@@ -99,7 +122,7 @@
         .badge-sdt { 
             background: linear-gradient(135deg, #ffd700, #ffb449); color: #855a00; font-size: 0.75rem; 
             padding: 4px 10px; border-radius: 12px; font-weight: 800; box-shadow: 0 2px 5px rgba(255, 180, 73, 0.4); 
-            border: 1px solid rgba(255, 255, 255, 0.5); vertical-align: text-bottom; letter-spacing: 0.2px;
+            border: 1px solid rgba(255, 255, 255, 0.5); vertical-align: text-bottom; letter-spacing: 0.2px; margin-top: 4px;
         }
 
         .badge-role-h { background: linear-gradient(135deg, var(--bma-green), var(--bma-green-dark)); color: white; border: 1px solid rgba(255,255,255,0.3); }
@@ -250,85 +273,46 @@
                     </div>
                 </div>
 
-                <!-- 🌟 กล่องสถานะ 3 สี (Interactive Clickable) -->
+                <!-- 🌟 กล่องสถานะ 3 สี -->
                 <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-activity me-2 text-primary"></i>สถานะการดำเนินงาน (คลิกเพื่อดูรายละเอียด)</h5>
-                
-                <!-- แถว KRs -->
                 <div class="row g-2 g-md-3 mb-2">
                     <div class="col-12 col-md-4">
-                        <div class="status-box bg-status-red clickable-box" onclick="navigateToTabAndFilter('kr_not_started')" title="คลิกเพื่อดูกลุ่มตัวชี้วัดที่ยังไม่เริ่ม">
-                            <div>
-                                <div class="title">KRs ยังไม่ดำเนินการ</div>
-                                <div class="subtitle">ความคืบหน้า 0%</div>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <h3 id="krNotStarted" class="me-3">0</h3>
-                                <i class="bi bi-x-circle-fill status-icon"></i>
-                            </div>
+                        <div class="status-box bg-status-red clickable-box" onclick="navigateToTabAndFilter('kr_not_started')">
+                            <div><div class="title">KRs ยังไม่ดำเนินการ</div><div class="subtitle">ความคืบหน้า 0%</div></div>
+                            <div class="d-flex align-items-center"><h3 id="krNotStarted" class="me-3">0</h3><i class="bi bi-x-circle-fill status-icon"></i></div>
                         </div>
                     </div>
                     <div class="col-12 col-md-4">
-                        <div class="status-box bg-status-yellow clickable-box" onclick="navigateToTabAndFilter('kr_in_progress')" title="คลิกเพื่อดูกลุ่มตัวชี้วัดที่กำลังทำ">
-                            <div>
-                                <div class="title">KRs อยู่ระหว่างดำเนินการ</div>
-                                <div class="subtitle">ความคืบหน้ามากกว่า 0%</div>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <h3 id="krInProgress" class="me-3">0</h3>
-                                <i class="bi bi-arrow-repeat status-icon"></i>
-                            </div>
+                        <div class="status-box bg-status-yellow clickable-box" onclick="navigateToTabAndFilter('kr_in_progress')">
+                            <div><div class="title">KRs อยู่ระหว่างดำเนินการ</div><div class="subtitle">ความคืบหน้ามากกว่า 0%</div></div>
+                            <div class="d-flex align-items-center"><h3 id="krInProgress" class="me-3">0</h3><i class="bi bi-arrow-repeat status-icon"></i></div>
                         </div>
                     </div>
                     <div class="col-12 col-md-4">
-                        <div class="status-box bg-status-green clickable-box" onclick="navigateToTabAndFilter('kr_completed')" title="คลิกเพื่อดูกลุ่มตัวชี้วัดที่เสร็จแล้ว">
-                            <div>
-                                <div class="title">KRs ดำเนินการแล้วเสร็จ</div>
-                                <div class="subtitle">ความคืบหน้า 100%</div>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <h3 id="krCompleted" class="me-3">0</h3>
-                                <i class="bi bi-check-circle-fill status-icon"></i>
-                            </div>
+                        <div class="status-box bg-status-green clickable-box" onclick="navigateToTabAndFilter('kr_completed')">
+                            <div><div class="title">KRs ดำเนินการแล้วเสร็จ</div><div class="subtitle">ความคืบหน้า 100%</div></div>
+                            <div class="d-flex align-items-center"><h3 id="krCompleted" class="me-3">0</h3><i class="bi bi-check-circle-fill status-icon"></i></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- แถว Projects -->
                 <div class="row g-2 g-md-3 mb-4">
                     <div class="col-12 col-md-4">
                         <div class="status-box bg-status-red clickable-box" style="opacity: 0.9;" onclick="navigateToTabAndFilter('proj_not_started')">
-                            <div>
-                                <div class="title">โครงการ ยังไม่ดำเนินการ</div>
-                                <div class="subtitle">ความคืบหน้า 0%</div>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <h3 id="projNotStarted" class="me-3">0</h3>
-                                <i class="bi bi-x-circle-fill status-icon"></i>
-                            </div>
+                            <div><div class="title">โครงการ ยังไม่ดำเนินการ</div><div class="subtitle">ความคืบหน้า 0%</div></div>
+                            <div class="d-flex align-items-center"><h3 id="projNotStarted" class="me-3">0</h3><i class="bi bi-x-circle-fill status-icon"></i></div>
                         </div>
                     </div>
                     <div class="col-12 col-md-4">
                         <div class="status-box bg-status-yellow clickable-box" style="opacity: 0.9;" onclick="navigateToTabAndFilter('proj_in_progress')">
-                            <div>
-                                <div class="title">โครงการ อยู่ระหว่างดำเนินการ</div>
-                                <div class="subtitle">ความคืบหน้ามากกว่า 0%</div>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <h3 id="projInProgress" class="me-3">0</h3>
-                                <i class="bi bi-arrow-repeat status-icon"></i>
-                            </div>
+                            <div><div class="title">โครงการ อยู่ระหว่างดำเนินการ</div><div class="subtitle">ความคืบหน้ามากกว่า 0%</div></div>
+                            <div class="d-flex align-items-center"><h3 id="projInProgress" class="me-3">0</h3><i class="bi bi-arrow-repeat status-icon"></i></div>
                         </div>
                     </div>
                     <div class="col-12 col-md-4">
                         <div class="status-box bg-status-green clickable-box" style="opacity: 0.9;" onclick="navigateToTabAndFilter('proj_completed')">
-                            <div>
-                                <div class="title">โครงการ ดำเนินการแล้วเสร็จ</div>
-                                <div class="subtitle">ความคืบหน้า 100%</div>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <h3 id="projCompleted" class="me-3">0</h3>
-                                <i class="bi bi-check-circle-fill status-icon"></i>
-                            </div>
+                            <div><div class="title">โครงการ ดำเนินการแล้วเสร็จ</div><div class="subtitle">ความคืบหน้า 100%</div></div>
+                            <div class="d-flex align-items-center"><h3 id="projCompleted" class="me-3">0</h3><i class="bi bi-check-circle-fill status-icon"></i></div>
                         </div>
                     </div>
                 </div>
@@ -428,7 +412,6 @@
 
                 <div class="content-card p-0 p-md-3">
                     
-                    <!-- 🌟 ส่วนแสดงจำนวนรายการที่ถูกกรอง (Filtered Count) -->
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center px-3 pt-3 pb-2 border-bottom">
                         <h6 class="fw-bold text-secondary m-0 mb-2 mb-md-0"><i class="bi bi-table me-2 text-primary"></i>ตารางข้อมูลรายละเอียด (เจาะลึก)</h6>
                         <div id="filteredCountResult" class="filter-count-badge badge bg-primary px-3 py-2 rounded-pill shadow-sm fs-6 fw-medium d-inline-flex align-items-center">
@@ -484,7 +467,7 @@
     </div>
 </div>
 
-<!-- ================= Modal: Project Details ================= -->
+<!-- ================= Modal ================= -->
 <div class="modal fade" id="projectModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content border-0 shadow-lg">
@@ -500,7 +483,6 @@
   </div>
 </div>
 
-<!-- ================= Modal: KR Details (จากหน้าแรก) ================= -->
 <div class="modal fade" id="krModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content border-0 shadow-lg">
@@ -552,12 +534,17 @@
             if(result.status === 'success') {
                 globalData = result.data || [];
                 
+                // 🌟 ประมวลผลดึงข้อมูล Policy Dictionary ที่มี Host และ Relative
                 policyDictionary = {};
                 if (result.policy_dict && result.policy_dict.length > 0) {
                     result.policy_dict.forEach(item => {
                         let code = String(item['Policy_No'] || '').trim().toUpperCase();
                         let name = String(item['Policy_Name'] || '').trim();
-                        if (code && name) policyDictionary[code] = name;
+                        let host = String(item['Policy_Host_Name'] || '').trim();
+                        let relative = String(item['Policy_Relative_Name'] || '').trim();
+                        if (code && name) {
+                            policyDictionary[code] = { name: name, host: host, relative: relative };
+                        }
                     });
                 }
 
@@ -565,13 +552,10 @@
                     setupColumns(globalData[0]);
                     populateDropdownFilters(globalData);
                     
-                    // 1. สร้างหน้าแรกโดยใช้ข้อมูลทั้งหมด (ไม่สนใจ Filter)
                     processOverview(globalData); 
-                    
-                    // 2. อัปเดตหน้า Tab 2 เพื่อให้พร้อมตาม Filter เริ่มต้น
                     applyFilters(); 
-                    
                     renderPolicyGlossary();
+                    
                     document.getElementById('dashboardContent').classList.remove('d-none');
                 } else {
                     document.getElementById('emptyState').classList.remove('d-none');
@@ -648,13 +632,45 @@
         return { isH, isCoH, isR };
     }
 
-    // 🌟 ใช้คลาส CSS ใหม่สำหรับป้าย Role
     function getRoleBadge(isH, isCoH, isR) {
         let b = '';
         if (isH) b += `<span class="badge ms-2 shadow-sm badge-role-h rounded-2 py-1 px-2">H</span>`;
         if (isCoH) b += `<span class="badge ms-2 shadow-sm badge-role-coh rounded-2 py-1 px-2">Co-H</span>`;
         if (isR) b += `<span class="badge ms-2 shadow-sm badge-role-r rounded-2 py-1 px-2">R</span>`;
         return b;
+    }
+
+    // 🌟 ระบบสร้างป้าย 261+ โดยเช็กฐานข้อมูลจาก Dictionary ถ้ามีชื่อ สดท. เป็น Host/Relative
+    function getPolicyBadgeHTML(policyText) {
+        if(!policyText || policyText === 'NaN' || policyText === '-') return '';
+        if(policyText.includes('ไม่สอดคล้อง')) {
+            return `<span class="badge-policy-none"><i class="bi bi-x-circle me-1"></i> ${policyText}</span>`;
+        } else {
+            let badges = '';
+            policyText.split(',').forEach(p => {
+                let code = p.trim().toUpperCase();
+                if(code) {
+                    let isSdtHost = false;
+                    let isSdtRelative = false;
+                    let dictEntry = policyDictionary[code];
+                    
+                    // ตรวจสอบกับข้อมูลจากชีท PolicyDictionary โดยตรง
+                    if (dictEntry) {
+                        if (dictEntry.host.includes('สดท') || dictEntry.host.includes('สำนักดิจิทัล')) isSdtHost = true;
+                        if (dictEntry.relative.includes('สดท') || dictEntry.relative.includes('สำนักดิจิทัล')) isSdtRelative = true;
+                    }
+
+                    if (isSdtHost) {
+                        badges += `<span class="badge-policy badge-policy-host"><i class="bi bi-star-fill me-1 text-warning"></i> 261+: ${code} <span class="inner-tag-host">H: สดท.</span></span>`;
+                    } else if (isSdtRelative) {
+                        badges += `<span class="badge-policy badge-policy-relative"><i class="bi bi-star-half me-1 text-white"></i> 261+: ${code} <span class="inner-tag-relative">R: สดท.</span></span>`;
+                    } else {
+                        badges += `<span class="badge-policy"><i class="bi bi-star me-1 opacity-75"></i> 261+: ${code}</span>`;
+                    }
+                }
+            });
+            return badges;
+        }
     }
 
     function applyFilters() {
@@ -688,7 +704,6 @@
             return true; 
         });
 
-        // ส่งข้อมูลที่ Filter แล้ว ไปคำนวณและวาดสำหรับหน้า Tab 2
         processDetails(filteredData);
     }
 
@@ -706,22 +721,6 @@
         if(num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
         if(num >= 10000) return (num / 1000).toFixed(0) + 'k';
         return num.toLocaleString();
-    }
-
-    function getPolicyBadgeHTML(policyText) {
-        if(!policyText || policyText === 'NaN' || policyText === '-') return '';
-        if(policyText.includes('ไม่สอดคล้อง')) {
-            return `<span class="badge-policy-none"><i class="bi bi-x-circle me-1"></i> ${policyText}</span>`;
-        } else {
-            let badges = '';
-            policyText.split(',').forEach(p => {
-                let code = p.trim().toUpperCase();
-                if(code) {
-                    badges += `<span class="badge-policy"><i class="bi bi-star-fill me-1"></i> 261+: ${code}</span>`;
-                }
-            });
-            return badges;
-        }
     }
 
     function buildGroups(data, isOverview = false) {
@@ -894,7 +893,7 @@
                     <td>${group.id ? `<span class="kr-badge">${group.id}</span>` : '<span class="text-muted">-</span>'}</td>
                     <td>
                         <div class="fw-bold text-dark mb-1" style="font-size:0.95rem;">${group.title}${roleBadgeOverview}</div>
-                        <div>${policyBadgeOverview}</div>
+                        <div class="d-flex flex-wrap">${policyBadgeOverview}</div>
                     </td>
                     <td>
                         <div class="d-flex align-items-center mb-1">
@@ -953,14 +952,12 @@
             return idA.localeCompare(idB);
         });
 
-        // 🌟 อัปเดตตัวเลขการ Filter บนหน้าจอ Tab 2
         let totalFilteredProjs = 0;
         krArray.forEach(group => { totalFilteredProjs += group.projects.length; });
         document.getElementById('filteredCountResult').innerHTML = `<i class="bi bi-funnel-fill me-2"></i> กรองพบ: ${krArray.length} KRs / ${totalFilteredProjs} โครงการ`;
 
         let tableHTML = ''; let krCount = 0;
 
-        // กรณีไม่พบข้อมูลจากการกรอง
         if (krArray.length === 0) {
             tableHTML = `<tr><td colspan="5" class="text-center py-5 text-muted"><i class="bi bi-inbox fs-1 d-block mb-3 opacity-50"></i>ไม่พบข้อมูลที่ตรงกับเงื่อนไขการกรอง</td></tr>`;
         } else {
@@ -989,7 +986,7 @@
                                         ${group.id ? `<span class="kr-badge me-1">${group.id}</span>` : ''}
                                         <span class="fw-bold text-primary fs-6 lh-base">${group.title}</span>${roleBadge}
                                     </div>
-                                    <div class="mt-2"><span class="badge-sub me-1"><i class="bi bi-tags"></i> ${group.category}</span>${policyBadge}</div>
+                                    <div class="mt-2 d-flex flex-wrap align-items-center"><span class="badge-sub me-1"><i class="bi bi-tags"></i> ${group.category}</span>${policyBadge}</div>
                                 </div>
                             </div>
                         </td>
@@ -1060,6 +1057,7 @@
         document.getElementById('projectTableBody').innerHTML = tableHTML;
     }
 
+    // 🌟 อัปเกรดให้เชื่อมโยงสีและป้ายเข้ากับหน้าสารานุกรมนโยบาย (Tab 3) ด้วย
     function renderPolicyGlossary() {
         let glossaryMap = {};
         window.sdtPolicies = new Set(); 
@@ -1079,7 +1077,9 @@
                 pRaw.split(',').forEach(p => {
                     let code = p.trim().toUpperCase();
                     if(code !== '') {
-                        if(!glossaryMap[code]) glossaryMap[code] = "อยู่ระหว่างการระบุชื่อเต็มนโยบายลงในชีท Dictionary";
+                        if(!glossaryMap[code]) {
+                            glossaryMap[code] = { name: "อยู่ระหว่างการระบุชื่อเต็มนโยบายลงในชีท Dictionary", host: "", relative: "" };
+                        }
                         if(isSdtInvolved) window.sdtPolicies.add(code);
                     }
                 });
@@ -1087,7 +1087,7 @@
         });
 
         let glossaryArray = Object.keys(glossaryMap).map(code => {
-            return { code: code, desc: glossaryMap[code] };
+            return { code: code, ...glossaryMap[code] };
         });
 
         if(glossaryArray.length === 0) {
@@ -1103,16 +1103,28 @@
         const query = document.getElementById('glossarySearch').value.toLowerCase();
         let html = '';
         window.glossaryData.forEach(item => {
-            if(item.code.toLowerCase().includes(query) || item.desc.toLowerCase().includes(query)) {
-                let isSdtPolicy = window.sdtPolicies.has(item.code);
+            if(item.code.toLowerCase().includes(query) || item.name.toLowerCase().includes(query)) {
+                
+                let isDictHost = item.host && (item.host.includes('สดท') || item.host.includes('สำนักดิจิทัล'));
+                let isDictRel = item.relative && (item.relative.includes('สดท') || item.relative.includes('สำนักดิจิทัล'));
+                
+                let isSdtPolicy = window.sdtPolicies.has(item.code) || isDictHost || isDictRel;
                 let cardClass = isSdtPolicy ? 'dict-card dict-card-sdt' : 'dict-card';
-                let sdtBadge = isSdtPolicy ? `<span class="badge-sdt ms-2"><i class="bi bi-star-fill"></i> ภารกิจ สดท.</span>` : '';
+                
+                let sdtBadge = '';
+                if (isDictHost) {
+                    sdtBadge = `<span class="badge-sdt ms-2" style="background: linear-gradient(135deg, #00744b, #134e35); color: white;"><i class="bi bi-star-fill text-warning"></i> Host: สดท.</span>`;
+                } else if (isDictRel) {
+                    sdtBadge = `<span class="badge-sdt ms-2" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;"><i class="bi bi-star-half text-white"></i> Relative: สดท.</span>`;
+                } else if (isSdtPolicy) {
+                    sdtBadge = `<span class="badge-sdt ms-2"><i class="bi bi-star"></i> เกี่ยวข้องกับงาน สดท.</span>`;
+                }
 
                 html += `
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="${cardClass}">
                             <div class="dict-code">${item.code} ${sdtBadge}</div>
-                            <div class="dict-desc">${item.desc}</div>
+                            <div class="dict-desc">${item.name}</div>
                         </div>
                     </div>
                 `;
@@ -1168,7 +1180,7 @@
                     <span class="badge-sub"><i class="bi bi-tags"></i> ${k.category}</span>
                 </div>
                 <div class="fs-5 text-dark fw-bold mb-0 lh-base mt-2">${k.title} ${roleBadgeModal}</div>
-                ${k.policy && k.policy !== '-' && k.policy !== 'NaN' ? `<div class="mt-2">${getPolicyBadgeHTML(k.policy)}</div>` : ''}
+                <div class="d-flex flex-wrap mt-2">${k.policy && k.policy !== '-' && k.policy !== 'NaN' ? getPolicyBadgeHTML(k.policy) : ''}</div>
             </div>
             
             <div class="row g-2 g-md-3 mb-4">

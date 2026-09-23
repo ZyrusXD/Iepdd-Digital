@@ -34,7 +34,7 @@ def get_dashboard_data(year: str = "2570", t: str = None):
             
         sh = client.open_by_key(spreadsheet_id)
         
-        # 1. ดึงข้อมูลแผนยุทธศาสตร์ (ดักจับ Error กรณีชีทว่างเปล่า หรือยังไม่ได้กรอก)
+        # 1. ดึงข้อมูลแผนยุทธศาสตร์
         records = []
         try:
             main_sheet = sh.worksheet(year)
@@ -42,7 +42,7 @@ def get_dashboard_data(year: str = "2570", t: str = None):
         except Exception:
             pass # ปล่อยผ่านเป็น list ว่าง
         
-        # 2. ค้นหาชีท Dictionary แบบยืดหยุ่น (แก้ปัญหาการเผลอเคาะเว้นวรรค หรือตัวพิมพ์เล็กใหญ่ในชื่อชีท)
+        # 2. ค้นหาชีท Dictionary แบบยืดหยุ่น
         policy_dict_records = []
         policy_sheet = None
         for ws in sh.worksheets():
@@ -50,17 +50,25 @@ def get_dashboard_data(year: str = "2570", t: str = None):
                 policy_sheet = ws
                 break
                 
-        # ดึงข้อมูลจากคอลัมน์ A และ B โดยตรง (ป้องกันปัญหาตั้งชื่อหัวคอลัมน์ผิด)
+        # ดึงข้อมูลจากคอลัมน์ A (No), B (Name), C (Host), D (Relative)
         if policy_sheet:
             try:
                 raw_policy = policy_sheet.get_all_values()
                 if len(raw_policy) > 1:
-                    for row in raw_policy[1:]: # ข้ามบรรทัดที่ 1 (หัวตาราง)
-                        if len(row) >= 2:
-                            p_no = str(row[0]).strip()
-                            p_name = str(row[1]).strip()
+                    for row in raw_policy[1:]:
+                        if len(row) > 0:
+                            p_no = str(row[0]).strip() if len(row) > 0 else ""
+                            p_name = str(row[1]).strip() if len(row) > 1 else ""
+                            p_host = str(row[2]).strip() if len(row) > 2 else ""
+                            p_relative = str(row[3]).strip() if len(row) > 3 else ""
+                            
                             if p_no:
-                                policy_dict_records.append({'Policy_No': p_no, 'Policy_Name': p_name})
+                                policy_dict_records.append({
+                                    'Policy_No': p_no, 
+                                    'Policy_Name': p_name,
+                                    'Policy_Host_Name': p_host,
+                                    'Policy_Relative_Name': p_relative
+                                })
             except Exception as e:
                 print(f"Read policy error: {e}")
         
@@ -71,7 +79,6 @@ def get_dashboard_data(year: str = "2570", t: str = None):
             "policy_dict": policy_dict_records
         }
         
-        # 🌟 สั่งปิดการ Cache ของ Vercel อย่างเด็ดขาด
         return JSONResponse(
             content=response_data,
             headers={
