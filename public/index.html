@@ -48,10 +48,16 @@
         .area-title { font-weight: 700; color: #1e293b; font-size: 1.05rem; margin-bottom: 2px; }
         .area-stats { font-size: 0.85rem; color: #64748b; }
         
+        /* 🌟 Policy Dictionary Cards */
         .dict-card { background: #fff; border-left: 4px solid var(--bma-blue); border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: 0.2s; height: 100%;}
         .dict-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.08); transform: translateY(-2px); }
         .dict-code { font-weight: 800; color: var(--bma-blue); font-size: 1.1rem; }
         .dict-desc { font-size: 0.95rem; color: #475569; margin-top: 5px; line-height: 1.5; }
+        
+        /* 🌟 Policy Dictionary Cards (SDT Highlighted) */
+        .dict-card-sdt { border-left: 5px solid var(--bma-orange) !important; background: #fffdf8; box-shadow: 0 4px 8px rgba(255, 180, 73, 0.15); }
+        .dict-card-sdt .dict-code { color: var(--bma-green-dark); }
+        .badge-sdt { background-color: var(--bma-orange); color: #000; font-size: 0.75rem; padding: 3px 8px; border-radius: 12px; font-weight: 700; box-shadow: 0 2px 4px rgba(255, 180, 73, 0.4); vertical-align: text-bottom;}
 
         .filter-section { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
         .table-responsive { -webkit-overflow-scrolling: touch; border-radius: 8px; }
@@ -126,7 +132,7 @@
         <h6 class="mt-3 fw-bold text-muted">กำลังซิงค์ข้อมูลยุทธศาสตร์...</h6>
     </div>
 
-    <!-- ส่วนที่จะแสดงเมื่อเลือกปีงบประมาณที่ไม่มีข้อมูล (เช่น 2571) -->
+    <!-- ส่วนที่จะแสดงเมื่อเลือกปีงบประมาณที่ไม่มีข้อมูล -->
     <div id="emptyState" class="d-none my-5">
         <div class="text-center">
             <i class="bi bi-folder-x text-muted" style="font-size: 5rem;"></i>
@@ -213,7 +219,6 @@
                     </div>
                 </div>
 
-                <!-- 🌟 TAB 1: ตารางรายชื่อ KR ทั้งหมด -->
                 <div class="row g-3">
                     <div class="col-12">
                         <div class="content-card">
@@ -344,7 +349,6 @@
     let projectDetailsDb = {}; 
     let budgetChartInstance = null;
     let progressChartInstance = null;
-    
     let policyDictionary = {};
 
     const areaMapping = [
@@ -363,10 +367,9 @@
         const year = document.getElementById('yearSelect').value;
         document.getElementById('loading').classList.remove('d-none');
         document.getElementById('dashboardContent').classList.add('d-none');
-        document.getElementById('emptyState').classList.add('d-none'); // ซ่อน State ว่างเปล่า
+        document.getElementById('emptyState').classList.add('d-none'); 
 
         try {
-            // 🌟 ใส่ Date.now() ไปที่ URL ต่อท้ายเพื่อเจาะเกราะ Cache ของ Vercel
             const cacheBuster = new Date().getTime();
             const response = await fetch(`/api/data?year=${year}&t=${cacheBuster}`);
             const result = await response.json();
@@ -374,19 +377,14 @@
             if(result.status === 'success') {
                 globalData = result.data || [];
                 
-                // รับข้อมูล Dictionary (ทะลวง Cache มาสดๆ)
                 policyDictionary = {};
                 if (result.policy_dict && result.policy_dict.length > 0) {
                     result.policy_dict.forEach(item => {
                         let code = String(item['Policy_No'] || '').trim().toUpperCase();
                         let name = String(item['Policy_Name'] || '').trim();
-                        if (code && name) {
-                            policyDictionary[code] = name;
-                        }
+                        if (code && name) policyDictionary[code] = name;
                     });
                 }
-                
-                console.log("Loaded Policy Dictionary:", policyDictionary); // ดูใน F12
 
                 if(globalData.length > 0) {
                     setupColumns(globalData[0]);
@@ -395,11 +393,9 @@
                     renderPolicyGlossary();
                     document.getElementById('dashboardContent').classList.remove('d-none');
                 } else {
-                    // 🌟 กรณีเป็นชีทเปล่า (เช่น เลือกปี 2571)
                     document.getElementById('emptyState').classList.remove('d-none');
-                    renderPolicyGlossary(); // แม้แผนไม่มี ก็ให้ดู Dictionary ได้
+                    renderPolicyGlossary(); 
                     document.getElementById('dashboardContent').classList.remove('d-none');
-                    // ซ่อนส่วนที่ไม่จำเป็นในกรณีไม่มีข้อมูล
                     document.getElementById('overview').innerHTML = '<div class="alert alert-info">ไม่พบข้อมูลสถิติ กรุณาเพิ่มข้อมูลโครงการลงใน Google Sheets</div>';
                     document.getElementById('detail').innerHTML = '<div class="alert alert-info">ไม่พบข้อมูลโครงการ</div>';
                 }
@@ -626,7 +622,7 @@
             return idA.localeCompare(idB);
         });
 
-        // 🌟 TAB 1: ตาราง KR
+        // Overview Table
         let overviewHTML = '';
         krArray.forEach(group => {
             let krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
@@ -654,9 +650,8 @@
         });
         document.getElementById('overviewKrTableBody').innerHTML = overviewHTML;
 
-        // 🌟 TAB 2: ตารางข้อมูลโครงการ
+        // Detail Table
         let tableHTML = ''; let krCount = 0;
-        
         krArray.forEach(group => {
             krCount++;
             const krRowId = `kr-${krCount}`;
@@ -673,7 +668,6 @@
             if (group.isR) roleBadge += `<span class="badge text-bg-warning ms-2" style="background-color: var(--bma-orange) !important;">R</span>`;
             
             let policyBadge = getPolicyBadgeHTML(group.policy);
-
             let krDocButtons = '';
             if (group.doc1 && String(group.doc1).startsWith('http')) krDocButtons += `<a href="${group.doc1}" target="_blank" class="btn btn-sm btn-primary mb-1 w-100" style="font-size: 0.75rem;"><i class="bi bi-file-earmark-pdf"></i> ปผ.01</a>`;
             if (group.doc2 && String(group.doc2).startsWith('http')) krDocButtons += `<a href="${group.doc2}" target="_blank" class="btn btn-sm btn-outline-primary w-100" style="font-size: 0.75rem;"><i class="bi bi-file-earmark-pdf"></i> ปผ.02</a>`;
@@ -769,24 +763,34 @@
         drawCharts(chartBudget, chartProgress);
     }
 
+    // 🌟 ดึงข้อมูลและไฮไลท์นโยบายของ สดท. ในบรรณานุกรม
     function renderPolicyGlossary() {
         let glossaryMap = {};
+        window.sdtPolicies = new Set(); // เก็บว่ารหัสไหนเป็นภารกิจ สดท.
         
+        // 1. นำรายชื่อจาก Dictionary ตั้งต้น
         for(let code in policyDictionary) {
             if(!code.includes('ไม่สอดคล้อง')) {
                 glossaryMap[code] = policyDictionary[code];
             }
         }
 
-        // ตรวจสอบว่าในแผนมีการใช้รหัส 261+ อะไรบ้าง
+        // 2. เช็กว่าในแผนงานมีการระบุนโยบายใดบ้าง และนโยบายใด สดท. เข้าไปมีส่วนร่วม
         globalData.forEach(row => {
             let pRaw = String(row[cols.policy] || '').trim();
+            let roles = checkRole(row);
+            let isSdtInvolved = roles.isH || roles.isR; // สดท. เป็น H หรือ R
+
             if(pRaw && pRaw !== 'NaN' && pRaw !== '-' && !pRaw.includes('ไม่สอดคล้อง')) {
                 pRaw.split(',').forEach(p => {
                     let code = p.trim().toUpperCase();
                     if(code !== '') {
                         if(!glossaryMap[code]) {
                             glossaryMap[code] = "อยู่ระหว่างการระบุชื่อเต็มนโยบายลงในชีท Dictionary";
+                        }
+                        // ถ้านโยบายนี้ สดท. เกี่ยวข้อง ให้บันทึกรหัสเก็บไว้
+                        if(isSdtInvolved) {
+                            window.sdtPolicies.add(code);
                         }
                     }
                 });
@@ -811,10 +815,16 @@
         let html = '';
         window.glossaryData.forEach(item => {
             if(item.code.toLowerCase().includes(query) || item.desc.toLowerCase().includes(query)) {
+                
+                // ตรวจสอบว่านโยบายนี้เป็นของ สดท. หรือไม่ เพื่อใส่คลาสไฮไลท์
+                let isSdtPolicy = window.sdtPolicies.has(item.code);
+                let cardClass = isSdtPolicy ? 'dict-card dict-card-sdt' : 'dict-card';
+                let sdtBadge = isSdtPolicy ? `<span class="badge-sdt ms-2"><i class="bi bi-star-fill"></i> ภารกิจ สดท.</span>` : '';
+
                 html += `
                     <div class="col-12 col-md-6 col-lg-4">
-                        <div class="dict-card">
-                            <div class="dict-code">${item.code}</div>
+                        <div class="${cardClass}">
+                            <div class="dict-code">${item.code} ${sdtBadge}</div>
                             <div class="dict-desc">${item.desc}</div>
                         </div>
                     </div>
