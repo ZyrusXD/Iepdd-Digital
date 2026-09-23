@@ -59,7 +59,7 @@
         .table-custom th { background: #f8fafc; color: var(--bma-green-dark); font-weight: 700; padding: 15px; border-bottom: 2px solid #e2e8f0; font-size: 0.95rem; white-space: nowrap; }
         .table-custom td { padding: 15px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
         
-        .overview-table { min-width: 700px; }
+        .overview-table { min-width: 800px; }
         .kr-row { background-color: #ffffff; border-left: 4px solid var(--bma-green); cursor: pointer; transition: 0.2s; }
         .kr-row:hover { background-color: #f8fafc; }
         .proj-row { background-color: #fdfdfd; border-left: 4px solid #cbd5e1; }
@@ -74,7 +74,7 @@
         .badge-sub { font-size: 0.75rem; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-top: 4px;}
         .kr-badge { font-size: 0.95rem; font-weight: 700; background: #e2e8f0; color: var(--bma-green-dark); padding: 5px 12px; border-radius: 6px; border: 1px solid #cbd5e1; white-space: nowrap; }
         
-        .badge-policy { background: var(--bma-blue); color: white; font-weight: 600; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; display: inline-block; box-shadow: 0 2px 4px rgba(0, 113, 206, 0.2); margin-top: 4px; }
+        .badge-policy { background: var(--bma-blue); color: white; font-weight: 600; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; display: inline-block; box-shadow: 0 2px 4px rgba(0, 113, 206, 0.2); margin-top: 4px; margin-right: 4px;}
         .badge-policy-none { background: #e2e8f0; color: #64748b; font-weight: 600; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; display: inline-block; border: 1px solid #cbd5e1; margin-top: 4px; }
 
         @media (max-width: 768px) {
@@ -204,7 +204,7 @@
                     </div>
                 </div>
 
-                <!-- 🌟 ตารางรายชื่อ KR ทั้งหมด (Overview) -->
+                <!-- 🌟 TAB 1: ตารางรายชื่อ KR ทั้งหมดที่ผู้ใช้ร้องขอให้เอากลับมา -->
                 <div class="row g-3">
                     <div class="col-12">
                         <div class="content-card">
@@ -214,10 +214,10 @@
                                 <table class="table table-hover align-middle border overview-table">
                                     <thead class="table-light">
                                         <tr>
-                                            <th style="width: 15%;">ด้าน</th>
+                                            <th style="width: 15%;">ด้านยุทธศาสตร์</th>
                                             <th style="width: 15%;">รหัส KRs</th>
                                             <th style="width: 45%;">ชื่อตัวชี้วัด (KEY RESULT)</th>
-                                            <th style="width: 25%;">ระดับความสำเร็จ (Progress)</th>
+                                            <th style="width: 25%;">ระดับความสำเร็จรวม (Progress)</th>
                                         </tr>
                                     </thead>
                                     <tbody id="overviewKrTableBody">
@@ -336,7 +336,7 @@
     let budgetChartInstance = null;
     let progressChartInstance = null;
     
-    // 🌟 ตัวแปรเก็บพจนานุกรมที่จะดึงจาก Sheet "policyDictionary"
+    // ตัวแปรเก็บพจนานุกรม
     let policyDictionary = {};
 
     const areaMapping = [
@@ -363,11 +363,11 @@
             if(result.status === 'success') {
                 globalData = result.data;
                 
-                // 🌟 รับและคลีนข้อมูลพจนานุกรม (ตัดช่องว่างทิ้ง)
+                // 🌟 รับข้อมูลพจนานุกรม และแปลงคีย์ให้เป็นตัวพิมพ์ใหญ่ป้องกันการอ้างอิงผิด
                 policyDictionary = {};
                 if (result.policy_dict && result.policy_dict.length > 0) {
                     result.policy_dict.forEach(item => {
-                        let code = String(item['Policy_No'] || '').trim();
+                        let code = String(item['Policy_No'] || '').trim().toUpperCase();
                         let name = String(item['Policy_Name'] || '').trim();
                         if (code && name) {
                             policyDictionary[code] = name;
@@ -427,8 +427,11 @@
             if(row[cols.issue] && row[cols.issue] !== 'NaN') issues.add(String(row[cols.issue]).trim());
             
             let pRaw = String(row[cols.policy] || '').trim();
-            if(pRaw && pRaw !== 'NaN' && pRaw !== '-') {
-                pRaw.split(',').forEach(p => policies.add(p.trim()));
+            if(pRaw && pRaw !== 'NaN' && pRaw !== '-' && !pRaw.includes('ไม่สอดคล้อง')) {
+                pRaw.split(',').forEach(p => {
+                    let code = p.trim().toUpperCase();
+                    if(code) policies.add(code);
+                });
             }
         });
 
@@ -439,7 +442,7 @@
         issues.forEach(i => { issueSelect.innerHTML += `<option value="${i}">${i}</option>`; });
 
         policySelect.innerHTML = '<option value="all">ทั้งหมด</option>';
-        policies.forEach(p => { policySelect.innerHTML += `<option value="${p}">${p}</option>`; });
+        [...policies].sort().forEach(p => { policySelect.innerHTML += `<option value="${p}">${p}</option>`; });
     }
 
     function checkRole(row) {
@@ -460,8 +463,9 @@
         let filteredData = globalData.filter(row => {
             let catMatch = fCat === 'all' || String(row[cols.category] || '').trim() === fCat;
             let issueMatch = fIssue === 'all' || String(row[cols.issue] || '').trim() === fIssue;
-            let pRaw = String(row[cols.policy] || '').trim();
-            let policyMatch = fPolicy === 'all' || pRaw.includes(fPolicy);
+            
+            let pRaw = String(row[cols.policy] || '').trim().toUpperCase();
+            let policyMatch = fPolicy === 'all' || pRaw.includes(fPolicy.toUpperCase());
             
             let roles = checkRole(row);
             let roleMatch = true;
@@ -491,12 +495,20 @@
         return num.toLocaleString();
     }
 
+    // ฟังก์ชันสร้างป้ายนโยบาย รองรับการใส่หลายนโยบายในช่องเดียว (เช่น P228, P229)
     function getPolicyBadgeHTML(policyText) {
         if(!policyText || policyText === 'NaN' || policyText === '-') return '';
         if(policyText.includes('ไม่สอดคล้อง')) {
             return `<span class="badge-policy-none ms-2 mt-2 mt-md-0"><i class="bi bi-x-circle me-1"></i> ${policyText}</span>`;
         } else {
-            return `<span class="badge-policy ms-2 mt-2 mt-md-0"><i class="bi bi-star-fill me-1"></i> นโยบาย 261+: ${policyText}</span>`;
+            let badges = '';
+            policyText.split(',').forEach(p => {
+                let code = p.trim().toUpperCase();
+                if(code) {
+                    badges += `<span class="badge-policy ms-2 mt-2 mt-md-0"><i class="bi bi-star-fill me-1"></i> 261+: ${code}</span>`;
+                }
+            });
+            return badges;
         }
     }
 
@@ -521,14 +533,11 @@
             
             if(!krGroups[krKey]) {
                 krGroups[krKey] = {
-                    title: krTitle,
-                    id: String(row[cols.krID] || '').trim() !== 'NaN' ? row[cols.krID] : '',
-                    category: cat,
-                    policy: String(row[cols.policy] || '').trim(),
+                    title: krTitle, id: String(row[cols.krID] || '').trim() !== 'NaN' ? row[cols.krID] : '',
+                    category: cat, policy: String(row[cols.policy] || '').trim(),
                     unit: String(row[cols.unit] || '-').trim(),
                     target: parseFloat(String(row[cols.krTarget]).replace(/,/g, '')) || 0,
-                    accumulatedActual: 0,
-                    isH: roles.isH, isR: roles.isR,
+                    accumulatedActual: 0, isH: roles.isH, isR: roles.isR,
                     doc1: row[cols.docKR1], doc2: row[cols.docKR2],
                     projects: [], krBudget: 0, krSpent: 0
                 };
@@ -597,7 +606,7 @@
             return idA.localeCompare(idB);
         });
 
-        // 🌟 TAB 1: ตารางรายชื่อ KR ทั้งหมด (ภาพรวมความสำเร็จ)
+        // 🌟 TAB 1: ตาราง KR ในหน้าแรก
         let overviewHTML = '';
         krArray.forEach(group => {
             let krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
@@ -618,14 +627,14 @@
                                 <div class="progress-bar ${krProgressPercent == 100 ? 'bg-success' : 'bg-primary'}" style="width: ${krProgressPercent}%;"></div>
                             </div>
                         </div>
-                        <div class="text-muted text-end" style="font-size:0.8rem;">ทำได้ ${group.accumulatedActual.toLocaleString()} / เป้าหมาย ${group.target.toLocaleString()}</div>
+                        <div class="text-muted text-end" style="font-size:0.8rem;">ทำได้ ${group.accumulatedActual.toLocaleString()} / เป้าหมาย ${group.target.toLocaleString()}${group.unit}</div>
                     </td>
                 </tr>
             `;
         });
         document.getElementById('overviewKrTableBody').innerHTML = overviewHTML;
 
-        // 🌟 TAB 2: ตารางข้อมูลโครงการ (เจาะลึก)
+        // 🌟 TAB 2: ตารางลงลึกรายละเอียดโครงการ
         let tableHTML = ''; let krCount = 0;
         
         krArray.forEach(group => {
@@ -644,6 +653,7 @@
             if (group.isR) roleBadge += `<span class="badge text-bg-warning ms-2" style="background-color: var(--bma-orange) !important;">R</span>`;
             
             let policyBadge = getPolicyBadgeHTML(group.policy);
+
             let krDocButtons = '';
             if (group.doc1 && String(group.doc1).startsWith('http')) krDocButtons += `<a href="${group.doc1}" target="_blank" class="btn btn-sm btn-primary mb-1 w-100" style="font-size: 0.75rem;"><i class="bi bi-file-earmark-pdf"></i> ปผ.01</a>`;
             if (group.doc2 && String(group.doc2).startsWith('http')) krDocButtons += `<a href="${group.doc2}" target="_blank" class="btn btn-sm btn-outline-primary w-100" style="font-size: 0.75rem;"><i class="bi bi-file-earmark-pdf"></i> ปผ.02</a>`;
@@ -671,6 +681,7 @@
                             <span>ผลสำเร็จรวม KR</span> <span class="${krProgressPercent==100?'text-success':'text-primary'}">${krProgressPercent.toFixed(1)}%</span>
                         </div>
                         <div class="progress progress-slim mb-1"><div class="progress-bar progress-bar-kpi" style="width: ${krProgressPercent}%;"></div></div>
+                        <div class="text-muted text-end" style="font-size:0.75rem;">${group.accumulatedActual.toLocaleString()} /${group.target.toLocaleString()}</div>
                     </td>
                     <td>
                         <div class="d-flex justify-content-between small fw-bold mb-1">
@@ -683,11 +694,10 @@
                 </tr>
             `;
 
-            // บรรทัดย่อย (โครงการ)
             group.projects.forEach(proj => {
                 let detailBtn = `<button class="btn btn-sm btn-info text-white w-100 mb-1" style="font-size: 0.8rem; background-color: var(--bma-blue); border-color: var(--bma-blue);" onclick="openProjectModal('${proj.id}')"><i class="bi bi-search"></i> รายละเอียดโครงการ</button>`;
                 let docBtn = proj.doc && String(proj.doc).startsWith('http') 
-                    ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-secondary w-100" style="font-size: 0.8rem;"><i class="bi bi-file-earmark-text"></i> ไฟล์หลักฐาน</a>` : ``;
+                    ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-secondary w-100" style="font-size: 0.8rem;"><i class="bi bi-file-earmark-text"></i> ไฟล์โครงการ</a>` : ``;
                 
                 let pBudgPct = proj.budget > 0 ? Math.min((proj.spent / proj.budget) * 100, 100) : 0;
                 let unitLabel = proj.unit !== '-' ? ` <span class="text-muted">(${proj.unit})</span>` : '';
@@ -704,7 +714,7 @@
                         </td>
                         <td>
                             <div class="d-flex justify-content-between small fw-bold mb-1">
-                                <span class="text-muted">ความคืบหน้า</span>
+                                <span class="text-muted">คืบหน้า</span>
                                 <span class="${proj.progress==100?'text-success':'text-secondary'}">${proj.progress.toFixed(0)}%</span>
                             </div>
                             <div class="progress progress-slim"><div class="progress-bar bg-secondary" style="width: ${proj.progress}%;"></div></div>
@@ -734,31 +744,29 @@
         let spendPct = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
         document.getElementById('statSpentPercent').innerText = spendPct.toFixed(1) + "%";
         document.getElementById('statSpentBar').style.width = spendPct + "%";
-
         document.getElementById('projectTableBody').innerHTML = tableHTML;
         
         drawCharts(chartBudget, chartProgress);
     }
 
-    // 🌟 ดึงข้อมูลและสร้างการ์ดในแท็บ บรรณานุกรม 
     function renderPolicyGlossary() {
         let glossaryMap = {};
         
-        // อ่านจาก Object policyDictionary ที่ดึงมาจาก Sheet 
         for(let code in policyDictionary) {
             if(!code.includes('ไม่สอดคล้อง')) {
                 glossaryMap[code] = policyDictionary[code];
             }
         }
 
-        // ตรวจสอบว่ามีรหัสไหนโผล่ในแผน แต่ลืมใส่ใน Sheet พจนานุกรมหรือไม่
         globalData.forEach(row => {
             let pRaw = String(row[cols.policy] || '').trim();
             if(pRaw && pRaw !== 'NaN' && pRaw !== '-' && !pRaw.includes('ไม่สอดคล้อง')) {
                 pRaw.split(',').forEach(p => {
-                    let code = p.trim();
-                    if(!glossaryMap[code]) {
-                        glossaryMap[code] = "อยู่ระหว่างการระบุชื่อเต็มนโยบายลงในชีท Dictionary";
+                    let code = p.trim().toUpperCase();
+                    if(code !== '') {
+                        if(!glossaryMap[code]) {
+                            glossaryMap[code] = "อยู่ระหว่างการระบุชื่อเต็มนโยบายลงในชีท Dictionary";
+                        }
                     }
                 });
             }
@@ -769,7 +777,7 @@
         });
 
         if(glossaryArray.length === 0) {
-            document.getElementById('glossaryContainer').innerHTML = '<div class="col-12"><div class="alert alert-warning">ยังไม่พบข้อมูลนโยบาย หรือยังไม่ได้ดึงข้อมูลจากชีท policyDictionary</div></div>';
+            document.getElementById('glossaryContainer').innerHTML = '<div class="col-12"><div class="alert alert-warning">ยังไม่พบข้อมูลการอ้างอิงนโยบาย หรือข้อมูลชีท policyDictionary ยังไม่เข้าสู่ระบบ</div></div>';
             return;
         }
 
