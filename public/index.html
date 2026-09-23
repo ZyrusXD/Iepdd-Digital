@@ -42,7 +42,6 @@
         .stat-icon { position: absolute; right: -10px; bottom: -15px; font-size: 5rem; opacity: 0.15; transition: transform 0.3s;}
         .stat-box:hover .stat-icon { transform: scale(1.1) rotate(-5deg); }
 
-        /* 🌟 Status Boxes (Mini Cards) & Interactivity */
         .status-box { padding: 15px 20px; border-radius: 10px; position: relative; overflow: hidden; color: white; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s; }
         .status-box h3 { font-size: 2rem; font-weight: 800; margin: 0; line-height: 1; }
         .status-box .title { font-size: 0.85rem; font-weight: 600; opacity: 0.9; margin-bottom: 2px; }
@@ -525,7 +524,13 @@
                 if(globalData.length > 0) {
                     setupColumns(globalData[0]);
                     populateDropdownFilters(globalData);
+                    
+                    // 🌟 1. สร้างหน้าแรกโดยใช้ข้อมูลทั้งหมด (ไม่สนใจ Filter)
+                    processOverview(globalData); 
+                    
+                    // 🌟 2. อัปเดตหน้า Tab 2 เพื่อให้พร้อมตาม Filter เริ่มต้น
                     applyFilters(); 
+                    
                     renderPolicyGlossary();
                     document.getElementById('dashboardContent').classList.remove('d-none');
                 } else {
@@ -643,7 +648,8 @@
             return true; 
         });
 
-        processData(filteredData);
+        // 🌟 ส่งข้อมูลที่ Filter แล้ว ไปคำนวณและวาดสำหรับหน้า Tab 2 โดยเฉพาะ
+        processDetails(filteredData);
     }
 
     // 🌟 ฟังก์ชันวาร์ปไป TAB 2 และ Filter แบบ Dynamic (คลิกจากป้ายหน้า 1)
@@ -653,7 +659,7 @@
         tab.show();
         
         document.getElementById('filterStatus').value = statusValue;
-        applyFilters(); // เรียกใช้การกรองข้อมูล
+        applyFilters(); 
         document.getElementById('filterStatus').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
@@ -679,15 +685,10 @@
         }
     }
 
-    function processData(data) {
-        let krGroups = {}; 
-
-        let areaCounter = {};
-        areaMapping.forEach(a => {
-            areaCounter[a.key] = { name: a.name, img: a.img, krCount: 0, projCount: 0 };
-        });
-
-        // 1. จัดกลุ่มข้อมูล
+    // ฟังก์ชันย่อยสำหรับช่วยรวบรวมกลุ่มข้อมูล KRs / โครงการ
+    function buildGroups(data, isOverview = false) {
+        let krGroups = {};
+        
         data.forEach(row => {
             let krTitle = String(row[cols.krName] || '').trim();
             if(!krTitle || krTitle === 'NaN' || krTitle === 'None') return;
@@ -725,56 +726,50 @@
                 
                 if(calcFlag === 'คำนวณ') krGroups[krKey].accumulatedActual += pActual;
 
-                let projId = 'proj-' + Object.keys(projectDetailsDb).length;
+                let projId = 'proj-' + krKey.replace(/\s+/g, '-') + '-' + krGroups[krKey].projects.length;
                 let pData = {
                     id: projId, krParentName: krTitle, name: pName, 
                     budget: pBudget, spent: pSpent, target: pTarget, actual: pActual, 
                     unit: pUnit, progress: pProgress, calcFlag: calcFlag, 
                     doc: row[cols.docProj], reportNote: String(row[cols.reportNote] || '').trim() 
                 };
+                
                 krGroups[krKey].projects.push(pData);
-                projectDetailsDb[projId] = pData;
+                
+                // ให้ Modal อ้างอิงข้อมูลตอน Overview เต็มเท่านั้น (จะได้ไม่หายเวลา Filter)
+                if (isOverview) {
+                    projectDetailsDb[projId] = pData;
+                }
             }
         });
 
         let krArray = Object.values(krGroups);
-
-        // 2. คำนวณความคืบหน้า KR ก่อน เพื่อให้พร้อมรองรับตัวกรองสถานะ
         krArray.forEach(group => {
             group.krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
         });
 
-        // 3. 🌟 ดักจับ Status Filter (ทำงานหลังบ้าน)
-        const fStatus = document.getElementById('filterStatus') ? document.getElementById('filterStatus').value : 'all';
-        if (fStatus !== 'all') {
-            if (fStatus === 'kr_not_started') krArray = krArray.filter(g => g.krProgressPercent === 0);
-            if (fStatus === 'kr_in_progress') krArray = krArray.filter(g => g.krProgressPercent > 0 && g.krProgressPercent < 100);
-            if (fStatus === 'kr_completed') krArray = krArray.filter(g => g.krProgressPercent >= 100);
-            
-            if (fStatus === 'proj_not_started') {
-                krArray.forEach(g => g.projects = g.projects.filter(p => p.progress === 0));
-                krArray = krArray.filter(g => g.projects.length > 0);
-            }
-            if (fStatus === 'proj_in_progress') {
-                krArray.forEach(g => g.projects = g.projects.filter(p => p.progress > 0 && p.progress < 100));
-                krArray = krArray.filter(g => g.projects.length > 0);
-            }
-            if (fStatus === 'proj_completed') {
-                krArray.forEach(g => g.projects = g.projects.filter(p => p.progress >= 100));
-                krArray = krArray.filter(g => g.projects.length > 0);
-            }
-        }
+        return krArray;
+    }
 
-        // 4. คำนวณยอดรวมต่างๆ ใหม่ทั้งหมด
+    // 🌟 1. ฟังก์ชันวาดหน้าแรก (Dashboard Overview) อิงจากข้อมูลดิบทั้งหมด
+    function processOverview(data) {
+        projectDetailsDb = {}; 
+        krDetailsDb = {};
+        
+        let krArray = buildGroups(data, true); // true = สร้าง DB ให้ Modals ด้วย
+        let areaCounter = {};
+        areaMapping.forEach(a => {
+            areaCounter[a.key] = { name: a.name, img: a.img, krCount: 0, projCount: 0 };
+        });
+
         let totalBudget = 0; let totalSpent = 0; let totalProjectsCount = 0;
         let chartBudget = {}; let chartProgress = {};
-        krDetailsDb = {}; 
 
         let countH = 0, countCoH = 0, countR = 0;
         let krNotStarted = 0, krInProgress = 0, krCompleted = 0;
         let projNotStarted = 0, projInProgress = 0, projCompleted = 0;
 
-        krArray.forEach(group => {
+        krArray.forEach((group, index) => {
             if (group.isH) countH++;
             if (group.isCoH) countCoH++;
             if (group.isR) countR++;
@@ -812,7 +807,7 @@
             for (let a of areaMapping) { if(cat.includes(a.key)) { areaCounter[a.key].krCount++; break; } }
         });
 
-        // 5. อัปเดตกล่องสถิติ (หน้าแรก)
+        // 🌟 อัปเดตกล่องสถิติหน้าแรกให้เป็นข้อมูล 100% เสมอ
         document.getElementById('krNotStarted').innerText = krNotStarted;
         document.getElementById('krInProgress').innerText = krInProgress;
         document.getElementById('krCompleted').innerText = krCompleted;
@@ -845,20 +840,20 @@
         });
         document.getElementById('areaCardsContainer').innerHTML = areaCardsHTML;
 
+        // ซอร์ตจัดเรียง KRs หน้าแรก
         krArray.sort((a, b) => {
             let idA = a.id || 'ZZZ'; let idB = b.id || 'ZZZ';
             if (idA === idB) return a.category.localeCompare(b.category);
             return idA.localeCompare(idB);
         });
 
-        // 🌟 TAB 1: ตาราง KR ในหน้าแรก (แก้ Spacing แล้ว)
         let overviewHTML = '';
         krArray.forEach((group, index) => {
             let policyBadgeOverview = getPolicyBadgeHTML(group.policy);
             let roleBadgeOverview = getRoleBadge(group.isH, group.isCoH, group.isR);
             
             const overviewKrId = `kr-overview-${index}`;
-            krDetailsDb[overviewKrId] = group;
+            krDetailsDb[overviewKrId] = group; // บันทึกลงฐานข้อมูล Modal
 
             overviewHTML += `
                 <tr class="kr-overview-row" onclick="openKrModal('${overviewKrId}')" title="คลิกเพื่อดูรายละเอียดโครงการที่เกี่ยวข้อง">
@@ -884,12 +879,59 @@
         });
         document.getElementById('overviewKrTableBody').innerHTML = overviewHTML;
 
-        // 🌟 TAB 2: ตารางข้อมูลโครงการ
+        document.getElementById('statKRs').innerText = krArray.length.toLocaleString();
+        document.getElementById('statProjects').innerText = totalProjectsCount.toLocaleString();
+        document.getElementById('statBudget').innerText = window.innerWidth < 768 ? formatNumberAbbr(totalBudget) : totalBudget.toLocaleString();
+        document.getElementById('statSpent').innerText = window.innerWidth < 768 ? formatNumberAbbr(totalSpent) : totalSpent.toLocaleString();
+        
+        let spendPct = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
+        document.getElementById('statSpentPercent').innerText = spendPct.toFixed(1) + "%";
+        document.getElementById('statSpentBar').style.width = spendPct + "%";
+        
+        drawCharts(chartBudget, chartProgress);
+    }
+
+    // 🌟 2. ฟังก์ชันวาดเฉพาะตารางหน้าสอง (Detail Projects) อิงข้อมูลที่ผ่านการ Filter
+    function processDetails(data) {
+        let krArray = buildGroups(data, false);
+
+        // ดักจับและคัดกรองด้วย Status Filter ในหน้านี้
+        const fStatus = document.getElementById('filterStatus') ? document.getElementById('filterStatus').value : 'all';
+        if (fStatus !== 'all') {
+            if (fStatus === 'kr_not_started') krArray = krArray.filter(g => g.krProgressPercent === 0);
+            if (fStatus === 'kr_in_progress') krArray = krArray.filter(g => g.krProgressPercent > 0 && g.krProgressPercent < 100);
+            if (fStatus === 'kr_completed') krArray = krArray.filter(g => g.krProgressPercent >= 100);
+            
+            if (fStatus === 'proj_not_started') {
+                krArray.forEach(g => g.projects = g.projects.filter(p => p.progress === 0));
+                krArray = krArray.filter(g => g.projects.length > 0);
+            }
+            if (fStatus === 'proj_in_progress') {
+                krArray.forEach(g => g.projects = g.projects.filter(p => p.progress > 0 && p.progress < 100));
+                krArray = krArray.filter(g => g.projects.length > 0);
+            }
+            if (fStatus === 'proj_completed') {
+                krArray.forEach(g => g.projects = g.projects.filter(p => p.progress >= 100));
+                krArray = krArray.filter(g => g.projects.length > 0);
+            }
+        }
+
+        krArray.sort((a, b) => {
+            let idA = a.id || 'ZZZ'; let idB = b.id || 'ZZZ';
+            if (idA === idB) return a.category.localeCompare(b.category);
+            return idA.localeCompare(idB);
+        });
+
+        // สร้าง HTML ตาราง
         let tableHTML = ''; let krCount = 0;
         krArray.forEach(group => {
             krCount++;
             const krRowId = `kr-${krCount}`;
-            let budgetPercent = group.krBudget > 0 ? Math.min((group.krSpent / group.krBudget) * 100, 100) : 0;
+            
+            let gBudget = 0; let gSpent = 0;
+            group.projects.forEach(p => { gBudget += p.budget; gSpent += p.spent; });
+
+            let budgetPercent = gBudget > 0 ? Math.min((gSpent / gBudget) * 100, 100) : 0;
             let roleBadge = getRoleBadge(group.isH, group.isCoH, group.isR);
             let policyBadge = getPolicyBadgeHTML(group.policy);
 
@@ -926,7 +968,7 @@
                             <span>เบิกจ่ายรวม</span> <span class="text-warning">${budgetPercent.toFixed(1)}%</span>
                         </div>
                         <div class="progress progress-slim mb-1"><div class="progress-bar progress-bar-budget" style="width: ${budgetPercent}%;"></div></div>
-                        <div class="text-muted text-end" style="font-size:0.75rem;">${formatNumberAbbr(group.krSpent)} /${formatNumberAbbr(group.krBudget)}</div>
+                        <div class="text-muted text-end" style="font-size:0.75rem;">${formatNumberAbbr(gSpent)} /${formatNumberAbbr(gBudget)}</div>
                     </td>
                     <td class="text-center align-middle">${krDocButtons || `<span class="text-muted small">-</span>`}</td>
                 </tr>
@@ -975,17 +1017,7 @@
             });
         });
 
-        document.getElementById('statKRs').innerText = krCount.toLocaleString();
-        document.getElementById('statProjects').innerText = totalProjectsCount.toLocaleString();
-        document.getElementById('statBudget').innerText = window.innerWidth < 768 ? formatNumberAbbr(totalBudget) : totalBudget.toLocaleString();
-        document.getElementById('statSpent').innerText = window.innerWidth < 768 ? formatNumberAbbr(totalSpent) : totalSpent.toLocaleString();
-        
-        let spendPct = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
-        document.getElementById('statSpentPercent').innerText = spendPct.toFixed(1) + "%";
-        document.getElementById('statSpentBar').style.width = spendPct + "%";
         document.getElementById('projectTableBody').innerHTML = tableHTML;
-        
-        drawCharts(chartBudget, chartProgress);
     }
 
     function renderPolicyGlossary() {
@@ -1050,7 +1082,6 @@
         document.getElementById('glossaryContainer').innerHTML = html;
     }
 
-    // 🌟 ฟังก์ชันเปิดหน้าต่าง Modal ของ KR (และปรับช่องไฟสวยงาม)
     function openKrModal(krId) {
         const k = krDetailsDb[krId];
         if(!k) return;
@@ -1150,12 +1181,10 @@
         modal.show();
     }
 
-    // 🌟 ฟังก์ชันสลับหน้าต่าง (จาก Modal KR กดไปหา Modal Project)
     function switchModalToProject(projId) {
         const krModalEl = document.getElementById('krModal');
         const krModal = bootstrap.Modal.getInstance(krModalEl);
         
-        // รอให้ Modal เดิมปิดให้สนิทก่อน แล้วค่อยเปิดอันใหม่ (กันบักจอดำ)
         const onHidden = function () {
             krModalEl.removeEventListener('hidden.bs.modal', onHidden);
             openProjectModal(projId);
