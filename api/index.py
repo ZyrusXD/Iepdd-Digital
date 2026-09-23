@@ -32,17 +32,24 @@ def get_dashboard_data(year: str = "2570"):
         if not spreadsheet_id:
             return JSONResponse(status_code=500, content={"error": "Missing SPREADSHEET_ID"})
         
-        # 1. ดึงข้อมูลแผนยุทธศาสตร์ตามปี
+        # 1. ดึงข้อมูลแผน
         sheet = client.open_by_key(spreadsheet_id).worksheet(year)
         records = sheet.get_all_records()
         
-        # 2. ดึงข้อมูลพจนานุกรมนโยบายจากชีท "policyDictionary"
+        # 2. ดึงข้อมูลพจนานุกรม (บังคับตัดช่องว่างหน้าหลังทิ้งให้หมด)
         policy_dict_records = []
         try:
             policy_sheet = client.open_by_key(spreadsheet_id).worksheet("policyDictionary")
-            policy_dict_records = policy_sheet.get_all_records()
-        except Exception:
-            pass # หากหาชีท policyDictionary ไม่เจอให้ปล่อยผ่านไปก่อน ไม่ให้ระบบพัง
+            raw_policy = policy_sheet.get_all_records()
+            for row in raw_policy:
+                # แก้ปัญหาการเคาะเว้นวรรคผิดพลาดใน Sheet
+                p_no = str(row.get('Policy_No', '')).strip()
+                p_name = str(row.get('Policy_Name', '')).strip()
+                if p_no:
+                    policy_dict_records.append({'Policy_No': p_no, 'Policy_Name': p_name})
+        except Exception as sheet_err:
+            print(f"Policy Dictionary Error: {sheet_err}")
+            pass 
         
         return {
             "status": "success", 
