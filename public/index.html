@@ -176,7 +176,6 @@
             <!-- ================= TAB 1: OVERVIEW ================= -->
             <div class="tab-pane fade show active" id="overview">
                 
-                <!-- 🌟 กล่องสถิติหลัก 4 กล่อง (เป็นข้อมูล Global ไม่ขยับตาม Filter) -->
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-md-3">
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-green);">
@@ -219,10 +218,8 @@
                     </div>
                 </div>
 
-                <!-- 🌟 กล่องสถานะไฟจราจร (Global ไม่ขยับตาม Filter) -->
                 <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-activity me-2 text-primary"></i>สถานะการดำเนินงานรวมทั้งหมด (คลิกเพื่อดูรายละเอียด)</h5>
                 
-                <!-- แถว KRs -->
                 <div class="row g-2 g-md-3 mb-2">
                     <div class="col-12 col-md-4">
                         <div class="status-box bg-status-red clickable-box" onclick="navigateToTabAndFilter('kr_not_started')" title="คลิกเพื่อดูกลุ่มตัวชี้วัดที่ยังไม่เริ่ม">
@@ -262,7 +259,6 @@
                     </div>
                 </div>
 
-                <!-- แถว Projects -->
                 <div class="row g-2 g-md-3 mb-4">
                     <div class="col-12 col-md-4">
                         <div class="status-box bg-status-red clickable-box" style="opacity: 0.9;" onclick="navigateToTabAndFilter('proj_not_started')">
@@ -329,7 +325,6 @@
                         <div class="content-card">
                             <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
                                 <h5 class="fw-bold text-secondary fs-6 mb-0"><i class="bi bi-list-stars me-2 text-primary"></i>สรุปสถานะความสำเร็จของตัวชี้วัด (KRs)</h5>
-                                <!-- 🌟 ป้ายสรุปจำนวนเมื่อมีการฟิลเตอร์ -->
                                 <span id="filteredOverviewCount" class="badge bg-primary shadow-sm px-3 py-2 fs-6 rounded-pill mt-2 mt-md-0">แสดงผล 0 KRs</span>
                             </div>
                             <div class="swipe-hint"><i class="bi bi-hand-index-thumb"></i> เลื่อนตารางซ้าย-ขวา เพื่อดูข้อมูลเพิ่มเติม</div>
@@ -402,7 +397,6 @@
                 <div class="content-card p-0 p-md-3">
                     <div class="d-flex flex-wrap justify-content-between align-items-center p-3 pb-2 border-bottom">
                         <h6 class="fw-bold text-secondary mb-0"><i class="bi bi-table me-2 text-primary"></i>รายการโครงการ/กิจกรรม</h6>
-                        <!-- 🌟 ป้ายสรุปจำนวนเมื่อมีการฟิลเตอร์ -->
                         <span id="filteredDetailCount" class="badge bg-primary shadow-sm px-3 py-2 fs-6 rounded-pill mt-2 mt-md-0">แสดงผล 0 KRs | 0 โครงการ</span>
                     </div>
                     <div class="p-3 pb-0 d-md-none swipe-hint mb-0"><i class="bi bi-hand-index-thumb"></i> เลื่อนตารางซ้าย-ขวา เพื่อดูข้อมูลเพิ่มเติม</div>
@@ -519,6 +513,12 @@
         try {
             const cacheBuster = new Date().getTime();
             const response = await fetch(`/api/data?year=${year}&t=${cacheBuster}`);
+            
+            // ดักจับกรณี Vercel ล่มและพ่นหน้า HTML 500 กลับมา
+            if (!response.ok) {
+                throw new Error(`HTTP Error: ${response.status}`);
+            }
+
             const result = await response.json();
             
             if(result.status === 'success') {
@@ -535,7 +535,7 @@
 
                 if(globalData.length > 0) {
                     setupColumns(globalData[0]);
-                    calculateGlobalStats(globalData); // 🌟 คำนวณภาพรวมเก็บไว้ครั้งเดียว
+                    calculateGlobalStats(globalData); // คำนวณภาพรวมเก็บไว้ครั้งเดียว
                     populateDropdownFilters(globalData);
                     applyFilters(); 
                     renderPolicyGlossary();
@@ -565,9 +565,12 @@
                     document.getElementById('filteredOverviewCount').innerText = `แสดงผล: 0 KRs`;
                     document.getElementById('filteredDetailCount').innerText = `แสดงผล: 0 KRs | 0 โครงการ`;
                 }
-            } else { alert("เกิดข้อผิดพลาด: " + result.error); }
+            } else { 
+                alert("เกิดข้อผิดพลาดจากฐานข้อมูล: " + result.error); 
+            }
         } catch (error) {
-            console.error(error); alert("ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาลองใหม่อีกครั้ง");
+            console.error("Fetch Data Error:", error); 
+            alert(`ไม่สามารถเชื่อมต่อฐานข้อมูลได้\nสาเหตุ: ${error.message}\n(โปรดตรวจสอบว่าหน้า API ใช้งานได้ปกติ)`);
         } finally {
             document.getElementById('loading').classList.add('d-none');
         }
@@ -676,7 +679,6 @@
             else krInProgress++;
         });
 
-        // อัปเดตกล่องสถิติ (คงที่ตลอดการทำงาน)
         document.getElementById('statKRs').innerText = krCount.toLocaleString();
         document.getElementById('statProjects').innerText = totalProjectsCount.toLocaleString();
         document.getElementById('statBudget').innerText = window.innerWidth < 768 ? formatNumberAbbr(globalStatsData.budget) : globalStatsData.budget.toLocaleString();
@@ -771,7 +773,6 @@
         processData(filteredData);
     }
 
-    // 🌟 ฟังก์ชันวาร์ปไป TAB 2 และ Filter แบบ Dynamic (คลิกจากป้ายหน้า 1)
     function navigateToTabAndFilter(statusValue) {
         const detailTabBtn = document.getElementById('detail-tab');
         const tab = new bootstrap.Tab(detailTabBtn);
@@ -804,7 +805,6 @@
         }
     }
 
-    // 🌟 ฟังก์ชันประมวลผลสำหรับแสดงผลหน้าตารางและกราฟ (ขยับตาม Filter)
     function processData(data) {
         let krGroups = {}; 
         let chartBudget = {}; let chartProgress = {};
@@ -870,12 +870,10 @@
 
         let krArray = Object.values(krGroups);
 
-        // คำนวณความคืบหน้า KR ก่อน เพื่อให้รองรับ Filter
         krArray.forEach(group => {
             group.krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
         });
 
-        // ดักจับ Status Filter (ทำงานเฉพาะส่วนแสดงผล)
         const fStatus = document.getElementById('filterStatus') ? document.getElementById('filterStatus').value : 'all';
         if (fStatus !== 'all') {
             if (fStatus === 'kr_not_started') krArray = krArray.filter(g => g.krProgressPercent === 0);
@@ -914,11 +912,9 @@
             });
         });
 
-        // 🌟 อัปเดตป้ายแจ้งจำนวนที่ถูก Filter บริเวณหัวตาราง
         document.getElementById('filteredOverviewCount').innerText = `แสดงผล: ${krArray.length} KRs`;
         document.getElementById('filteredDetailCount').innerText = `แสดงผล: ${krArray.length} KRs \vert{}${filteredProjCount} โครงการ`;
 
-        // สร้างการ์ดไอคอน 9 ด้าน
         let areaCardsHTML = '';
         Object.values(areaCounter).forEach(area => {
             let imgOrIcon = `<img src="${area.img}" class="area-icon" onerror="this.outerHTML='<i class=\\'bi bi-compass text-primary\\' style=\\'font-size: 2.5rem;\\'></i>'">`;
@@ -945,7 +941,6 @@
             return idA.localeCompare(idB);
         });
 
-        // TAB 1: ตาราง KR ในหน้าแรก
         let overviewHTML = '';
         krArray.forEach((group, index) => {
             let policyBadgeOverview = getPolicyBadgeHTML(group.policy);
@@ -977,7 +972,6 @@
         });
         document.getElementById('overviewKrTableBody').innerHTML = overviewHTML;
 
-        // TAB 2: ตารางข้อมูลโครงการ
         let tableHTML = ''; let krCount = 0;
         krArray.forEach(group => {
             krCount++;
