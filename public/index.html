@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dashboard ยุทธศาสตร์ | สยป. กทม.</title>
+    <title>ระบบบริหารจัดการแผนยุทธศาสตร์ | สดท. กทม.</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -33,8 +33,8 @@
         
         /* Navbar & Logo */
         .navbar-custom { background: var(--primary-gradient); padding: 0.8rem 0; }
-        .nav-brand-text { line-height: 1.3; }
-        .logo-img { height: 55px; object-fit: contain; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .nav-brand-text { line-height: 1.4; white-space: normal; } /* รองรับการขึ้นบรรทัดใหม่ */
+        .logo-img { height: 55px; object-fit: contain; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex-shrink: 0;}
         
         /* Tabs */
         .nav-tabs { border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
@@ -96,16 +96,18 @@
             margin-top: 4px;
         }
 
-        /* Mobile Adjustments */
+        /* 📱 Mobile Adjustments */
         @media (max-width: 768px) {
-            .navbar-custom .container-fluid { flex-direction: column; align-items: stretch !important; gap: 10px; }
-            .navbar-brand { justify-content: center; margin-bottom: 5px; text-align: center; flex-direction: column; }
-            .logo-img { height: 45px; margin-right: 0 !important; margin-bottom: 10px; }
-            .nav-brand-text { text-align: center !important; }
-            .nav-brand-text .fs-4 { font-size: 1.25rem !important; }
-            .nav-brand-text .fs-6 { font-size: 0.8rem !important; }
+            .navbar-custom .container-fluid { flex-direction: column; align-items: center !important; gap: 10px; padding-top: 10px; padding-bottom: 10px; }
+            .navbar-brand { flex-direction: column; text-align: center; margin: 0; width: 100%; }
+            .logo-img { height: 50px; margin: 0 0 10px 0 !important; }
             
-            .year-selector-container { justify-content: space-between; background: rgba(255,255,255,0.1); padding: 8px 15px !important; border-radius: 8px; }
+            /* แก้ปัญหาชื่อยาวล้นหน้าจอ */
+            .nav-brand-text { width: 100%; text-align: center !important; padding: 0 5px; }
+            .nav-brand-text .fs-4 { font-size: 1.15rem !important; margin-bottom: 5px; word-wrap: break-word; }
+            .nav-brand-text .fs-6 { font-size: 0.75rem !important; opacity: 0.85; }
+            
+            .year-selector-container { justify-content: center; width: 100%; background: rgba(255,255,255,0.1); padding: 8px !important; border-radius: 8px; margin-top: 5px; }
             .year-selector-container select { width: 120px !important; }
 
             .stat-box h3 { font-size: 1.5rem; }
@@ -127,11 +129,12 @@
 
 <nav class="navbar navbar-dark navbar-custom shadow-sm">
     <div class="container-fluid px-4">
+        <!-- Logo & Branding -->
         <a class="navbar-brand d-flex align-items-center m-0" href="#">
             <img src="logo.png" alt="สยป. กทม." class="logo-img me-3">
             <div class="nav-brand-text text-start">
-                <div class="fs-4 fw-bold">ระบบติดตามแผนปฏิบัติราชการ</div>
-                <div class="fs-6 fw-light text-light opacity-75">กองยุทธศาสตร์พัฒนาโครงสร้างพื้นฐานเมือง | สำนักยุทธศาสตร์และประเมินผล</div>
+                <div class="fs-4 fw-bold">ระบบบริหารจัดการแผนยุทธศาสตร์ สำนักดิจิทัลกรุงเทพมหานคร</div>
+                <div class="fs-6 fw-light text-light">กองยุทธศาสตร์พัฒนาโครงสร้างพื้นฐานเมือง | สำนักยุทธศาสตร์และประเมินผล</div>
             </div>
         </a>
         
@@ -167,6 +170,7 @@
             
             <!-- TAB 1: OVERVIEW -->
             <div class="tab-pane fade show active" id="overview">
+                <!-- Stat Cards -->
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-md-3">
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-green);">
@@ -267,7 +271,7 @@
                             <select id="filterPolicy" class="form-select form-select-sm" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
                         </div>
                         <div class="col-6 col-lg">
-                            <label class="form-label text-muted small fw-bold mb-1">บทบาท สยป.</label>
+                            <label class="form-label text-muted small fw-bold mb-1">บทบาท สดท.</label>
                             <select id="filterRole" class="form-select form-select-sm" onchange="applyFilters()">
                                 <option value="all">ทั้งหมด</option>
                                 <option value="host">H: เจ้าภาพหลัก</option>
@@ -375,7 +379,7 @@
             spent: keys.find(k => k.includes('ผลการเบิกจ่ายจริง')),
             
             projTarget: keys.find(k => k.includes('ค่าเป้าหมายของโครงการ')),
-            projUnit: keys.find(k => k.includes('หน่วยนับของค่าเป้าหมายโครงการ')), // <--- ดึงหน่วยนับโครงการ
+            projUnit: keys.find(k => k.includes('หน่วยนับของค่าเป้าหมายโครงการ')),
             projActual: keys.find(k => k.includes('ผลการดำเนินงานตามค่าเป้าหมายของโครงการ') || k.includes('ผลการดำเนินงาน')),
             calcToKR: keys.find(k => k.includes('การคำนวณเข้า KR')),
             
@@ -408,11 +412,12 @@
         policies.forEach(p => { policySelect.innerHTML += `<option value="${p}">${p}</option>`; });
     }
 
+    // ⭐ แก้ไข Logic การตรวจเช็ก H/R ให้เช็กเฉพาะ สดท หรือ สำนักดิจิทัล
     function checkRole(row) {
         let hText = String(row[cols.hostDept] || '');
         let rText = String(row[cols.relDept] || '');
-        let isH = hText.includes('สยป') || hText.includes('ยุทธศาสตร์') || hText.includes('สดท');
-        let isR = rText.includes('สยป') || rText.includes('ยุทธศาสตร์') || rText.includes('สดท');
+        let isH = hText.includes('สดท') || hText.includes('สำนักดิจิทัล');
+        let isR = rText.includes('สดท') || rText.includes('สำนักดิจิทัล');
         return { isH, isR };
     }
 
@@ -523,7 +528,7 @@
                     name: pName, 
                     budget: pBudget, spent: pSpent,
                     target: pTarget, actual: pActual, 
-                    unit: pUnit, // เก็บหน่วยนับโครงการ
+                    unit: pUnit, 
                     progress: pProgress,
                     calcFlag: calcFlag, 
                     doc: row[cols.docProj],
@@ -761,7 +766,6 @@
         if(budgetChartInstance) budgetChartInstance.destroy();
         if(progressChartInstance) progressChartInstance.destroy();
 
-        // BMA Color System 
         const bmaColors = ['#00744b', '#00c08b', '#67a33b', '#ffb449', '#0071ce', '#ec3faa'];
 
         const ctxB = document.getElementById('budgetChart').getContext('2d');
