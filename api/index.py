@@ -17,7 +17,7 @@ app.add_middleware(
 )
 
 @app.get("/api/data")
-def get_dashboard_data(year: str = "2570"):
+def get_dashboard_data(year: str = "2570", t: str = None):
     try:
         google_creds_str = os.environ.get("GOOGLE_CREDENTIALS")
         if not google_creds_str:
@@ -31,31 +31,55 @@ def get_dashboard_data(year: str = "2570"):
         spreadsheet_id = os.environ.get("SPREADSHEET_ID")
         if not spreadsheet_id:
             return JSONResponse(status_code=500, content={"error": "Missing SPREADSHEET_ID"})
+            
+        sh = client.open_by_key(spreadsheet_id)
         
-        # 1. ดึงข้อมูลแผนยุทธศาสตร์ (ดึงทุกแถวที่มีข้อมูล)
-        main_sheet = client.open_by_key(spreadsheet_id).worksheet(year)
-        records = main_sheet.get_all_records()
-        
-        # 2. ดึงข้อมูล Dictionary (ใช้วิธี get_all_records เพื่อดึงตามหัวคอลัมน์โดยตรง)
-        policy_dict_records = []
+        # 1. ดึงข้อมูลแผนยุทธศาสตร์ (ดักจับ Error กรณีชีทว่างเปล่า หรือยังไม่ได้กรอก)
+        records = []
         try:
-            policy_sheet = client.open_by_key(spreadsheet_id).worksheet("policyDictionary")
-            # ดึงข้อมูลทั้งหมดโดยให้แถวแรกเป็น Header อัตโนมัติ
-            dict_data = policy_sheet.get_all_records()
-            for row in dict_data:
-                p_no = str(row.get('Policy_No', '')).strip()
-                p_name = str(row.get('Policy_Name', '')).strip()
-                if p_no:
-                    policy_dict_records.append({'Policy_No': p_no, 'Policy_Name': p_name})
-        except Exception as sheet_err:
-            print(f"Policy Dictionary Error: {sheet_err}")
+            main_sheet = sh.worksheet(year)
+            records = main_sheet.get_all_records()
+        except Exception:
+            pass # ปล่อยผ่านเป็น list ว่าง
         
-        return {
+        # 2. ค้นหาชีท Dictionary แบบยืดหยุ่น (แก้ปัญหาการเผลอเคาะเว้นวรรค หรือตัวพิมพ์เล็กใหญ่ในชื่อชีท)
+        policy_dict_records = []
+        policy_sheet = None
+        for ws in sh.worksheets():
+            if ws.title.strip().lower() == "policydictionary":
+                policy_sheet = ws
+                break
+                
+        # ดึงข้อมูลจากคอลัมน์ A และ B โดยตรง (ป้องกันปัญหาตั้งชื่อหัวคอลัมน์ผิด)
+        if policy_sheet:
+            try:
+                raw_policy = policy_sheet.get_all_values()
+                if len(raw_policy) > 1:
+                    for row in raw_policy[1:]: # ข้ามบรรทัดที่ 1 (หัวตาราง)
+                        if len(row) >= 2:
+                            p_no = str(row[0]).strip()
+                            p_name = str(row[1]).strip()
+                            if p_no:
+                                policy_dict_records.append({'Policy_No': p_no, 'Policy_Name': p_name})
+            except Exception as e:
+                print(f"Read policy error: {e}")
+        
+        response_data = {
             "status": "success", 
             "year": year, 
             "data": records, 
             "policy_dict": policy_dict_records
         }
+        
+        # 🌟 สั่งปิดการ Cache ของ Vercel อย่างเด็ดขาด
+        return JSONResponse(
+            content=response_data,
+            headers={
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0"
+            }
+        )
         
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
