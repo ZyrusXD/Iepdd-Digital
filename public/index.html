@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
+        /* BMA Official Color System */
         :root { 
             --bma-green: #00744b; --bma-green-dark: #205a41;
             --bma-blue: #0071ce; --bma-light-green: #67a33b; --bma-orange: #ffb449;
@@ -41,6 +42,18 @@
         .stat-box h3 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0; }
         .stat-icon { position: absolute; right: -10px; bottom: -15px; font-size: 5rem; opacity: 0.15; transition: transform 0.3s;}
         .stat-box:hover .stat-icon { transform: scale(1.1) rotate(-5deg); }
+
+        /* Status Boxes (Mini Cards) */
+        .status-box { padding: 15px 20px; border-radius: 10px; position: relative; overflow: hidden; color: white; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.2); transition: transform 0.2s; }
+        .status-box:hover { transform: translateY(-3px); }
+        .status-box h3 { font-size: 2rem; font-weight: 800; margin: 0; line-height: 1; }
+        .status-box .title { font-size: 0.85rem; font-weight: 600; opacity: 0.9; margin-bottom: 2px; }
+        .status-box .subtitle { font-size: 0.75rem; opacity: 0.75; margin: 0; }
+        .status-icon { font-size: 2.5rem; opacity: 0.3; }
+        
+        .bg-status-red { background: linear-gradient(135deg, #f87171 0%, #ef4444 100%); }
+        .bg-status-yellow { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+        .bg-status-green { background: linear-gradient(135deg, #34d399 0%, #10b981 100%); }
 
         .area-card { background: white; border-radius: 12px; padding: 15px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.3s; display: flex; align-items: center; gap: 15px; }
         .area-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,116,75,0.1); border-color: var(--bma-green); }
@@ -164,7 +177,6 @@
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-green);">
                             <p class="mb-1 opacity-75 fw-medium small">ตัวชี้วัด (KRs)</p>
                             <h3 id="statKRs" class="mb-1">0</h3>
-                            <!-- สรุปจำนวนแยกตามสถานะ H, Co-H, R -->
                             <div class="d-flex gap-1 flex-wrap" style="font-size: 0.7rem;">
                                 <span id="countH" class="badge bg-white text-dark opacity-100 shadow-sm border">H: 0</span>
                                 <span id="countCoH" class="badge bg-white text-dark opacity-100 shadow-sm border">Co-H: 0</span>
@@ -198,6 +210,89 @@
                                 <small id="statSpentPercent" class="fw-bold" style="font-size: 0.75rem;">0%</small>
                             </div>
                             <i class="bi bi-graph-up-arrow stat-icon text-white"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🌟 กล่องสถานะการดำเนินงาน (Traffic Light Badges) -->
+                <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-activity me-2 text-primary"></i>สถานะการดำเนินงาน (ตัวชี้วัด และ โครงการ)</h5>
+                
+                <!-- แถว KRs -->
+                <div class="row g-2 g-md-3 mb-2">
+                    <div class="col-12 col-md-4">
+                        <div class="status-box bg-status-red">
+                            <div>
+                                <div class="title">KRs ยังไม่ดำเนินการ</div>
+                                <div class="subtitle">ความคืบหน้า 0%</div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <h3 id="krNotStarted" class="me-3">0</h3>
+                                <i class="bi bi-x-circle-fill status-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="status-box bg-status-yellow">
+                            <div>
+                                <div class="title">KRs อยู่ระหว่างดำเนินการ</div>
+                                <div class="subtitle">ความคืบหน้ามากกว่า 0%</div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <h3 id="krInProgress" class="me-3">0</h3>
+                                <i class="bi bi-arrow-repeat status-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="status-box bg-status-green">
+                            <div>
+                                <div class="title">KRs ดำเนินการแล้วเสร็จ</div>
+                                <div class="subtitle">ความคืบหน้าเท่ากับ 100%</div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <h3 id="krCompleted" class="me-3">0</h3>
+                                <i class="bi bi-check-circle-fill status-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- แถว Projects -->
+                <div class="row g-2 g-md-3 mb-4">
+                    <div class="col-12 col-md-4">
+                        <div class="status-box bg-status-red" style="opacity: 0.9;">
+                            <div>
+                                <div class="title">โครงการ ยังไม่ดำเนินการ</div>
+                                <div class="subtitle">ความคืบหน้า 0%</div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <h3 id="projNotStarted" class="me-3">0</h3>
+                                <i class="bi bi-x-circle-fill status-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="status-box bg-status-yellow" style="opacity: 0.9;">
+                            <div>
+                                <div class="title">โครงการ อยู่ระหว่างดำเนินการ</div>
+                                <div class="subtitle">ความคืบหน้ามากกว่า 0%</div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <h3 id="projInProgress" class="me-3">0</h3>
+                                <i class="bi bi-arrow-repeat status-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="status-box bg-status-green" style="opacity: 0.9;">
+                            <div>
+                                <div class="title">โครงการ ดำเนินการแล้วเสร็จ</div>
+                                <div class="subtitle">ความคืบหน้าเท่ากับ 100%</div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <h3 id="projCompleted" class="me-3">0</h3>
+                                <i class="bi bi-check-circle-fill status-icon"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -348,7 +443,7 @@
   </div>
 </div>
 
-<!-- 🌟 Modal: KR Details (จากหน้าแรก) 🌟 -->
+<!-- ================= Modal: KR Details (จากหน้าแรก) ================= -->
 <div class="modal fade" id="krModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content border-0 shadow-lg">
@@ -419,8 +514,6 @@
                     document.getElementById('emptyState').classList.remove('d-none');
                     renderPolicyGlossary(); 
                     document.getElementById('dashboardContent').classList.remove('d-none');
-                    document.getElementById('overview').innerHTML = '<div class="alert alert-info">ไม่พบข้อมูลสถิติ กรุณาเพิ่มข้อมูลโครงการลงใน Google Sheets</div>';
-                    document.getElementById('detail').innerHTML = '<div class="alert alert-info">ไม่พบข้อมูลโครงการ</div>';
                 }
             } else { alert("เกิดข้อผิดพลาด: " + result.error); }
         } catch (error) {
@@ -485,13 +578,11 @@
         [...policies].sort().forEach(p => { policySelect.innerHTML += `<option value="${p}">${p}</option>`; });
     }
 
-    // 🌟 อัปเกรดการเช็กบทบาท (รวม H, Co-H, R)
     function checkRole(row) {
         let hText = String(row[cols.hostDept] || '');
         let rText = String(row[cols.relDept] || '');
         let hasSdtH = hText.includes('สดท') || hText.includes('สำนักดิจิทัล');
         
-        // เช็ก Co-Host (มี สดท. และมีเครื่องหมาย / หรือ , หรือคำว่าและ)
         let isCoH = hasSdtH && (hText.includes('/') || hText.includes(',')); 
         let isH = hasSdtH && !isCoH;
         let isR = rText.includes('สดท') || rText.includes('สำนักดิจิทัล');
@@ -499,7 +590,6 @@
         return { isH, isCoH, isR };
     }
 
-    // ฟังก์ชันช่วยสร้างป้าย Badge H, Co-H, R
     function getRoleBadge(isH, isCoH, isR) {
         let b = '';
         if (isH) b += `<span class="badge ms-2 shadow-sm border" style="background-color: var(--bma-green); color: white;">H</span>`;
@@ -578,6 +668,10 @@
             areaCounter[a.key] = { name: a.name, img: a.img, krCount: 0, projCount: 0 };
         });
 
+        // 🌟 ตัวนับสถานะ 3 สี (แดง, เหลือง, เขียว)
+        let krNotStarted = 0, krInProgress = 0, krCompleted = 0;
+        let projNotStarted = 0, projInProgress = 0, projCompleted = 0;
+
         data.forEach(row => {
             let krTitle = String(row[cols.krName] || '').trim();
             if(!krTitle || krTitle === 'NaN' || krTitle === 'None') return;
@@ -599,7 +693,6 @@
                 };
                 for (let a of areaMapping) { if(cat.includes(a.key)) { areaCounter[a.key].krCount++; break; } }
             } else {
-                // อัปเดตสถานะเผื่อมีหลายบรรทัด
                 krGroups[krKey].isH = krGroups[krKey].isH || roles.isH;
                 krGroups[krKey].isCoH = krGroups[krKey].isCoH || roles.isCoH;
                 krGroups[krKey].isR = krGroups[krKey].isR || roles.isR;
@@ -667,10 +760,9 @@
             return idA.localeCompare(idB);
         });
 
-        // ตัวแปรนับจำนวนตามสถานะ สดท.
         let countH = 0, countCoH = 0, countR = 0;
 
-        // 🌟 TAB 1: ตาราง KR ในหน้าแรก (คลิกได้)
+        // 🌟 TAB 1: ตาราง KR และการคำนวณสถานะ 3 สี
         let overviewHTML = '';
         krArray.forEach((group, index) => {
             if (group.isH) countH++;
@@ -678,6 +770,19 @@
             if (group.isR) countR++;
 
             let krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
+            
+            // นับสถานะ KR
+            if (krProgressPercent === 0) krNotStarted++;
+            else if (krProgressPercent >= 100) krCompleted++;
+            else krInProgress++;
+
+            // นับสถานะ Project ใน KR นี้
+            group.projects.forEach(p => {
+                if (p.progress === 0) projNotStarted++;
+                else if (p.progress >= 100) projCompleted++;
+                else projInProgress++;
+            });
+
             let policyBadgeOverview = getPolicyBadgeHTML(group.policy);
             let roleBadgeOverview = getRoleBadge(group.isH, group.isCoH, group.isR);
             
@@ -708,7 +813,14 @@
         });
         document.getElementById('overviewKrTableBody').innerHTML = overviewHTML;
 
-        // อัปเดตตัวเลขในกล่องตัวชี้วัด KRs ใน TAB 1
+        // อัปเดตตัวเลขในกล่องสรุปสถานะ
+        document.getElementById('krNotStarted').innerText = krNotStarted;
+        document.getElementById('krInProgress').innerText = krInProgress;
+        document.getElementById('krCompleted').innerText = krCompleted;
+        document.getElementById('projNotStarted').innerText = projNotStarted;
+        document.getElementById('projInProgress').innerText = projInProgress;
+        document.getElementById('projCompleted').innerText = projCompleted;
+
         document.getElementById('countH').innerText = `H: ${countH}`;
         document.getElementById('countCoH').innerText = `Co-H: ${countCoH}`;
         document.getElementById('countR').innerText = `R: ${countR}`;
@@ -823,7 +935,6 @@
         drawCharts(chartBudget, chartProgress);
     }
 
-    // 🌟 ดึงข้อมูลและไฮไลท์นโยบายของ สดท. ในบรรณานุกรม
     function renderPolicyGlossary() {
         let glossaryMap = {};
         window.sdtPolicies = new Set(); 
@@ -886,7 +997,6 @@
         document.getElementById('glossaryContainer').innerHTML = html;
     }
 
-    // 🌟 ฟังก์ชันเปิดหน้าต่าง Modal ของ KR (จากแท็บหน้าแรก) 🌟
     function openKrModal(krId) {
         const k = krDetailsDb[krId];
         if(!k) return;
