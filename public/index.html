@@ -395,12 +395,21 @@
                             <select id="filterPolicy" class="form-select" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
                         </div>
                         <div class="col-6 col-lg">
-                            <label class="form-label text-muted small fw-bold mb-1">บทบาท สดท.</label>
+                            <label class="form-label text-muted small fw-bold mb-1">บทบาทตาม KRs</label>
                             <select id="filterRole" class="form-select" onchange="applyFilters()">
                                 <option value="all">ทั้งหมด</option>
-                                <option value="host">H: เจ้าภาพหลัก</option>
-                                <option value="cohost">Co-H: เจ้าภาพร่วม</option>
-                                <option value="relative">R: ร่วมสนับสนุน</option>
+                                <option value="host">เจ้าภาพหลัก (H)</option>
+                                <option value="cohost">เจ้าภาพร่วม (Co-H)</option>
+                                <option value="relative">หน่วยสนับสนุน (R)</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-lg">
+                            <label class="form-label text-muted small fw-bold mb-1">บทบาท Policy ของ สดท.</label>
+                            <select id="filterPolicyRole" class="form-select" onchange="applyFilters()">
+                                <option value="all">ทั้งหมด</option>
+                                <option value="host">หน่วยงานหลัก (H)</option>
+                                <option value="relative">หน่วยงานสนับสนุน (R)</option>
+                                <option value="related">เกี่ยวข้องกับงาน สดท.</option>
                             </select>
                         </div>
                         <div class="col-12 col-lg">
@@ -673,10 +682,12 @@
         }
     }
 
+    // 🌟 ฟังก์ชันกรองข้อมูลที่มีการเพิ่มเงื่อนไข บทบาท Policy เข้ามา
     function applyFilters() {
         const fCat = document.getElementById('filterCategory').value;
         const fPolicy = document.getElementById('filterPolicy').value;
         const fRole = document.getElementById('filterRole').value;
+        const fPolicyRole = document.getElementById('filterPolicyRole').value;
         const fSearch = document.getElementById('filterSearch').value.toLowerCase();
 
         let filteredData = globalData.filter(row => {
@@ -690,6 +701,39 @@
             if (fRole === 'cohost' && !roles.isCoH) roleMatch = false;
             if (fRole === 'relative' && !roles.isR) roleMatch = false;
 
+            // 🌟 เงื่อนไขใหม่: บทบาท Policy ของ สดท.
+            let policyRoleMatch = true;
+            if (fPolicyRole !== 'all') {
+                let isPH = false;
+                let isPR = false;
+                let hasValidPolicy = false;
+                
+                if(pRaw && pRaw !== 'NaN' && pRaw !== '-' && !pRaw.includes('ไม่สอดคล้อง')) {
+                    pRaw.split(',').forEach(p => {
+                        let code = p.trim().toUpperCase();
+                        if(code) {
+                            hasValidPolicy = true;
+                            let dictEntry = policyDictionary[code];
+                            if(dictEntry) {
+                                if(dictEntry.host.includes('สดท') || dictEntry.host.includes('สำนักดิจิทัล')) isPH = true;
+                                if(dictEntry.relative.includes('สดท') || dictEntry.relative.includes('สำนักดิจิทัล')) isPR = true;
+                            }
+                        }
+                    });
+                }
+                
+                if (fPolicyRole === 'host' && !isPH) policyRoleMatch = false;
+                if (fPolicyRole === 'relative' && !isPR) policyRoleMatch = false;
+                if (fPolicyRole === 'related') {
+                    // หากเลือก "เกี่ยวข้อง" แปลว่าต้องมีนโยบายอย่างน้อย 1 ตัว และ สดท. เป็น H หรือ R ในนโยบาย
+                    // หรือ สดท. เกี่ยวกับ KR นั้นอยู่แล้ว 
+                    let isSdtInvolved = roles.isH || roles.isCoH || roles.isR;
+                    if (!hasValidPolicy || (!isPH && !isPR && !isSdtInvolved)) {
+                        policyRoleMatch = false;
+                    }
+                }
+            }
+
             let searchMatch = true;
             if (fSearch !== '') {
                 let krCode = String(row[cols.krID] || '').toLowerCase();
@@ -699,7 +743,7 @@
 
             let isKRRow = String(row[cols.krName] || '').trim() !== '' && String(row[cols.krName] || '').trim() !== 'NaN';
             if (isKRRow) {
-                return catMatch && policyMatch && roleMatch && searchMatch;
+                return catMatch && policyMatch && roleMatch && policyRoleMatch && searchMatch;
             }
             return true; 
         });
@@ -1057,7 +1101,6 @@
         document.getElementById('projectTableBody').innerHTML = tableHTML;
     }
 
-    // 🌟 อัปเกรดให้เชื่อมโยงสีและป้ายเข้ากับหน้าสารานุกรมนโยบาย (Tab 3) ด้วย
     function renderPolicyGlossary() {
         let glossaryMap = {};
         window.sdtPolicies = new Set(); 
