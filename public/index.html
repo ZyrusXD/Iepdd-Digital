@@ -489,7 +489,7 @@
     let progressChartInstance = null;
     let policyDictionary = {};
     
-    // 🌟 ตัวแปรเก็บค่า Global Stats (ห้ามขยับตาม Filter เด็ดขาด)
+    // ตัวแปรเก็บค่า Global Stats (ห้ามขยับตาม Filter)
     let globalStatsData = { budget: 0, spent: 0 };
 
     const areaMapping = [
@@ -514,7 +514,6 @@
             const cacheBuster = new Date().getTime();
             const response = await fetch(`/api/data?year=${year}&t=${cacheBuster}`);
             
-            // ดักจับกรณี Vercel ล่มและพ่นหน้า HTML 500 กลับมา
             if (!response.ok) {
                 throw new Error(`HTTP Error: ${response.status}`);
             }
@@ -562,8 +561,8 @@
                     
                     document.getElementById('overviewKrTableBody').innerHTML = '';
                     document.getElementById('projectTableBody').innerHTML = '';
-                    document.getElementById('filteredOverviewCount').innerText = `แสดงผล: 0 KRs`;
-                    document.getElementById('filteredDetailCount').innerText = `แสดงผล: 0 KRs | 0 โครงการ`;
+                    document.getElementById('filteredOverviewCount').innerText = `แสดงผล 0 KRs`;
+                    document.getElementById('filteredDetailCount').innerText = `แสดงผล 0 KRs | 0 โครงการ`;
                 }
             } else { 
                 alert("เกิดข้อผิดพลาดจากฐานข้อมูล: " + result.error); 
@@ -614,7 +613,7 @@
         return { isH, isCoH, isR };
     }
 
-    // 🌟 ฟังก์ชันคำนวณข้อมูลระดับ Global (ทำครั้งเดียว ไม่สน Filter)
+    // ฟังก์ชันคำนวณข้อมูลระดับ Global (ทำครั้งเดียว ไม่สน Filter)
     function calculateGlobalStats(data) {
         let krGroups = {}; 
         globalStatsData.budget = 0; 
@@ -912,8 +911,8 @@
             });
         });
 
-        document.getElementById('filteredOverviewCount').innerText = `แสดงผล: ${krArray.length} KRs`;
-        document.getElementById('filteredDetailCount').innerText = `แสดงผล: ${krArray.length} KRs \vert{}${filteredProjCount} โครงการ`;
+        document.getElementById('filteredOverviewCount').innerText = `แสดงผล ${krArray.length} KRs`;
+        document.getElementById('filteredDetailCount').innerText = `แสดงผล ${krArray.length} KRs \vert{}${filteredProjCount} โครงการ`;
 
         let areaCardsHTML = '';
         Object.values(areaCounter).forEach(area => {
