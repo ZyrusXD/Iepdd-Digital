@@ -42,6 +42,7 @@
         .stat-icon { position: absolute; right: -10px; bottom: -15px; font-size: 5rem; opacity: 0.15; transition: transform 0.3s;}
         .stat-box:hover .stat-icon { transform: scale(1.1) rotate(-5deg); }
 
+        /* 🌟 Status Boxes (Mini Cards) & Interactivity */
         .status-box { padding: 15px 20px; border-radius: 10px; position: relative; overflow: hidden; color: white; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s; }
         .status-box h3 { font-size: 2rem; font-weight: 800; margin: 0; line-height: 1; }
         .status-box .title { font-size: 0.85rem; font-weight: 600; opacity: 0.9; margin-bottom: 2px; }
@@ -176,10 +177,11 @@
             <!-- ================= TAB 1: OVERVIEW ================= -->
             <div class="tab-pane fade show active" id="overview">
                 
+                <!-- Stat Cards -->
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-md-3">
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-green);">
-                            <p class="mb-1 opacity-75 fw-medium small">ตัวชี้วัด (KRs) รวมทั้งหมด</p>
+                            <p class="mb-1 opacity-75 fw-medium small">ตัวชี้วัด (KRs)</p>
                             <h3 id="statKRs" class="mb-1">0</h3>
                             <div class="d-flex gap-1 flex-wrap" style="font-size: 0.7rem;">
                                 <span id="countH" class="badge bg-white text-dark opacity-100 shadow-sm border">H: 0</span>
@@ -191,21 +193,21 @@
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-blue);">
-                            <p class="mb-1 opacity-75 fw-medium small">โครงการ/กิจกรรม รวมทั้งหมด</p>
+                            <p class="mb-1 opacity-75 fw-medium small">โครงการ/กิจกรรม</p>
                             <h3 id="statProjects">0</h3>
                             <i class="bi bi-diagram-3-fill stat-icon text-white"></i>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="stat-box h-100" style="background-color: var(--bma-light-green); color: white;">
-                            <p class="mb-1 opacity-75 fw-medium small">งบประมาณรวมทั้งสิ้น (บาท)</p>
+                            <p class="mb-1 opacity-75 fw-medium small">งบประมาณรวม (บาท)</p>
                             <h3 id="statBudget" class="fs-4">0</h3>
                             <i class="bi bi-cash-coin stat-icon text-white"></i>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="stat-box h-100" style="background-color: var(--bma-orange); color: white;">
-                            <p class="mb-1 opacity-75 fw-medium small">เบิกจ่ายสะสมทั้งสิ้น</p>
+                            <p class="mb-1 opacity-75 fw-medium small">เบิกจ่ายสะสม</p>
                             <h3 id="statSpent" class="fs-4">0</h3>
                             <div class="mt-1 d-flex align-items-center">
                                 <div class="progress flex-grow-1 me-2" style="height: 4px; background: rgba(255,255,255,0.3);">
@@ -218,8 +220,10 @@
                     </div>
                 </div>
 
-                <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-activity me-2 text-primary"></i>สถานะการดำเนินงานรวมทั้งหมด (คลิกเพื่อดูรายละเอียด)</h5>
+                <!-- 🌟 กล่องสถานะ 3 สี (Interactive Clickable) -->
+                <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-activity me-2 text-primary"></i>สถานะการดำเนินงาน (คลิกเพื่อดูรายละเอียด)</h5>
                 
+                <!-- แถว KRs -->
                 <div class="row g-2 g-md-3 mb-2">
                     <div class="col-12 col-md-4">
                         <div class="status-box bg-status-red clickable-box" onclick="navigateToTabAndFilter('kr_not_started')" title="คลิกเพื่อดูกลุ่มตัวชี้วัดที่ยังไม่เริ่ม">
@@ -259,6 +263,7 @@
                     </div>
                 </div>
 
+                <!-- แถว Projects -->
                 <div class="row g-2 g-md-3 mb-4">
                     <div class="col-12 col-md-4">
                         <div class="status-box bg-status-red clickable-box" style="opacity: 0.9;" onclick="navigateToTabAndFilter('proj_not_started')">
@@ -323,10 +328,7 @@
                 <div class="row g-3">
                     <div class="col-12">
                         <div class="content-card">
-                            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-                                <h5 class="fw-bold text-secondary fs-6 mb-0"><i class="bi bi-list-stars me-2 text-primary"></i>สรุปสถานะความสำเร็จของตัวชี้วัด (KRs)</h5>
-                                <span id="filteredOverviewCount" class="badge bg-primary shadow-sm px-3 py-2 fs-6 rounded-pill mt-2 mt-md-0">แสดงผล 0 KRs</span>
-                            </div>
+                            <h5 class="fw-bold mb-3 text-secondary fs-6"><i class="bi bi-list-stars me-2 text-primary"></i>สรุปสถานะความสำเร็จของตัวชี้วัด (KRs) ทั้งหมด</h5>
                             <div class="swipe-hint"><i class="bi bi-hand-index-thumb"></i> เลื่อนตารางซ้าย-ขวา เพื่อดูข้อมูลเพิ่มเติม</div>
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle border overview-table">
@@ -395,17 +397,13 @@
                 </div>
 
                 <div class="content-card p-0 p-md-3">
-                    <div class="d-flex flex-wrap justify-content-between align-items-center p-3 pb-2 border-bottom">
-                        <h6 class="fw-bold text-secondary mb-0"><i class="bi bi-table me-2 text-primary"></i>รายการโครงการ/กิจกรรม</h6>
-                        <span id="filteredDetailCount" class="badge bg-primary shadow-sm px-3 py-2 fs-6 rounded-pill mt-2 mt-md-0">แสดงผล 0 KRs | 0 โครงการ</span>
-                    </div>
-                    <div class="p-3 pb-0 d-md-none swipe-hint mb-0"><i class="bi bi-hand-index-thumb"></i> เลื่อนตารางซ้าย-ขวา เพื่อดูข้อมูลเพิ่มเติม</div>
+                    <div class="p-3 pb-0 d-md-none swipe-hint"><i class="bi bi-hand-index-thumb"></i> เลื่อนตารางซ้าย-ขวา เพื่อดูข้อมูลเพิ่มเติม</div>
                     <div class="table-responsive">
                         <table class="table-custom">
                             <thead>
                                 <tr>
                                     <th style="min-width: 350px;">ยุทธศาสตร์ (KRs) / โครงการ</th>
-                                    <th style="min-width: 140px;">เป้าหมาย / หน่วยนับ</th>
+                                    <th style="min-width: 150px;">เป้าหมาย / หน่วยนับ</th>
                                     <th style="min-width: 170px;">ความคืบหน้า (ผลสำเร็จ)</th>
                                     <th style="min-width: 170px;">งบประมาณ (เบิกจ่าย)</th>
                                     <th style="min-width: 110px; text-align: center;">เอกสารอ้างอิง</th>
@@ -488,9 +486,6 @@
     let budgetChartInstance = null;
     let progressChartInstance = null;
     let policyDictionary = {};
-    
-    // ตัวแปรเก็บค่า Global Stats (ห้ามขยับตาม Filter)
-    let globalStatsData = { budget: 0, spent: 0 };
 
     const areaMapping = [
         { key: 'เดินทาง', name: '1. ด้านเดินทางดี', img: 'bma_icon01.png' },
@@ -513,11 +508,6 @@
         try {
             const cacheBuster = new Date().getTime();
             const response = await fetch(`/api/data?year=${year}&t=${cacheBuster}`);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP Error: ${response.status}`);
-            }
-
             const result = await response.json();
             
             if(result.status === 'success') {
@@ -534,7 +524,6 @@
 
                 if(globalData.length > 0) {
                     setupColumns(globalData[0]);
-                    calculateGlobalStats(globalData); // คำนวณภาพรวมเก็บไว้ครั้งเดียว
                     populateDropdownFilters(globalData);
                     applyFilters(); 
                     renderPolicyGlossary();
@@ -543,33 +532,10 @@
                     document.getElementById('emptyState').classList.remove('d-none');
                     renderPolicyGlossary(); 
                     document.getElementById('dashboardContent').classList.remove('d-none');
-                    
-                    // Reset ค่าบนกล่องหากไม่มีข้อมูลเลย
-                    document.getElementById('statKRs').innerText = "0";
-                    document.getElementById('statProjects').innerText = "0";
-                    document.getElementById('statBudget').innerText = "0";
-                    document.getElementById('statSpent').innerText = "0";
-                    document.getElementById('statSpentPercent').innerText = "0%";
-                    document.getElementById('statSpentBar').style.width = "0%";
-                    document.getElementById('countH').innerText = `H: 0`;
-                    document.getElementById('countCoH').innerText = `Co-H: 0`;
-                    document.getElementById('countR').innerText = `R: 0`;
-                    
-                    ['krNotStarted', 'krInProgress', 'krCompleted', 'projNotStarted', 'projInProgress', 'projCompleted'].forEach(id => {
-                        document.getElementById(id).innerText = "0";
-                    });
-                    
-                    document.getElementById('overviewKrTableBody').innerHTML = '';
-                    document.getElementById('projectTableBody').innerHTML = '';
-                    document.getElementById('filteredOverviewCount').innerText = `แสดงผล 0 KRs`;
-                    document.getElementById('filteredDetailCount').innerText = `แสดงผล 0 KRs | 0 โครงการ`;
                 }
-            } else { 
-                alert("เกิดข้อผิดพลาดจากฐานข้อมูล: " + result.error); 
-            }
+            } else { alert("เกิดข้อผิดพลาด: " + result.error); }
         } catch (error) {
-            console.error("Fetch Data Error:", error); 
-            alert(`ไม่สามารถเชื่อมต่อฐานข้อมูลได้\nสาเหตุ: ${error.message}\n(โปรดตรวจสอบว่าหน้า API ใช้งานได้ปกติ)`);
+            console.error(error); alert("ไม่สามารถเชื่อมต่อฐานข้อมูลได้");
         } finally {
             document.getElementById('loading').classList.add('d-none');
         }
@@ -601,113 +567,13 @@
         };
     }
 
-    function checkRole(row) {
-        let hText = String(row[cols.hostDept] || '');
-        let rText = String(row[cols.relDept] || '');
-        let hasSdtH = hText.includes('สดท') || hText.includes('สำนักดิจิทัล');
-        
-        let isCoH = hasSdtH && (hText.includes('/') || hText.includes(',')); 
-        let isH = hasSdtH && !isCoH;
-        let isR = rText.includes('สดท') || rText.includes('สำนักดิจิทัล');
-        
-        return { isH, isCoH, isR };
-    }
-
-    // ฟังก์ชันคำนวณข้อมูลระดับ Global (ทำครั้งเดียว ไม่สน Filter)
-    function calculateGlobalStats(data) {
-        let krGroups = {}; 
-        globalStatsData.budget = 0; 
-        globalStatsData.spent = 0; 
-        
-        let totalProjectsCount = 0;
-        let countH = 0, countCoH = 0, countR = 0;
-        let krNotStarted = 0, krInProgress = 0, krCompleted = 0;
-        let projNotStarted = 0, projInProgress = 0, projCompleted = 0;
-
-        data.forEach(row => {
-            let krTitle = String(row[cols.krName] || '').trim();
-            if(!krTitle || krTitle === 'NaN' || krTitle === 'None') return;
-
-            let krKey = row[cols.krID] || krTitle; 
-            let roles = checkRole(row);
-
-            if(!krGroups[krKey]) {
-                krGroups[krKey] = {
-                    target: parseFloat(String(row[cols.krTarget]).replace(/,/g, '')) || 0,
-                    accumulatedActual: 0, 
-                    isH: roles.isH, isCoH: roles.isCoH, isR: roles.isR,
-                    projects: []
-                };
-            } else {
-                krGroups[krKey].isH = krGroups[krKey].isH || roles.isH;
-                krGroups[krKey].isCoH = krGroups[krKey].isCoH || roles.isCoH;
-                krGroups[krKey].isR = krGroups[krKey].isR || roles.isR;
-            }
-
-            let pName = String(row[cols.projectName] || '').trim();
-            if(pName && pName !== 'NaN') {
-                totalProjectsCount++;
-                let pBudget = parseFloat(String(row[cols.budget] || '0').replace(/,/g, '')) || 0;
-                let pSpent = parseFloat(String(row[cols.spent] || '0').replace(/,/g, '')) || 0;
-                let pTarget = parseFloat(String(row[cols.projTarget]).replace(/,/g, '')) || 0;
-                let pActual = parseFloat(String(row[cols.projActual]).replace(/,/g, '')) || 0;
-                let pProgress = pTarget > 0 ? Math.min((pActual / pTarget) * 100, 100) : 0;
-                let calcFlag = String(row[cols.calcToKR] || '').trim();
-                
-                globalStatsData.budget += pBudget;
-                globalStatsData.spent += pSpent;
-
-                if(calcFlag === 'คำนวณ') krGroups[krKey].accumulatedActual += pActual;
-
-                if (pProgress === 0) projNotStarted++;
-                else if (pProgress >= 100) projCompleted++;
-                else projInProgress++;
-            }
-        });
-
-        let krCount = 0;
-        Object.values(krGroups).forEach(g => {
-            krCount++;
-            if (g.isH) countH++;
-            if (g.isCoH) countCoH++;
-            if (g.isR) countR++;
-
-            let krProg = g.target > 0 ? Math.min((g.accumulatedActual / g.target) * 100, 100) : 0;
-            if (krProg === 0) krNotStarted++;
-            else if (krProg >= 100) krCompleted++;
-            else krInProgress++;
-        });
-
-        document.getElementById('statKRs').innerText = krCount.toLocaleString();
-        document.getElementById('statProjects').innerText = totalProjectsCount.toLocaleString();
-        document.getElementById('statBudget').innerText = window.innerWidth < 768 ? formatNumberAbbr(globalStatsData.budget) : globalStatsData.budget.toLocaleString();
-        document.getElementById('statSpent').innerText = window.innerWidth < 768 ? formatNumberAbbr(globalStatsData.spent) : globalStatsData.spent.toLocaleString();
-        
-        let spendPct = globalStatsData.budget > 0 ? (globalStatsData.spent / globalStatsData.budget) * 100 : 0;
-        document.getElementById('statSpentPercent').innerText = spendPct.toFixed(1) + "%";
-        document.getElementById('statSpentBar').style.width = spendPct + "%";
-
-        document.getElementById('countH').innerText = `H: ${countH}`;
-        document.getElementById('countCoH').innerText = `Co-H: ${countCoH}`;
-        document.getElementById('countR').innerText = `R: ${countR}`;
-
-        document.getElementById('krNotStarted').innerText = krNotStarted;
-        document.getElementById('krInProgress').innerText = krInProgress;
-        document.getElementById('krCompleted').innerText = krCompleted;
-        document.getElementById('projNotStarted').innerText = projNotStarted;
-        document.getElementById('projInProgress').innerText = projInProgress;
-        document.getElementById('projCompleted').innerText = projCompleted;
-    }
-
     function populateDropdownFilters(data) {
         const catSelect = document.getElementById('filterCategory');
-        const issueSelect = document.getElementById('filterIssue');
         const policySelect = document.getElementById('filterPolicy');
-        const categories = new Set(); const issues = new Set(); const policies = new Set();
+        const categories = new Set(); const policies = new Set();
 
         data.forEach(row => {
             if(row[cols.category] && row[cols.category] !== 'NaN') categories.add(String(row[cols.category]).trim());
-            if(row[cols.issue] && row[cols.issue] !== 'NaN') issues.add(String(row[cols.issue]).trim());
             
             let pRaw = String(row[cols.policy] || '').trim();
             if(pRaw && pRaw !== 'NaN' && pRaw !== '-' && !pRaw.includes('ไม่สอดคล้อง')) {
@@ -720,12 +586,21 @@
 
         catSelect.innerHTML = '<option value="all">ทั้งหมด</option>';
         categories.forEach(c => { catSelect.innerHTML += `<option value="${c}">${c}</option>`; });
-        
-        issueSelect.innerHTML = '<option value="all">ทั้งหมด</option>';
-        issues.forEach(i => { issueSelect.innerHTML += `<option value="${i}">${i}</option>`; });
 
         policySelect.innerHTML = '<option value="all">ทั้งหมด</option>';
         [...policies].sort().forEach(p => { policySelect.innerHTML += `<option value="${p}">${p}</option>`; });
+    }
+
+    function checkRole(row) {
+        let hText = String(row[cols.hostDept] || '');
+        let rText = String(row[cols.relDept] || '');
+        let hasSdtH = hText.includes('สดท') || hText.includes('สำนักดิจิทัล');
+        
+        let isCoH = hasSdtH && (hText.includes('/') || hText.includes(',')); 
+        let isH = hasSdtH && !isCoH;
+        let isR = rText.includes('สดท') || rText.includes('สำนักดิจิทัล');
+        
+        return { isH, isCoH, isR };
     }
 
     function getRoleBadge(isH, isCoH, isR) {
@@ -738,14 +613,13 @@
 
     function applyFilters() {
         const fCat = document.getElementById('filterCategory').value;
-        const fIssue = document.getElementById('filterIssue').value;
         const fPolicy = document.getElementById('filterPolicy').value;
         const fRole = document.getElementById('filterRole').value;
         const fSearch = document.getElementById('filterSearch').value.toLowerCase();
 
+        // 🌟 กรองข้อมูลบรรทัดต่อบรรทัด
         let filteredData = globalData.filter(row => {
             let catMatch = fCat === 'all' || String(row[cols.category] || '').trim() === fCat;
-            let issueMatch = fIssue === 'all' || String(row[cols.issue] || '').trim() === fIssue;
             let pRaw = String(row[cols.policy] || '').trim().toUpperCase();
             let policyMatch = fPolicy === 'all' || pRaw.includes(fPolicy.toUpperCase());
             
@@ -764,7 +638,7 @@
 
             let isKRRow = String(row[cols.krName] || '').trim() !== '' && String(row[cols.krName] || '').trim() !== 'NaN';
             if (isKRRow) {
-                return catMatch && issueMatch && policyMatch && roleMatch && searchMatch;
+                return catMatch && policyMatch && roleMatch && searchMatch;
             }
             return true; 
         });
@@ -772,13 +646,14 @@
         processData(filteredData);
     }
 
+    // 🌟 ฟังก์ชันวาร์ปไป TAB 2 และ Filter แบบ Dynamic (คลิกจากป้ายหน้า 1)
     function navigateToTabAndFilter(statusValue) {
         const detailTabBtn = document.getElementById('detail-tab');
         const tab = new bootstrap.Tab(detailTabBtn);
         tab.show();
         
         document.getElementById('filterStatus').value = statusValue;
-        applyFilters(); 
+        applyFilters(); // เรียกใช้การกรองข้อมูล
         document.getElementById('filterStatus').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
@@ -806,15 +681,13 @@
 
     function processData(data) {
         let krGroups = {}; 
-        let chartBudget = {}; let chartProgress = {};
-        projectDetailsDb = {}; 
-        krDetailsDb = {}; 
 
         let areaCounter = {};
         areaMapping.forEach(a => {
             areaCounter[a.key] = { name: a.name, img: a.img, krCount: 0, projCount: 0 };
         });
 
+        // 1. จัดกลุ่มข้อมูล
         data.forEach(row => {
             let krTitle = String(row[cols.krName] || '').trim();
             if(!krTitle || krTitle === 'NaN' || krTitle === 'None') return;
@@ -851,9 +724,6 @@
                 let calcFlag = String(row[cols.calcToKR] || '').trim();
                 
                 if(calcFlag === 'คำนวณ') krGroups[krKey].accumulatedActual += pActual;
-                
-                krGroups[krKey].krBudget += pBudget;
-                krGroups[krKey].krSpent += pSpent;
 
                 let projId = 'proj-' + Object.keys(projectDetailsDb).length;
                 let pData = {
@@ -869,10 +739,12 @@
 
         let krArray = Object.values(krGroups);
 
+        // 2. คำนวณความคืบหน้า KR ก่อน เพื่อให้พร้อมรองรับตัวกรองสถานะ
         krArray.forEach(group => {
             group.krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
         });
 
+        // 3. 🌟 ดักจับ Status Filter (ทำงานหลังบ้าน)
         const fStatus = document.getElementById('filterStatus') ? document.getElementById('filterStatus').value : 'all';
         if (fStatus !== 'all') {
             if (fStatus === 'kr_not_started') krArray = krArray.filter(g => g.krProgressPercent === 0);
@@ -893,27 +765,66 @@
             }
         }
 
-        let filteredProjCount = 0;
+        // 4. คำนวณยอดรวมต่างๆ ใหม่ทั้งหมด
+        let totalBudget = 0; let totalSpent = 0; let totalProjectsCount = 0;
+        let chartBudget = {}; let chartProgress = {};
+        krDetailsDb = {}; 
+
+        let countH = 0, countCoH = 0, countR = 0;
+        let krNotStarted = 0, krInProgress = 0, krCompleted = 0;
+        let projNotStarted = 0, projInProgress = 0, projCompleted = 0;
+
         krArray.forEach(group => {
+            if (group.isH) countH++;
+            if (group.isCoH) countCoH++;
+            if (group.isR) countR++;
+
+            if (group.krProgressPercent === 0) krNotStarted++;
+            else if (group.krProgressPercent >= 100) krCompleted++;
+            else krInProgress++;
+
+            let gBudget = 0; let gSpent = 0;
+            group.projects.forEach(p => {
+                totalProjectsCount++;
+                gBudget += p.budget;
+                gSpent += p.spent;
+                
+                if (p.progress === 0) projNotStarted++;
+                else if (p.progress >= 100) projCompleted++;
+                else projInProgress++;
+                
+                for (let a of areaMapping) { if(group.category.includes(a.key)) { areaCounter[a.key].projCount++; break; } }
+            });
+
+            group.krBudget = gBudget;
+            group.krSpent = gSpent;
+            totalBudget += gBudget;
+            totalSpent += gSpent;
+            
             let cat = group.category;
             if(!chartBudget[cat]) chartBudget[cat] = 0;
-            chartBudget[cat] += group.krBudget;
+            chartBudget[cat] += gBudget;
             
             if(!chartProgress[cat]) chartProgress[cat] = { sum: 0, count: 0 };
             chartProgress[cat].sum += group.krProgressPercent;
             chartProgress[cat].count += 1;
-
-            for (let a of areaMapping) { if(cat.includes(a.key)) { areaCounter[a.key].krCount++; break; } }
             
-            group.projects.forEach(p => {
-                filteredProjCount++;
-                for (let a of areaMapping) { if(cat.includes(a.key)) { areaCounter[a.key].projCount++; break; } }
-            });
+            for (let a of areaMapping) { if(cat.includes(a.key)) { areaCounter[a.key].krCount++; break; } }
         });
 
-        document.getElementById('filteredOverviewCount').innerText = `แสดงผล ${krArray.length} KRs`;
-        document.getElementById('filteredDetailCount').innerText = `แสดงผล ${krArray.length} KRs \vert{}${filteredProjCount} โครงการ`;
+        // 5. อัปเดตกล่องสถิติ (หน้าแรก)
+        document.getElementById('krNotStarted').innerText = krNotStarted;
+        document.getElementById('krInProgress').innerText = krInProgress;
+        document.getElementById('krCompleted').innerText = krCompleted;
+        document.getElementById('projNotStarted').innerText = projNotStarted;
+        document.getElementById('projInProgress').innerText = projInProgress;
+        document.getElementById('projCompleted').innerText = projCompleted;
 
+        document.getElementById('countH').innerText = `H: ${countH}`;
+        document.getElementById('countCoH').innerText = `Co-H: ${countCoH}`;
+        document.getElementById('countR').innerText = `R: ${countR}`;
+
+        // สร้างการ์ดไอคอน 9 ด้าน
         let areaCardsHTML = '';
         Object.values(areaCounter).forEach(area => {
             let imgOrIcon = `<img src="${area.img}" class="area-icon" onerror="this.outerHTML='<i class=\\'bi bi-compass text-primary\\' style=\\'font-size: 2.5rem;\\'></i>'">`;
@@ -940,10 +851,12 @@
             return idA.localeCompare(idB);
         });
 
+        // 🌟 TAB 1: ตาราง KR ในหน้าแรก (แก้ Spacing แล้ว)
         let overviewHTML = '';
         krArray.forEach((group, index) => {
             let policyBadgeOverview = getPolicyBadgeHTML(group.policy);
             let roleBadgeOverview = getRoleBadge(group.isH, group.isCoH, group.isR);
+            
             const overviewKrId = `kr-overview-${index}`;
             krDetailsDb[overviewKrId] = group;
 
@@ -971,6 +884,7 @@
         });
         document.getElementById('overviewKrTableBody').innerHTML = overviewHTML;
 
+        // 🌟 TAB 2: ตารางข้อมูลโครงการ
         let tableHTML = ''; let krCount = 0;
         krArray.forEach(group => {
             krCount++;
@@ -1005,7 +919,7 @@
                             <span>ผลสำเร็จรวม KR</span> <span class="${group.krProgressPercent==100?'text-success':'text-primary'}">${group.krProgressPercent.toFixed(1)}%</span>
                         </div>
                         <div class="progress progress-slim mb-1"><div class="progress-bar progress-bar-kpi" style="width: ${group.krProgressPercent}%;"></div></div>
-                        <div class="text-muted text-end" style="font-size:0.75rem;">ทำได้ <strong class="text-dark">${group.accumulatedActual.toLocaleString()}</strong> / เป้าหมาย <strong class="text-dark">${group.target.toLocaleString()}</strong> <span class="ms-1 fw-normal">${group.unit}</span></div>
+                        <div class="text-muted text-end" style="font-size:0.75rem;">ทำได้ <strong class="text-dark">${group.accumulatedActual.toLocaleString()}</strong> / เป้าหมาย <strong class="text-dark">${group.target.toLocaleString()}</strong> <span class="ms-1 text-muted fw-normal">${group.unit}</span></div>
                     </td>
                     <td>
                         <div class="d-flex justify-content-between small fw-bold mb-1">
@@ -1030,12 +944,12 @@
                 tableHTML += `
                     <tr class="proj-row kr-child-${krRowId}">
                         <td class="ps-4 ps-md-5">
-                            <div class="text-dark" style="font-size:0.95rem;"><i class="bi bi-arrow-return-right text-muted me-1"></i> <a href="javascript:void(0)" onclick="openProjectModal('${proj.id}')" class="hover-link fw-bold text-dark text-decoration-none">${proj.name}</a></div>
+                            <div class="text-dark" style="font-size:0.95rem;"><i class="bi bi-arrow-return-right text-muted me-1"></i> ${proj.name}</div>
                             ${proj.calcFlag === 'คำนวณ' ? `<span class="badge-sub text-info ms-4 mt-1 border-info"><i class="bi bi-plus"></i> คำนวณยอดเข้า KR</span>` : ''}
                         </td>
                         <td>
-                            <div class="text-muted small mb-1">เป้า: <strong class="text-dark">${proj.target.toLocaleString()}</strong> ${unitLabel}</div>
-                            <div class="text-muted small">ทำได้: <strong class="text-dark">${proj.actual.toLocaleString()}</strong> ${unitLabel}</div>
+                            <div class="text-muted small mb-1">เป้า: <strong class="text-dark">${proj.target.toLocaleString()}</strong>${unitLabel}</div>
+                            <div class="text-muted small">ทำได้: <strong class="text-dark">${proj.actual.toLocaleString()}</strong>${unitLabel}</div>
                         </td>
                         <td>
                             <div class="d-flex justify-content-between small fw-bold mb-1">
@@ -1061,7 +975,16 @@
             });
         });
 
+        document.getElementById('statKRs').innerText = krCount.toLocaleString();
+        document.getElementById('statProjects').innerText = totalProjectsCount.toLocaleString();
+        document.getElementById('statBudget').innerText = window.innerWidth < 768 ? formatNumberAbbr(totalBudget) : totalBudget.toLocaleString();
+        document.getElementById('statSpent').innerText = window.innerWidth < 768 ? formatNumberAbbr(totalSpent) : totalSpent.toLocaleString();
+        
+        let spendPct = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
+        document.getElementById('statSpentPercent').innerText = spendPct.toFixed(1) + "%";
+        document.getElementById('statSpentBar').style.width = spendPct + "%";
         document.getElementById('projectTableBody').innerHTML = tableHTML;
+        
         drawCharts(chartBudget, chartProgress);
     }
 
@@ -1127,17 +1050,7 @@
         document.getElementById('glossaryContainer').innerHTML = html;
     }
 
-    function switchModalToProject(projId) {
-        const krModalEl = document.getElementById('krModal');
-        const krModal = bootstrap.Modal.getInstance(krModalEl);
-        const onHidden = function () {
-            krModalEl.removeEventListener('hidden.bs.modal', onHidden);
-            openProjectModal(projId);
-        };
-        krModalEl.addEventListener('hidden.bs.modal', onHidden);
-        if (krModal) krModal.hide();
-    }
-
+    // 🌟 ฟังก์ชันเปิดหน้าต่าง Modal ของ KR (และปรับช่องไฟสวยงาม)
     function openKrModal(krId) {
         const k = krDetailsDb[krId];
         if(!k) return;
@@ -1237,6 +1150,20 @@
         modal.show();
     }
 
+    // 🌟 ฟังก์ชันสลับหน้าต่าง (จาก Modal KR กดไปหา Modal Project)
+    function switchModalToProject(projId) {
+        const krModalEl = document.getElementById('krModal');
+        const krModal = bootstrap.Modal.getInstance(krModalEl);
+        
+        // รอให้ Modal เดิมปิดให้สนิทก่อน แล้วค่อยเปิดอันใหม่ (กันบักจอดำ)
+        const onHidden = function () {
+            krModalEl.removeEventListener('hidden.bs.modal', onHidden);
+            openProjectModal(projId);
+        };
+        krModalEl.addEventListener('hidden.bs.modal', onHidden);
+        if (krModal) krModal.hide();
+    }
+
     function openProjectModal(projId) {
         const p = projectDetailsDb[projId];
         if(!p) return;
@@ -1326,12 +1253,7 @@
     }
 
     window.onload = fetchData;
-    window.onresize = () => { 
-        if(globalData.length > 0) {
-            document.getElementById('statBudget').innerText = window.innerWidth < 768 ? formatNumberAbbr(globalStatsData.budget) : globalStatsData.budget.toLocaleString();
-            document.getElementById('statSpent').innerText = window.innerWidth < 768 ? formatNumberAbbr(globalStatsData.spent) : globalStatsData.spent.toLocaleString();
-        }
-    };
+    window.onresize = () => { if(globalData.length > 0) applyFilters(); };
 </script>
 </body>
 </html>
