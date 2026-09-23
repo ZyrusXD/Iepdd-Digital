@@ -204,7 +204,7 @@
                     </div>
                 </div>
 
-                <!-- 🌟 TAB 1: ตารางรายชื่อ KR ทั้งหมดที่ผู้ใช้ร้องขอให้เอากลับมา -->
+                <!-- 🌟 TAB 1: ตารางรายชื่อ KR ทั้งหมด (Overview) -->
                 <div class="row g-3">
                     <div class="col-12">
                         <div class="content-card">
@@ -363,7 +363,7 @@
             if(result.status === 'success') {
                 globalData = result.data;
                 
-                // 🌟 รับข้อมูลพจนานุกรม และแปลงคีย์ให้เป็นตัวพิมพ์ใหญ่ป้องกันการอ้างอิงผิด
+                // 🌟 รับข้อมูลพจนานุกรม และแปลงคีย์ให้เป็นตัวพิมพ์ใหญ่ ป้องกันการอ่านรหัสผิด
                 policyDictionary = {};
                 if (result.policy_dict && result.policy_dict.length > 0) {
                     result.policy_dict.forEach(item => {
@@ -697,7 +697,8 @@
             group.projects.forEach(proj => {
                 let detailBtn = `<button class="btn btn-sm btn-info text-white w-100 mb-1" style="font-size: 0.8rem; background-color: var(--bma-blue); border-color: var(--bma-blue);" onclick="openProjectModal('${proj.id}')"><i class="bi bi-search"></i> รายละเอียดโครงการ</button>`;
                 let docBtn = proj.doc && String(proj.doc).startsWith('http') 
-                    ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-secondary w-100" style="font-size: 0.8rem;"><i class="bi bi-file-earmark-text"></i> ไฟล์โครงการ</a>` : ``;
+                    ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-secondary w-100" style="font-size: 0.8rem;"><i class="bi bi-file-earmark-text"></i> ไฟล์โครงการ</a>` 
+                    : ``;
                 
                 let pBudgPct = proj.budget > 0 ? Math.min((proj.spent / proj.budget) * 100, 100) : 0;
                 let unitLabel = proj.unit !== '-' ? ` <span class="text-muted">(${proj.unit})</span>` : '';
@@ -744,11 +745,13 @@
         let spendPct = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
         document.getElementById('statSpentPercent').innerText = spendPct.toFixed(1) + "%";
         document.getElementById('statSpentBar').style.width = spendPct + "%";
+
         document.getElementById('projectTableBody').innerHTML = tableHTML;
         
         drawCharts(chartBudget, chartProgress);
     }
 
+    // 🌟 ดึงข้อมูลไปแสดงในหน้า บรรณานุกรม 
     function renderPolicyGlossary() {
         let glossaryMap = {};
         
