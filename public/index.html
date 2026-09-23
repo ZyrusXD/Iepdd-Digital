@@ -52,6 +52,9 @@
         .dict-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.08); transform: translateY(-2px); }
         .dict-code { font-weight: 800; color: var(--bma-blue); font-size: 1.1rem; }
         .dict-desc { font-size: 0.95rem; color: #475569; margin-top: 5px; line-height: 1.5; }
+        .dict-card-sdt { border-left: 5px solid var(--bma-orange) !important; background: #fffdf8; box-shadow: 0 4px 8px rgba(255, 180, 73, 0.15); }
+        .dict-card-sdt .dict-code { color: var(--bma-green-dark); }
+        .badge-sdt { background-color: var(--bma-orange); color: #000; font-size: 0.75rem; padding: 3px 8px; border-radius: 12px; font-weight: 700; box-shadow: 0 2px 4px rgba(255, 180, 73, 0.4); vertical-align: text-bottom;}
 
         .filter-section { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
         .table-responsive { -webkit-overflow-scrolling: touch; border-radius: 8px; }
@@ -64,7 +67,6 @@
         .kr-row:hover { background-color: #f8fafc; }
         .proj-row { background-color: #fdfdfd; border-left: 4px solid #cbd5e1; }
         
-        /* แถวตาราง KRs ในหน้าแรกที่กดได้ */
         .kr-overview-row { cursor: pointer; transition: 0.2s; }
         .kr-overview-row:hover { background-color: #f8fafc; box-shadow: inset 4px 0 0 var(--bma-green); }
 
@@ -130,7 +132,6 @@
         <h6 class="mt-3 fw-bold text-muted">กำลังซิงค์ข้อมูลยุทธศาสตร์...</h6>
     </div>
 
-    <!-- ส่วนที่จะแสดงเมื่อเลือกปีงบประมาณที่ไม่มีข้อมูล -->
     <div id="emptyState" class="d-none my-5">
         <div class="text-center">
             <i class="bi bi-folder-x text-muted" style="font-size: 5rem;"></i>
@@ -162,7 +163,13 @@
                     <div class="col-6 col-md-3">
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-green);">
                             <p class="mb-1 opacity-75 fw-medium small">ตัวชี้วัด (KRs)</p>
-                            <h3 id="statKRs">0</h3>
+                            <h3 id="statKRs" class="mb-1">0</h3>
+                            <!-- สรุปจำนวนแยกตามสถานะ H, Co-H, R -->
+                            <div class="d-flex gap-1 flex-wrap" style="font-size: 0.7rem;">
+                                <span id="countH" class="badge bg-white text-dark opacity-100 shadow-sm border">H: 0</span>
+                                <span id="countCoH" class="badge bg-white text-dark opacity-100 shadow-sm border">Co-H: 0</span>
+                                <span id="countR" class="badge bg-white text-dark opacity-100 shadow-sm border">R: 0</span>
+                            </div>
                             <i class="bi bi-flag-fill stat-icon text-white"></i>
                         </div>
                     </div>
@@ -217,14 +224,13 @@
                     </div>
                 </div>
 
-                <!-- 🌟 TAB 1: ตารางรายชื่อ KR (Overview) แบบกดดู Modal ได้ -->
                 <div class="row g-3">
                     <div class="col-12">
                         <div class="content-card">
                             <h5 class="fw-bold mb-3 text-secondary fs-6"><i class="bi bi-list-stars me-2 text-primary"></i>สรุปสถานะความสำเร็จของตัวชี้วัด (KRs) ทั้งหมด</h5>
                             <div class="swipe-hint"><i class="bi bi-hand-index-thumb"></i> เลื่อนตารางซ้าย-ขวา เพื่อดูข้อมูลเพิ่มเติม</div>
                             <div class="table-responsive">
-                                <table class="table align-middle border overview-table">
+                                <table class="table table-hover align-middle border overview-table">
                                     <thead class="table-light">
                                         <tr>
                                             <th style="width: 15%;">ด้านยุทธศาสตร์</th>
@@ -266,6 +272,7 @@
                             <select id="filterRole" class="form-select" onchange="applyFilters()">
                                 <option value="all">ทั้งหมด</option>
                                 <option value="host">H: เจ้าภาพหลัก</option>
+                                <option value="cohost">Co-H: เจ้าภาพร่วม</option>
                                 <option value="relative">R: ร่วมสนับสนุน</option>
                             </select>
                         </div>
@@ -362,7 +369,7 @@
     let globalData = [];
     let cols = {};
     let projectDetailsDb = {}; 
-    let krDetailsDb = {}; // 🌟 เก็บข้อมูล KR สำหรับ Modal หน้าแรก
+    let krDetailsDb = {}; 
     let budgetChartInstance = null;
     let progressChartInstance = null;
     let policyDictionary = {};
@@ -398,9 +405,7 @@
                     result.policy_dict.forEach(item => {
                         let code = String(item['Policy_No'] || '').trim().toUpperCase();
                         let name = String(item['Policy_Name'] || '').trim();
-                        if (code && name) {
-                            policyDictionary[code] = name;
-                        }
+                        if (code && name) policyDictionary[code] = name;
                     });
                 }
 
@@ -480,12 +485,27 @@
         [...policies].sort().forEach(p => { policySelect.innerHTML += `<option value="${p}">${p}</option>`; });
     }
 
+    // 🌟 อัปเกรดการเช็กบทบาท (รวม H, Co-H, R)
     function checkRole(row) {
         let hText = String(row[cols.hostDept] || '');
         let rText = String(row[cols.relDept] || '');
-        let isH = hText.includes('สดท') || hText.includes('สำนักดิจิทัล');
+        let hasSdtH = hText.includes('สดท') || hText.includes('สำนักดิจิทัล');
+        
+        // เช็ก Co-Host (มี สดท. และมีเครื่องหมาย / หรือ , หรือคำว่าและ)
+        let isCoH = hasSdtH && (hText.includes('/') || hText.includes(',')); 
+        let isH = hasSdtH && !isCoH;
         let isR = rText.includes('สดท') || rText.includes('สำนักดิจิทัล');
-        return { isH, isR };
+        
+        return { isH, isCoH, isR };
+    }
+
+    // ฟังก์ชันช่วยสร้างป้าย Badge H, Co-H, R
+    function getRoleBadge(isH, isCoH, isR) {
+        let b = '';
+        if (isH) b += `<span class="badge ms-2 shadow-sm border" style="background-color: var(--bma-green); color: white;">H</span>`;
+        if (isCoH) b += `<span class="badge ms-2 shadow-sm border" style="background-color: #0dcaf0; color: #000;">Co-H</span>`;
+        if (isR) b += `<span class="badge ms-2 shadow-sm border" style="background-color: var(--bma-orange); color: #000;">R</span>`;
+        return b;
     }
 
     function applyFilters() {
@@ -498,13 +518,13 @@
         let filteredData = globalData.filter(row => {
             let catMatch = fCat === 'all' || String(row[cols.category] || '').trim() === fCat;
             let issueMatch = fIssue === 'all' || String(row[cols.issue] || '').trim() === fIssue;
-            
             let pRaw = String(row[cols.policy] || '').trim().toUpperCase();
             let policyMatch = fPolicy === 'all' || pRaw.includes(fPolicy.toUpperCase());
             
             let roles = checkRole(row);
             let roleMatch = true;
             if (fRole === 'host' && !roles.isH) roleMatch = false;
+            if (fRole === 'cohost' && !roles.isCoH) roleMatch = false;
             if (fRole === 'relative' && !roles.isR) roleMatch = false;
 
             let searchMatch = true;
@@ -551,7 +571,7 @@
         let totalBudget = 0; let totalSpent = 0; let totalProjectsCount = 0;
         let chartBudget = {}; let chartProgress = {};
         projectDetailsDb = {}; 
-        krDetailsDb = {}; // 🌟 ล้างข้อมูลเก่าของ KR Modal
+        krDetailsDb = {}; 
 
         let areaCounter = {};
         areaMapping.forEach(a => {
@@ -572,11 +592,17 @@
                     category: cat, policy: String(row[cols.policy] || '').trim(),
                     unit: String(row[cols.unit] || '-').trim(),
                     target: parseFloat(String(row[cols.krTarget]).replace(/,/g, '')) || 0,
-                    accumulatedActual: 0, isH: roles.isH, isR: roles.isR,
+                    accumulatedActual: 0, 
+                    isH: roles.isH, isCoH: roles.isCoH, isR: roles.isR,
                     doc1: row[cols.docKR1], doc2: row[cols.docKR2],
                     projects: [], krBudget: 0, krSpent: 0
                 };
                 for (let a of areaMapping) { if(cat.includes(a.key)) { areaCounter[a.key].krCount++; break; } }
+            } else {
+                // อัปเดตสถานะเผื่อมีหลายบรรทัด
+                krGroups[krKey].isH = krGroups[krKey].isH || roles.isH;
+                krGroups[krKey].isCoH = krGroups[krKey].isCoH || roles.isCoH;
+                krGroups[krKey].isR = krGroups[krKey].isR || roles.isR;
             }
 
             let pName = String(row[cols.projectName] || '').trim();
@@ -641,22 +667,29 @@
             return idA.localeCompare(idB);
         });
 
-        // 🌟 TAB 1: ตาราง KR ในหน้าแรก (แบบกดดู Modal ได้ และปรับแก้ระยะห่างตัวอักษร)
+        // ตัวแปรนับจำนวนตามสถานะ สดท.
+        let countH = 0, countCoH = 0, countR = 0;
+
+        // 🌟 TAB 1: ตาราง KR ในหน้าแรก (คลิกได้)
         let overviewHTML = '';
         krArray.forEach((group, index) => {
+            if (group.isH) countH++;
+            if (group.isCoH) countCoH++;
+            if (group.isR) countR++;
+
             let krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
             let policyBadgeOverview = getPolicyBadgeHTML(group.policy);
+            let roleBadgeOverview = getRoleBadge(group.isH, group.isCoH, group.isR);
             
-            // สร้าง ID สำหรับผูกกับ Modal
             const overviewKrId = `kr-overview-${index}`;
             krDetailsDb[overviewKrId] = group;
 
             overviewHTML += `
-                <tr class="kr-overview-row" onclick="openKrModal('${overviewKrId}')" title="คลิกเพื่อดูรายละเอียด">
+                <tr class="kr-overview-row" onclick="openKrModal('${overviewKrId}')" title="คลิกเพื่อดูรายละเอียดโครงการที่เกี่ยวข้อง">
                     <td><span class="badge-sub text-wrap text-start"><i class="bi bi-tags"></i> ${group.category}</span></td>
                     <td>${group.id ? `<span class="kr-badge bg-light text-dark border">${group.id}</span>` : '<span class="text-muted">-</span>'}</td>
                     <td>
-                        <div class="fw-bold text-dark" style="font-size:0.95rem;">${group.title}</div>
+                        <div class="fw-bold text-dark" style="font-size:0.95rem;">${group.title}${roleBadgeOverview}</div>
                         <div class="mt-1">${policyBadgeOverview}</div>
                     </td>
                     <td>
@@ -667,7 +700,7 @@
                             </div>
                         </div>
                         <div class="text-muted text-end" style="font-size:0.85rem;">
-                            ทำได้ <strong class="text-dark">${group.accumulatedActual.toLocaleString()}</strong> / เป้าหมาย <strong class="text-dark">${group.target.toLocaleString()}</strong> <span class="ms-1">${group.unit}</span>
+                            ทำได้ <strong class="text-dark">${group.accumulatedActual.toLocaleString()}</strong> / เป้าหมาย <strong class="text-dark">${group.target.toLocaleString()}</strong> <span class="ms-1 fw-normal">${group.unit}</span>
                         </div>
                     </td>
                 </tr>
@@ -675,9 +708,13 @@
         });
         document.getElementById('overviewKrTableBody').innerHTML = overviewHTML;
 
-        // 🌟 TAB 2: ตารางลงลึกรายละเอียดโครงการ
+        // อัปเดตตัวเลขในกล่องตัวชี้วัด KRs ใน TAB 1
+        document.getElementById('countH').innerText = `H: ${countH}`;
+        document.getElementById('countCoH').innerText = `Co-H: ${countCoH}`;
+        document.getElementById('countR').innerText = `R: ${countR}`;
+
+        // 🌟 TAB 2: ตารางข้อมูลโครงการ
         let tableHTML = ''; let krCount = 0;
-        
         krArray.forEach(group => {
             krCount++;
             const krRowId = `kr-${krCount}`;
@@ -689,10 +726,7 @@
             chartProgress[cat].count += 1;
             let budgetPercent = group.krBudget > 0 ? Math.min((group.krSpent / group.krBudget) * 100, 100) : 0;
 
-            let roleBadge = '';
-            if (group.isH) roleBadge += `<span class="badge text-bg-primary ms-2" style="background-color: var(--bma-green) !important;">H</span>`;
-            if (group.isR) roleBadge += `<span class="badge text-bg-warning ms-2" style="background-color: var(--bma-orange) !important;">R</span>`;
-            
+            let roleBadge = getRoleBadge(group.isH, group.isCoH, group.isR);
             let policyBadge = getPolicyBadgeHTML(group.policy);
 
             let krDocButtons = '';
@@ -714,14 +748,14 @@
                         </div>
                     </td>
                     <td>
-                        <div class="text-muted small mb-1">เป้าหมายรวม: <strong class="text-dark">${group.target.toLocaleString()}</strong> <span class="ms-1">${group.unit}</span></div>
+                        <div class="text-muted small mb-1">เป้าหมายรวม: <strong class="text-dark">${group.target.toLocaleString()}</strong> <span class="ms-1 fw-normal">${group.unit}</span></div>
                     </td>
                     <td>
                         <div class="d-flex justify-content-between small fw-bold mb-1">
                             <span>ผลสำเร็จรวม KR</span> <span class="${krProgressPercent==100?'text-success':'text-primary'}">${krProgressPercent.toFixed(1)}%</span>
                         </div>
                         <div class="progress progress-slim mb-1"><div class="progress-bar progress-bar-kpi" style="width: ${krProgressPercent}%;"></div></div>
-                        <div class="text-muted text-end" style="font-size:0.75rem;">ทำได้ <strong class="text-dark">${group.accumulatedActual.toLocaleString()}</strong> / เป้าหมาย <strong class="text-dark">${group.target.toLocaleString()}</strong> <span class="ms-1">${group.unit}</span></div>
+                        <div class="text-muted text-end" style="font-size:0.75rem;">ทำได้ <strong class="text-dark">${group.accumulatedActual.toLocaleString()}</strong> / เป้าหมาย <strong class="text-dark">${group.target.toLocaleString()}</strong> <span class="ms-1 fw-normal">${group.unit}</span></div>
                     </td>
                     <td>
                         <div class="d-flex justify-content-between small fw-bold mb-1">
@@ -740,7 +774,7 @@
                     ? `<a href="${proj.doc}" target="_blank" class="btn btn-sm btn-outline-secondary w-100" style="font-size: 0.8rem;"><i class="bi bi-file-earmark-text"></i> ไฟล์หลักฐาน</a>` : ``;
                 
                 let pBudgPct = proj.budget > 0 ? Math.min((proj.spent / proj.budget) * 100, 100) : 0;
-                let unitLabel = proj.unit !== '-' ? `<span class="text-muted ms-1">${proj.unit}</span>` : '';
+                let unitLabel = proj.unit !== '-' ? `<span class="text-muted ms-1 fw-normal">${proj.unit}</span>` : '';
 
                 tableHTML += `
                     <tr class="proj-row kr-child-${krRowId}">
@@ -803,18 +837,14 @@
         globalData.forEach(row => {
             let pRaw = String(row[cols.policy] || '').trim();
             let roles = checkRole(row);
-            let isSdtInvolved = roles.isH || roles.isR;
+            let isSdtInvolved = roles.isH || roles.isCoH || roles.isR; 
 
             if(pRaw && pRaw !== 'NaN' && pRaw !== '-' && !pRaw.includes('ไม่สอดคล้อง')) {
                 pRaw.split(',').forEach(p => {
                     let code = p.trim().toUpperCase();
                     if(code !== '') {
-                        if(!glossaryMap[code]) {
-                            glossaryMap[code] = "อยู่ระหว่างการระบุชื่อเต็มนโยบายลงในชีท Dictionary";
-                        }
-                        if(isSdtInvolved) {
-                            window.sdtPolicies.add(code);
-                        }
+                        if(!glossaryMap[code]) glossaryMap[code] = "อยู่ระหว่างการระบุชื่อเต็มนโยบายลงในชีท Dictionary";
+                        if(isSdtInvolved) window.sdtPolicies.add(code);
                     }
                 });
             }
@@ -862,13 +892,14 @@
         if(!k) return;
 
         let krProgressPercent = k.target > 0 ? Math.min((k.accumulatedActual / k.target) * 100, 100) : 0;
+        let roleBadgeModal = getRoleBadge(k.isH, k.isCoH, k.isR);
         
         let projectsHTML = '';
         if(k.projects.length === 0) {
-            projectsHTML = '<tr><td colspan="4" class="text-center text-danger py-3">ยังไม่มีโครงการ/กิจกรรมรองรับตัวชี้วัดนี้</td></tr>';
+            projectsHTML = '<tr><td colspan="4" class="text-center text-danger py-4">ยังไม่มีโครงการ/กิจกรรมรองรับตัวชี้วัดนี้</td></tr>';
         } else {
             k.projects.forEach(proj => {
-                let unitLabel = proj.unit !== '-' ? `<span class="text-muted ms-1">(${proj.unit})</span>` : '';
+                let unitLabel = proj.unit !== '-' ? `<span class="text-muted ms-1 fw-normal">${proj.unit}</span>` : '';
                 projectsHTML += `
                     <tr>
                         <td class="text-start">
@@ -900,7 +931,7 @@
                     ${k.id ? `<span class="kr-badge me-2">${k.id}</span>` : ''}
                     <span class="badge-sub"><i class="bi bi-tags"></i> ${k.category}</span>
                 </div>
-                <div class="fs-5 text-dark fw-bold mb-0">${k.title}</div>
+                <div class="fs-5 text-dark fw-bold mb-0 lh-base">${k.title} ${roleBadgeModal}</div>
                 ${k.policy && k.policy !== '-' && k.policy !== 'NaN' ? `<div class="mt-2">${getPolicyBadgeHTML(k.policy)}</div>` : ''}
             </div>
             
@@ -933,7 +964,7 @@
             <div class="bg-white p-3 p-md-4 rounded border shadow-sm">
                 <h6 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="bi bi-diagram-3 text-primary me-2"></i>รายชื่อโครงการ/กิจกรรมที่สนับสนุนตัวชี้วัดนี้</h6>
                 <div class="table-responsive">
-                    <table class="table table-hover table-bordered align-middle">
+                    <table class="table table-hover table-bordered align-middle mb-0">
                         <thead class="table-light text-center">
                             <tr>
                                 <th style="width: 45%;">ชื่อโครงการ/กิจกรรม</th>
@@ -959,7 +990,7 @@
         if(!p) return;
 
         let hasReport = p.reportNote && p.reportNote !== 'NaN' && p.reportNote !== '';
-        let unitLabel = p.unit !== '-' ? `<span class="fs-6 text-muted ms-1">${p.unit}</span>` : '';
+        let unitLabel = p.unit !== '-' ? `<span class="fs-6 text-muted fw-normal ms-1">${p.unit}</span>` : '';
         
         let html = `
             <div class="bg-white p-3 p-md-4 rounded border mb-4 shadow-sm">
