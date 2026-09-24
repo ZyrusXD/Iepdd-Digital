@@ -1074,8 +1074,19 @@
         // 🌟 ยืนยันการแสดงผลครบ 9 ด้านด้วยภาพ BMA Icon ใน Dashboard
         let areaCardsHTML = '';
         Object.values(areaCounter).forEach(area => {
-            let fallback = `<i class=\\'bi ${area.icon}\\' style=\\'font-size: 2.5rem; color:${area.color};\\'></i>`;
-            let imgOrIcon = `<img src="${area.img}" class="area-icon" onerror="this.outerHTML='${fallback}'">`;
+            if (area.krCount === 0 && area.projCount === 0) return; // ซ่อนด้านที่ไม่มีข้อมูล
+            
+            let foundArea = areaMapping.find(a => a.name === area.name);
+            let imgOrIcon = '';
+
+            // บังคับให้ "งานประจำ" ใช้ Vector Icon ทันที
+            if (area.name.includes('งานประจำ')) {
+                imgOrIcon = `<i class="bi ${foundArea.icon} me-3" style="font-size: 2.5rem; color: ${foundArea.color};"></i>`;
+            } else {
+                // ด้านอื่นๆ 1-9 ใช้รูป BMA Icon เหมือนเดิม (ถ้าโหลดไม่ขึ้นค่อยดึง Vector มาใช้)
+                let fallback = foundArea ? `<i class=\\'bi ${foundArea.icon}\\' style=\\'font-size: 2.5rem; color: ${foundArea.color};\\'></i>` : `<i class=\\'bi bi-compass text-primary\\' style=\\'font-size: 2.5rem;\\'></i>`;
+                imgOrIcon = `<img src="${area.img}" class="area-icon me-3" onerror="this.outerHTML='${fallback}'">`;
+            }
             
             areaCardsHTML += `
                 <div class="col-12 col-md-6 col-lg-4">
