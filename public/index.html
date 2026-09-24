@@ -76,12 +76,9 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05); white-space: nowrap; display: inline-flex; align-items: center; letter-spacing: 0.3px;
         }
         
-        /* 🌟 Category Badge */
         .badge-category { 
-            font-size: 0.85rem; font-weight: 600; color: #334155; 
-            background: #ffffff; border: 1px solid #e2e8f0; 
-            padding: 6px 14px; border-radius: 8px; 
-            display: inline-flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            font-size: 0.85rem; font-weight: 600; color: #334155; background: #ffffff; border: 1px solid #e2e8f0; 
+            padding: 6px 14px; border-radius: 8px; display: inline-flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
 
         .badge-component { 
@@ -516,10 +513,10 @@
     let progressChartInstance = null;
     let policyDictionary = {};
     
-    // 🌟 ระบบตรวจจับโปรเจกต์ซ้ำข้าม KR
+    // ระบบตรวจจับโปรเจกต์ซ้ำข้าม KR
     let globalProjectDict = {}; 
 
-    // 🌟 ระบบสีสำหรับองค์ประกอบ
+    // ระบบสีสำหรับองค์ประกอบ
     const compPalette = [
         'linear-gradient(135deg, #6366f1, #4f46e5)', // Indigo
         'linear-gradient(135deg, #ec4899, #db2777)', // Pink
@@ -531,7 +528,7 @@
     let compColorMap = {};
     let compColorIndex = 0;
 
-    // 🌟 เปลี่ยนรูปเป็น BMA Icons / Vector Icons แบบสวยงาม
+    // เปลี่ยนรูปเป็น Vector Icons
     const areaMapping = [
         { key: 'เดินทาง', name: '1. ด้านเดินทางดี', img: 'bma_icon01.png', icon: 'bi-car-front-fill', color: '#0071ce' },
         { key: 'ปลอดภัย', name: '2. ด้านปลอดภัยดี', img: 'bma_icon02.png', icon: 'bi-shield-fill-check', color: '#eab308' },
@@ -621,14 +618,15 @@
         };
     }
 
+    // 🌟 ดึงเฉพาะ KR ID ตามต้องการ หากไม่มีกำหนดเป็น "ไม่ระบุรหัส"
     function initGlobalProjectDict(data) {
         globalProjectDict = {};
         data.forEach(row => {
             let pName = String(row[cols.projectName] || '').trim();
             let krId = String(row[cols.krID] || '').trim();
-            if (!krId || krId === 'NaN') krId = String(row[cols.krName] || '').trim();
+            if (!krId || krId === 'NaN') krId = 'ไม่ระบุรหัส';
 
-            if (pName && pName !== 'NaN' && krId && krId !== 'NaN') {
+            if (pName && pName !== 'NaN') {
                 if (!globalProjectDict[pName]) globalProjectDict[pName] = new Set();
                 globalProjectDict[pName].add(krId);
             }
@@ -685,7 +683,6 @@
         return `<span class="badge-component" style="background: ${compColorMap[compText]}"><i class="bi bi-puzzle-fill me-1 text-white-50"></i> ${compText}</span>`;
     }
 
-    // 🌟 อัปเกรดป้ายด้านยุทธศาสตร์ให้ใช้ Bootstrap Vector Icon
     function getAreaIconHTML(categoryName) {
         if(!categoryName || categoryName === '-' || categoryName === 'NaN') return '<i class="bi bi-tags-fill text-secondary me-1"></i>';
         let found = areaMapping.find(a => categoryName.includes(a.key));
@@ -830,9 +827,13 @@
             let cat = String(row[cols.category] || 'ไม่ระบุ').trim();
             let comp = String(row[cols.component] || '').trim(); 
             
+            // 🌟 แก้ไขบั๊กตัวเลขด้วยการแปลงค่า KR ID ให้เป็น String( ) เสมอ
+            let krID_val = row[cols.krID];
+            let safeKrID = (krID_val !== undefined && krID_val !== null && String(krID_val).trim() !== 'NaN') ? String(krID_val).trim() : '';
+
             if(!krGroups[krKey]) {
                 krGroups[krKey] = {
-                    title: krTitle, id: String(row[cols.krID] || '').trim() !== 'NaN' ? row[cols.krID] : '',
+                    title: krTitle, id: safeKrID,
                     component: comp !== 'NaN' ? comp : '-', 
                     category: cat, policy: String(row[cols.policy] || '').trim(),
                     unit: String(row[cols.unit] || '-').trim(),
@@ -860,7 +861,7 @@
                 
                 if(calcFlag === 'คำนวณ') krGroups[krKey].accumulatedActual += pActual;
 
-                let projId = 'proj-' + krKey.replace(/\s+/g, '-') + '-' + krGroups[krKey].projects.length;
+                let projId = 'proj-' + String(krKey).replace(/\s+/g, '-') + '-' + krGroups[krKey].projects.length;
                 let pData = {
                     id: projId, krParentName: krTitle, name: pName, 
                     budget: pBudget, spent: pSpent, target: pTarget, actual: pActual, 
@@ -981,9 +982,10 @@
         });
         document.getElementById('areaCardsContainer').innerHTML = areaCardsHTML;
 
+        // 🌟 แก้ไขบั๊กตัวเลขโดยครอบ String() เสมอ
         krArray.sort((a, b) => {
-            let idA = a.id || 'ZZZ'; let idB = b.id || 'ZZZ';
-            if (idA === idB) return a.category.localeCompare(b.category);
+            let idA = String(a.id || 'ZZZ'); let idB = String(b.id || 'ZZZ');
+            if (idA === idB) return String(a.category).localeCompare(String(b.category));
             return idA.localeCompare(idB);
         });
 
@@ -1059,9 +1061,10 @@
             }
         }
 
+        // 🌟 แก้ไขบั๊กตัวเลขโดยครอบ String() เสมอ
         krArray.sort((a, b) => {
-            let idA = a.id || 'ZZZ'; let idB = b.id || 'ZZZ';
-            if (idA === idB) return a.category.localeCompare(b.category);
+            let idA = String(a.id || 'ZZZ'); let idB = String(b.id || 'ZZZ');
+            if (idA === idB) return String(a.category).localeCompare(String(b.category));
             return idA.localeCompare(idB);
         });
 
