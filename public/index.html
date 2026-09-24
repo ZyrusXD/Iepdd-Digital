@@ -77,19 +77,17 @@
         }
         
         .badge-sub { 
-            font-size: 0.75rem; font-weight: 600; background: rgba(0, 116, 75, 0.08); color: var(--bma-green-dark); 
-            border: 1px solid rgba(0, 116, 75, 0.2); padding: 4px 10px; border-radius: 6px; 
-            display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            font-size: 0.85rem; font-weight: 600; color: var(--bma-green-dark); 
+            border: 1px solid #e2e8f0; padding: 4px 12px; border-radius: 6px; 
+            display: inline-flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.03); background: #ffffff;
         }
 
-        /* 🌟 Component Badge */
         .badge-component { 
-            background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; font-weight: 600; 
-            padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; display: inline-flex; align-items: center; 
-            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3); border: 1px solid rgba(255,255,255,0.2); text-shadow: 0 1px 1px rgba(0,0,0,0.1);
+            color: white; font-weight: 600; padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; 
+            display: inline-flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            border: 1px solid rgba(255,255,255,0.2); text-shadow: 0 1px 1px rgba(0,0,0,0.1);
         }
         
-        /* 🌟 Policy Badges */
         .badge-policy { 
             background: linear-gradient(135deg, #0071ce, #00569d); color: white; font-weight: 600; 
             padding: 5px 14px; border-radius: 20px; font-size: 0.75rem; display: inline-flex; align-items: center; 
@@ -97,32 +95,15 @@
         }
         .badge-policy:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0, 113, 206, 0.4); }
 
-        /* 🌟 Policy Host (H) Badge */
-        .badge-policy-host {
-            background: linear-gradient(135deg, #00744b, #134e35) !important;
-            border: 1px solid #ffd700 !important;
-            box-shadow: 0 3px 8px rgba(0, 116, 75, 0.4) !important;
-        }
-        .inner-tag-host {
-            background: #ffd700; color: #134e35; font-weight: 800;
-            padding: 2px 8px; border-radius: 12px; font-size: 0.65rem; margin-left: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
+        .badge-policy-host { background: linear-gradient(135deg, #00744b, #134e35) !important; border: 1px solid #ffd700 !important; box-shadow: 0 3px 8px rgba(0, 116, 75, 0.4) !important; }
+        .inner-tag-host { background: #ffd700; color: #134e35; font-weight: 800; padding: 2px 8px; border-radius: 12px; font-size: 0.65rem; margin-left: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
 
-        /* 🌟 Policy Relative (R) Badge */
-        .badge-policy-relative {
-            background: linear-gradient(135deg, #f59e0b, #d97706) !important;
-            border: 1px solid #fde68a !important;
-            box-shadow: 0 3px 8px rgba(245, 158, 11, 0.4) !important;
-        }
-        .inner-tag-relative {
-            background: #ffffff; color: #d97706; font-weight: 800;
-            padding: 2px 8px; border-radius: 12px; font-size: 0.65rem; margin-left: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
+        .badge-policy-relative { background: linear-gradient(135deg, #f59e0b, #d97706) !important; border: 1px solid #fde68a !important; box-shadow: 0 3px 8px rgba(245, 158, 11, 0.4) !important; }
+        .inner-tag-relative { background: #ffffff; color: #d97706; font-weight: 800; padding: 2px 8px; border-radius: 12px; font-size: 0.65rem; margin-left: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
 
         .badge-policy-none { 
             background: #f1f5f9; color: #64748b; font-weight: 600; padding: 5px 14px; border-radius: 20px; 
-            font-size: 0.75rem; display: inline-flex; align-items: center; border: 1px solid #cbd5e1; 
-            box-shadow: inset 0 1px 2px rgba(255,255,255,0.5); 
+            font-size: 0.75rem; display: inline-flex; align-items: center; border: 1px solid #cbd5e1; box-shadow: inset 0 1px 2px rgba(255,255,255,0.5); 
         }
         
         .badge-sdt { 
@@ -134,6 +115,14 @@
         .badge-role-h { background: linear-gradient(135deg, var(--bma-green), var(--bma-green-dark)); color: white; border: 1px solid rgba(255,255,255,0.3); }
         .badge-role-coh { background: linear-gradient(135deg, #0dcaf0, #0aa2c0); color: white; border: 1px solid rgba(255,255,255,0.3); text-shadow: 0 1px 1px rgba(0,0,0,0.1); }
         .badge-role-r { background: linear-gradient(135deg, var(--bma-orange), #e69d30); color: white; border: 1px solid rgba(255,255,255,0.3); text-shadow: 0 1px 1px rgba(0,0,0,0.1); }
+
+        /* 🌟 Duplicate Project Highlighting */
+        .badge-duplicate {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7); color: #92400e; border: 1px solid #fde68a;
+            font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 6px;
+            display: inline-flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .proj-duplicate { background-color: #fffdf5 !important; border-left: 4px solid #f59e0b !important; }
 
         .filter-section { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
         .table-responsive { -webkit-overflow-scrolling: touch; border-radius: 8px; }
@@ -236,7 +225,6 @@
             <!-- ================= TAB 1: OVERVIEW ================= -->
             <div class="tab-pane fade show active" id="overview">
                 
-                <!-- Stat Cards -->
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-md-3">
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-green);">
@@ -252,21 +240,21 @@
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-blue);">
-                            <p class="mb-1 opacity-75 fw-medium small">โครงการ/กิจกรรม</p>
+                            <p class="mb-1 opacity-75 fw-medium small">โครงการ/กิจกรรม (ไม่นับซ้ำ)</p>
                             <h3 id="statProjects">0</h3>
                             <i class="bi bi-diagram-3-fill stat-icon text-white"></i>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="stat-box h-100" style="background-color: var(--bma-light-green); color: white;">
-                            <p class="mb-1 opacity-75 fw-medium small">งบประมาณรวม (บาท)</p>
+                            <p class="mb-1 opacity-75 fw-medium small">งบประมาณรวมสุทธิ (บาท)</p>
                             <h3 id="statBudget" class="fs-4">0</h3>
                             <i class="bi bi-cash-coin stat-icon text-white"></i>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="stat-box h-100" style="background-color: var(--bma-orange); color: white;">
-                            <p class="mb-1 opacity-75 fw-medium small">เบิกจ่ายสะสม</p>
+                            <p class="mb-1 opacity-75 fw-medium small">เบิกจ่ายสะสมสุทธิ</p>
                             <h3 id="statSpent" class="fs-4">0</h3>
                             <div class="mt-1 d-flex align-items-center">
                                 <div class="progress flex-grow-1 me-2" style="height: 4px; background: rgba(255,255,255,0.3);">
@@ -279,7 +267,6 @@
                     </div>
                 </div>
 
-                <!-- 🌟 กล่องสถานะ 3 สี -->
                 <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-activity me-2 text-primary"></i>สถานะการดำเนินงาน (คลิกเพื่อดูรายละเอียด)</h5>
                 <div class="row g-2 g-md-3 mb-2">
                     <div class="col-12 col-md-4">
@@ -423,7 +410,7 @@
                             </select>
                         </div>
                         <div class="col-12">
-                            <label class="form-label text-muted small fw-bold mb-1">ค้นหารหัส / ชื่อ KR</label>
+                            <label class="form-label text-muted small fw-bold mb-1">ค้นหารหัส / ชื่อ KR / โครงการ</label>
                             <input type="text" id="filterSearch" class="form-control" placeholder="พิมพ์คำค้นหา..." onkeyup="applyFilters()">
                         </div>
                     </div>
@@ -526,6 +513,21 @@
     let budgetChartInstance = null;
     let progressChartInstance = null;
     let policyDictionary = {};
+    
+    // 🌟 ระบบตรวจจับโปรเจกต์ซ้ำข้าม KR
+    let globalProjectDict = {}; 
+
+    // 🌟 ระบบสีสำหรับองค์ประกอบ
+    const compPalette = [
+        'linear-gradient(135deg, #6366f1, #4f46e5)', // Indigo
+        'linear-gradient(135deg, #ec4899, #db2777)', // Pink
+        'linear-gradient(135deg, #8b5cf6, #7c3aed)', // Purple
+        'linear-gradient(135deg, #14b8a6, #0d9488)', // Teal
+        'linear-gradient(135deg, #f97316, #ea580c)', // Orange
+        'linear-gradient(135deg, #06b6d4, #0891b2)'  // Cyan
+    ];
+    let compColorMap = {};
+    let compColorIndex = 0;
 
     const areaMapping = [
         { key: 'เดินทาง', name: '1. ด้านเดินทางดี', img: 'bma_icon01.png' },
@@ -553,7 +555,6 @@
             if(result.status === 'success') {
                 globalData = result.data || [];
                 
-                // ประมวลผลดึงข้อมูล Policy Dictionary
                 policyDictionary = {};
                 if (result.policy_dict && result.policy_dict.length > 0) {
                     result.policy_dict.forEach(item => {
@@ -569,6 +570,7 @@
 
                 if(globalData.length > 0) {
                     setupColumns(globalData[0]);
+                    initGlobalProjectDict(globalData); // 🌟 ประมวลผลหาโปรเจกต์ซ้ำทันทีที่โหลดเสร็จ
                     populateDropdownFilters(globalData);
                     
                     processOverview(globalData); 
@@ -592,7 +594,7 @@
     function setupColumns(row) {
         const keys = Object.keys(row);
         cols = {
-            component: keys.find(k => k.includes('องค์ประกอบ')) || keys[1], // 🌟 เพิ่มค้นหาคอลัมน์องค์ประกอบ
+            component: keys.find(k => k.includes('องค์ประกอบ')), // รองรับการดึงคำว่า องค์ประกอบ
             krID: keys.find(k => k.includes('รหัส KRs')) || keys[1],
             category: keys.find(k => k.includes('ด้าน')) || keys[2],
             issue: keys.find(k => k.includes('ประเด็นพัฒนา')) || keys[3],
@@ -616,10 +618,25 @@
         };
     }
 
+    // 🌟 ฟังก์ชันหาว่าโครงการไหนอยู่ KR ไหนบ้างทั่วทั้งระบบ (ทำครั้งเดียวตอนโหลด)
+    function initGlobalProjectDict(data) {
+        globalProjectDict = {};
+        data.forEach(row => {
+            let pName = String(row[cols.projectName] || '').trim();
+            let krId = String(row[cols.krID] || '').trim();
+            if (!krId || krId === 'NaN') krId = String(row[cols.krName] || '').trim(); // Fallback to KR name
+
+            if (pName && pName !== 'NaN' && krId && krId !== 'NaN') {
+                if (!globalProjectDict[pName]) globalProjectDict[pName] = new Set();
+                globalProjectDict[pName].add(krId);
+            }
+        });
+    }
+
     function populateDropdownFilters(data) {
         const catSelect = document.getElementById('filterCategory');
         const policySelect = document.getElementById('filterPolicy');
-        const compSelect = document.getElementById('filterComponent'); // 🌟 สำหรับ Filter องค์ประกอบ
+        const compSelect = document.getElementById('filterComponent'); 
         const categories = new Set(); const policies = new Set(); const components = new Set();
 
         data.forEach(row => {
@@ -636,10 +653,10 @@
         });
 
         catSelect.innerHTML = '<option value="all">ทั้งหมด</option>';
-        categories.forEach(c => { catSelect.innerHTML += `<option value="${c}">${c}</option>`; });
+        [...categories].sort().forEach(c => { catSelect.innerHTML += `<option value="${c}">${c}</option>`; });
         
         compSelect.innerHTML = '<option value="all">ทั้งหมด</option>';
-        components.forEach(c => { compSelect.innerHTML += `<option value="${c}">${c}</option>`; });
+        [...components].sort().forEach(c => { compSelect.innerHTML += `<option value="${c}">${c}</option>`; });
 
         policySelect.innerHTML = '<option value="all">ทั้งหมด</option>';
         [...policies].sort().forEach(p => { policySelect.innerHTML += `<option value="${p}">${p}</option>`; });
@@ -657,10 +674,21 @@
         return { isH, isCoH, isR };
     }
 
-    // 🌟 ระบบสร้างป้ายต่างๆ ไม่ใส่ margin เพื่อให้ Flex gap จัดการ
+    // 🌟 ระบบสร้างป้ายต่างๆ ไม่ใส่ margin เพื่อให้ Flex gap จัดการเรียงแถวเดียวสวยงาม
     function getComponentBadgeHTML(compText) {
         if (!compText || compText === '-' || compText === 'NaN') return '';
-        return `<span class="badge-component"><i class="bi bi-puzzle-fill me-1 text-white-50"></i> ${compText}</span>`;
+        if (!compColorMap[compText]) {
+            compColorMap[compText] = compPalette[compColorIndex % compPalette.length];
+            compColorIndex++;
+        }
+        return `<span class="badge-component" style="background: ${compColorMap[compText]}"><i class="bi bi-puzzle-fill me-1 text-white-50"></i> ${compText}</span>`;
+    }
+
+    function getAreaIconHTML(categoryName) {
+        if(!categoryName || categoryName === '-' || categoryName === 'NaN') return '<i class="bi bi-tags text-secondary"></i>';
+        let found = areaMapping.find(a => categoryName.includes(a.key));
+        let imgSrc = found ? found.img : 'bma_icon09.png'; 
+        return `<img src="${imgSrc}" style="width: 16px; height: 16px; margin-right: 4px; object-fit: contain;">`;
     }
 
     function getRoleBadge(isH, isCoH, isR) {
@@ -674,7 +702,7 @@
     function getPolicyBadgeHTML(policyText) {
         if(!policyText || policyText === 'NaN' || policyText === '-') return '';
         if(policyText.includes('ไม่สอดคล้อง')) {
-            return `<span class="badge-policy-none"><i class="bi bi-x-circle me-1"></i> ${policyText}</span>`;
+            return `<span class="badge-policy-none"><i class="bi bi-x-circle me-1"></i> Policy: ${policyText}</span>`;
         } else {
             let badges = '';
             policyText.split(',').forEach(p => {
@@ -757,7 +785,8 @@
             if (fSearch !== '') {
                 let krCode = String(row[cols.krID] || '').toLowerCase();
                 let krTitle = String(row[cols.krName] || '').toLowerCase();
-                searchMatch = krCode.includes(fSearch) || krTitle.includes(fSearch);
+                let projName = String(row[cols.projectName] || '').toLowerCase();
+                searchMatch = krCode.includes(fSearch) || krTitle.includes(fSearch) || projName.includes(fSearch);
             }
 
             let isKRRow = String(row[cols.krName] || '').trim() !== '' && String(row[cols.krName] || '').trim() !== 'NaN';
@@ -869,6 +898,8 @@
         let krNotStarted = 0, krInProgress = 0, krCompleted = 0;
         let projNotStarted = 0, projInProgress = 0, projCompleted = 0;
 
+        let processedGlobalProjects = new Set(); // 🌟 สำหรับเช็กโปรเจกต์ซ้ำตอนคำนวณภาพรวม
+
         krArray.forEach((group, index) => {
             if (group.isH) countH++;
             if (group.isCoH) countCoH++;
@@ -880,26 +911,35 @@
 
             let gBudget = 0; let gSpent = 0;
             group.projects.forEach(p => {
-                totalProjectsCount++;
+                
+                // 🌟 งบประมาณประจำ KR (แสดงโชว์ในตาราง ไม่สนใจว่าซ้ำไหม เพราะถือว่า KR นี้ต้องรับผิดชอบงบก้อนนี้)
                 gBudget += p.budget;
                 gSpent += p.spent;
                 
-                if (p.progress === 0) projNotStarted++;
-                else if (p.progress >= 100) projCompleted++;
-                else projInProgress++;
-                
-                for (let a of areaMapping) { if(group.category.includes(a.key)) { areaCounter[a.key].projCount++; break; } }
+                // 🌟 แต่! งบประมาณรวมของ "ทั้งระบบ" (Overview Top) จะคำนวณโครงการนี้แค่ 1 ครั้งเท่านั้น
+                if (!processedGlobalProjects.has(p.name)) {
+                    processedGlobalProjects.add(p.name);
+                    totalProjectsCount++;
+                    totalBudget += p.budget;
+                    totalSpent += p.spent;
+                    
+                    if (p.progress === 0) projNotStarted++;
+                    else if (p.progress >= 100) projCompleted++;
+                    else projInProgress++;
+                    
+                    // ป้องกันกราฟเบิ้ลงบประมาณเช่นกัน
+                    let cat = group.category;
+                    if(!chartBudget[cat]) chartBudget[cat] = 0;
+                    chartBudget[cat] += p.budget;
+                    
+                    for (let a of areaMapping) { if(group.category.includes(a.key)) { areaCounter[a.key].projCount++; break; } }
+                }
             });
 
             group.krBudget = gBudget;
             group.krSpent = gSpent;
-            totalBudget += gBudget;
-            totalSpent += gSpent;
             
             let cat = group.category;
-            if(!chartBudget[cat]) chartBudget[cat] = 0;
-            chartBudget[cat] += gBudget;
-            
             if(!chartProgress[cat]) chartProgress[cat] = { sum: 0, count: 0 };
             chartProgress[cat].sum += group.krProgressPercent;
             chartProgress[cat].count += 1;
@@ -949,13 +989,14 @@
             let compBadge = getComponentBadgeHTML(group.component);
             let policyBadgeOverview = getPolicyBadgeHTML(group.policy);
             let roleBadgeOverview = getRoleBadge(group.isH, group.isCoH, group.isR);
+            let areaIconBadge = `<span class="badge-sub border-secondary-subtle bg-white shadow-sm">${getAreaIconHTML(group.category)}${group.category}</span>`;
             
             const overviewKrId = `kr-overview-${index}`;
             krDetailsDb[overviewKrId] = group;
 
             overviewHTML += `
                 <tr class="kr-overview-row" onclick="openKrModal('${overviewKrId}')" title="คลิกเพื่อดูรายละเอียดโครงการที่เกี่ยวข้อง">
-                    <td><span class="badge-sub text-wrap text-start"><i class="bi bi-tags"></i> ${group.category}</span></td>
+                    <td>${areaIconBadge}</td>
                     <td>${group.id ? `<span class="kr-badge">${group.id}</span>` : '<span class="text-muted">-</span>'}</td>
                     <td>
                         <div class="fw-bold text-dark mb-2" style="font-size:0.95rem;">${group.title}</div>
@@ -1022,8 +1063,12 @@
         });
 
         let totalFilteredProjs = 0;
-        krArray.forEach(group => { totalFilteredProjs += group.projects.length; });
-        document.getElementById('filteredCountResult').innerHTML = `<i class="bi bi-funnel-fill me-2"></i> กรองพบ: ${krArray.length} KRs / ${totalFilteredProjs} โครงการ`;
+        let uniqueFilteredProjs = new Set();
+        krArray.forEach(group => { 
+            totalFilteredProjs += group.projects.length; 
+            group.projects.forEach(p => uniqueFilteredProjs.add(p.name));
+        });
+        document.getElementById('filteredCountResult').innerHTML = `<i class="bi bi-funnel-fill me-2"></i> กรองพบ: ${krArray.length} KRs / ${uniqueFilteredProjs.size} โครงการ (ไม่นับซ้ำ)`;
 
         let tableHTML = ''; let krCount = 0;
 
@@ -1041,6 +1086,7 @@
                 let compBadge = getComponentBadgeHTML(group.component);
                 let roleBadge = getRoleBadge(group.isH, group.isCoH, group.isR);
                 let policyBadge = getPolicyBadgeHTML(group.policy);
+                let areaIconBadge = `<span class="badge-sub border-secondary-subtle bg-white shadow-sm">${getAreaIconHTML(group.category)}${group.category}</span>`;
 
                 let krDocButtons = '';
                 if (group.doc1 && String(group.doc1).startsWith('http')) krDocButtons += `<a href="${group.doc1}" target="_blank" class="btn btn-sm btn-primary mb-1 w-100" style="font-size: 0.75rem;"><i class="bi bi-file-earmark-pdf"></i> ปผ.01</a>`;
@@ -1054,7 +1100,7 @@
                                 <div>
                                     <div class="mb-2">
                                         ${group.id ? `<span class="kr-badge me-2">${group.id}</span>` : ''}
-                                        <span class="badge-sub"><i class="bi bi-tags"></i> ${group.category}</span>
+                                        ${areaIconBadge}
                                     </div>
                                     <div class="fw-bold text-primary fs-6 lh-base mb-2">${group.title}</div>
                                     <div class="d-flex flex-wrap align-items-center gap-2">
@@ -1094,11 +1140,24 @@
                     let pBudgPct = proj.budget > 0 ? Math.min((proj.spent / proj.budget) * 100, 100) : 0;
                     let unitLabel = proj.unit !== '-' ? `<span class="ms-1 fw-normal text-muted">${proj.unit}</span>` : '';
 
+                    // 🌟 ระบบเพิ่ม Badge KR ซ้ำซ้อน 🌟
+                    let krsSet = globalProjectDict[proj.name] || new Set();
+                    let isDuplicate = krsSet.size > 1;
+                    let duplicateUI = '';
+                    let projRowClass = 'proj-row';
+                    
+                    if (isDuplicate) {
+                        projRowClass += ' proj-duplicate';
+                        let tags = Array.from(krsSet).map(id => `<span class="badge bg-white text-danger border border-danger-subtle ms-1 shadow-sm">${id}</span>`).join('');
+                        duplicateUI = `<div class="mt-2 mb-1"><span class="badge-duplicate"><i class="bi bi-diagram-2-fill me-1 text-warning"></i> สนับสนุนหลาย KR: ${tags}</span></div>`;
+                    }
+
                     tableHTML += `
-                        <tr class="proj-row kr-child-${krRowId}">
+                        <tr class="${projRowClass} kr-child-${krRowId}">
                             <td class="ps-4 ps-md-5">
                                 <div class="text-dark" style="font-size:0.95rem;"><i class="bi bi-arrow-return-right text-muted me-1"></i> ${proj.name}</div>
-                                ${proj.calcFlag === 'คำนวณ' ? `<span class="badge-sub text-info ms-4 mt-2 border-info bg-transparent"><i class="bi bi-plus-circle-fill me-1"></i>คำนวณยอดเข้า KR</span>` : ''}
+                                ${duplicateUI}
+                                ${proj.calcFlag === 'คำนวณ' ? `<span class="badge-sub text-info border-info mt-1 bg-white shadow-sm"><i class="bi bi-plus-circle-fill me-1"></i> คำนวณยอดเข้า KR นี้</span>` : ''}
                             </td>
                             <td>
                                 <div class="text-muted small mb-1">เป้า: <strong class="text-dark">${proj.target.toLocaleString()}</strong>${unitLabel}</div>
@@ -1214,6 +1273,7 @@
         let krProgressPercent = k.target > 0 ? Math.min((k.accumulatedActual / k.target) * 100, 100) : 0;
         let compBadge = getComponentBadgeHTML(k.component);
         let roleBadgeModal = getRoleBadge(k.isH, k.isCoH, k.isR);
+        let areaIconBadge = `<span class="badge-sub border-secondary-subtle bg-white shadow-sm">${getAreaIconHTML(k.category)} ${k.category}</span>`;
         
         let projectsHTML = '';
         if(k.projects.length === 0) {
@@ -1221,12 +1281,21 @@
         } else {
             k.projects.forEach(proj => {
                 let unitLabel = proj.unit !== '-' ? `<span class="text-muted ms-1 fw-normal">${proj.unit}</span>` : '';
+                
+                let krsSet = globalProjectDict[proj.name] || new Set();
+                let isDuplicate = krsSet.size > 1;
+                let duplicateUI = '';
+                if (isDuplicate) {
+                    let tags = Array.from(krsSet).map(id => `<span class="badge bg-white text-danger border border-danger-subtle ms-1 shadow-sm">${id}</span>`).join('');
+                    duplicateUI = `<div class="mt-2 mb-1"><span class="badge-duplicate"><i class="bi bi-diagram-2-fill me-1 text-warning"></i> สนับสนุนหลาย KR: ${tags}</span></div>`;
+                }
+
                 projectsHTML += `
-                    <tr>
+                    <tr class="${isDuplicate ? 'bg-warning-subtle' : ''}">
                         <td class="text-start">
                             <a href="javascript:void(0)" onclick="switchModalToProject('${proj.id}')" class="hover-link fw-bold text-dark text-decoration-none">${proj.name}</a>
-                            <br>
-                            ${proj.calcFlag === 'คำนวณ' ? `<span class="badge-sub text-info border-info mt-1 bg-transparent"><i class="bi bi-plus-circle-fill me-1"></i> คำนวณยอดเข้า KR</span>` : ''}
+                            ${duplicateUI}
+                            ${proj.calcFlag === 'คำนวณ' ? `<div class="mt-1"><span class="badge-sub text-info border-info bg-white shadow-sm"><i class="bi bi-plus-circle-fill me-1"></i> คำนวณยอดเข้า KR นี้</span></div>` : ''}
                         </td>
                         <td class="text-center">
                             <span class="text-dark fw-bold">${proj.target.toLocaleString()}</span> ${unitLabel}
@@ -1251,7 +1320,7 @@
             <div class="bg-white p-3 p-md-4 rounded border mb-4 shadow-sm">
                 <div class="mb-2">
                     ${k.id ? `<span class="kr-badge me-2">${k.id}</span>` : ''}
-                    <span class="badge-sub"><i class="bi bi-tags"></i> ${k.category}</span>
+                    ${areaIconBadge}
                 </div>
                 <div class="fs-5 text-dark fw-bold mb-2 lh-base">${k.title}</div>
                 <div class="d-flex flex-wrap align-items-center gap-2 mt-1">
@@ -1334,7 +1403,7 @@
             <div class="bg-white p-3 p-md-4 rounded border mb-4 shadow-sm">
                 <h6 class="fw-bold text-muted mb-2"><i class="bi bi-briefcase-fill me-1"></i> ชื่อโครงการ/กิจกรรม</h6>
                 <div class="fs-5 text-dark fw-bold mb-3">${p.name}</div>
-                <h6 class="fw-bold text-muted mb-2"><i class="bi bi-link-45deg me-1"></i> ตอบสนองตัวชี้วัด (KR)</h6>
+                <h6 class="fw-bold text-muted mb-2"><i class="bi bi-link-45deg me-1"></i> ตอบสนองตัวชี้วัด (KR) ล่าสุดที่คลิก</h6>
                 <div class="text-primary fw-medium">${p.krParentName}</div>
             </div>
             
