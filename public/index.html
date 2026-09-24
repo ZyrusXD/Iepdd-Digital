@@ -58,6 +58,7 @@
 
         .area-card { background: white; border-radius: 12px; padding: 15px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.3s; display: flex; align-items: center; gap: 15px; }
         .area-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,116,75,0.1); border-color: var(--bma-green); }
+        .area-icon { width: 50px; height: 50px; object-fit: contain; }
         .area-title { font-weight: 700; color: #1e293b; font-size: 1.05rem; margin-bottom: 2px; }
         .area-stats { font-size: 0.85rem; color: #64748b; }
         
@@ -340,6 +341,7 @@
                     </div>
                 </div>
 
+                <!-- 🌟 สรุป 9 ด้าน ยืนยันใช้รูป bma_icon และโชว์ครบทุกกล่อง -->
                 <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-grid-fill me-2 text-primary"></i>สรุปผลตามยุทธศาสตร์ กทม. และหน่วยงาน</h5>
                 <div class="row g-3 mb-4" id="areaCardsContainer"></div>
 
@@ -564,18 +566,19 @@
     let compColorMap = {};
     let compColorIndex = 0;
 
-    // Vector Icons สำหรับด้านยุทธศาสตร์
+    // 🌟 ภาพ Icon BMA สำหรับหน้า Dashboard (หน้าแรก)
+    // 🌟 ส่วน Vector Icon สำหรับ Tag ขนาดย่อม
     const areaMapping = [
-        { key: 'เดินทาง', name: '1. ด้านเดินทางดี', icon: 'bi-car-front-fill', color: '#0071ce' },
-        { key: 'ปลอดภัย', name: '2. ด้านปลอดภัยดี', icon: 'bi-shield-fill-check', color: '#eab308' },
-        { key: 'โปร่งใส', name: '3. ด้านโปร่งใสดี', icon: 'bi-search', color: '#8b5cf6' },
-        { key: 'สิ่งแวดล้อม', name: '4. ด้านสิ่งแวดล้อมดี', icon: 'bi-tree-fill', color: '#22c55e' },
-        { key: 'สุขภาพ', name: '5. ด้านสุขภาพดี', icon: 'bi-heart-pulse-fill', color: '#ef4444' },
-        { key: 'เรียน', name: '6. ด้านเรียนดี', icon: 'bi-book-half', color: '#f97316' },
-        { key: 'เศรษฐกิจ', name: '7. ด้านเศรษฐกิจดี', icon: 'bi-graph-up-arrow', color: '#14b8a6' },
-        { key: 'สังคม', name: '8. ด้านสังคมดี', icon: 'bi-people-fill', color: '#ec4899' },
-        { key: 'บริหารจัดการ', name: '9. ด้านบริหารจัดการดี', icon: 'bi-building-fill-gear', color: '#64748b' },
-        { key: 'ยุทธศาสตร์หน่วยงาน', name: 'ยุทธศาสตร์หน่วยงาน (งานประจำ)', icon: 'bi-briefcase-fill', color: '#475569' }
+        { key: 'เดินทาง', name: '1. ด้านเดินทางดี', img: 'bma_icon01.png', icon: 'bi-car-front-fill', color: '#0071ce' },
+        { key: 'ปลอดภัย', name: '2. ด้านปลอดภัยดี', img: 'bma_icon02.png', icon: 'bi-shield-fill-check', color: '#eab308' },
+        { key: 'โปร่งใส', name: '3. ด้านโปร่งใสดี', img: 'bma_icon03.png', icon: 'bi-search', color: '#8b5cf6' },
+        { key: 'สิ่งแวดล้อม', name: '4. ด้านสิ่งแวดล้อมดี', img: 'bma_icon04.png', icon: 'bi-tree-fill', color: '#22c55e' },
+        { key: 'สุขภาพ', name: '5. ด้านสุขภาพดี', img: 'bma_icon05.png', icon: 'bi-heart-pulse-fill', color: '#ef4444' },
+        { key: 'เรียน', name: '6. ด้านเรียนดี', img: 'bma_icon06.png', icon: 'bi-book-half', color: '#f97316' },
+        { key: 'เศรษฐกิจ', name: '7. ด้านเศรษฐกิจดี', img: 'bma_icon07.png', icon: 'bi-graph-up-arrow', color: '#14b8a6' },
+        { key: 'สังคม', name: '8. ด้านสังคมดี', img: 'bma_icon08.png', icon: 'bi-people-fill', color: '#ec4899' },
+        { key: 'บริหารจัดการ', name: '9. ด้านบริหารจัดการดี', img: 'bma_icon09.png', icon: 'bi-building-fill-gear', color: '#64748b' },
+        { key: 'ยุทธศาสตร์หน่วยงาน', name: 'ยุทธศาสตร์หน่วยงาน (งานประจำ)', img: 'bma_icon09.png', icon: 'bi-briefcase-fill', color: '#475569' }
     ];
 
     async function fetchData() {
@@ -655,12 +658,15 @@
         };
     }
 
+    // 🌟 ดักจับแก้บั๊กตัวเลขด้วย String()
     function initGlobalProjectDict(data) {
         globalProjectDict = {};
         data.forEach(row => {
-            let pName = String(row[cols.projectName] || '').trim();
-            let krId = String(row[cols.krID] || '').trim();
-            if (!krId || krId === 'NaN') krId = 'ไม่ระบุรหัส';
+            let pName_val = row[cols.projectName];
+            let pName = (pName_val != null) ? String(pName_val).trim() : '';
+            
+            let krId_val = row[cols.krID];
+            let krId = (krId_val != null && String(krId_val).trim() !== 'NaN') ? String(krId_val).trim() : 'ไม่ระบุรหัส';
 
             if (pName && pName !== 'NaN') {
                 if (!globalProjectDict[pName]) globalProjectDict[pName] = new Set();
@@ -676,14 +682,17 @@
         const categories = new Set(); const policies = new Set(); const components = new Set();
 
         data.forEach(row => {
-            let comp = String(row[cols.component] || '').trim();
+            let comp_val = row[cols.component];
+            let comp = (comp_val != null) ? String(comp_val).trim() : '';
             if(comp && comp !== 'NaN') components.add(comp);
 
-            let cat = String(row[cols.category] || '').trim();
+            let cat_val = row[cols.category];
+            let cat = (cat_val != null) ? String(cat_val).trim() : '';
             if (comp.includes('งานประจำ')) cat = 'ยุทธศาสตร์หน่วยงาน';
             if(cat && cat !== 'NaN') categories.add(cat);
             
-            let pRaw = String(row[cols.policy] || '').trim();
+            let pRaw_val = row[cols.policy];
+            let pRaw = (pRaw_val != null) ? String(pRaw_val).trim() : '';
             if(pRaw && pRaw !== 'NaN' && pRaw !== '-' && !pRaw.includes('ไม่สอดคล้อง')) {
                 pRaw.split(',').forEach(p => {
                     let code = p.trim().toUpperCase();
@@ -703,8 +712,8 @@
     }
 
     function checkRole(row) {
-        let hText = String(row[cols.hostDept] || '');
-        let rText = String(row[cols.relDept] || '');
+        let hText = (row[cols.hostDept] != null) ? String(row[cols.hostDept]) : '';
+        let rText = (row[cols.relDept] != null) ? String(row[cols.relDept]) : '';
         let hasSdtH = hText.includes('สดท') || hText.includes('สำนักดิจิทัล');
         
         let isCoH = hasSdtH && (hText.includes('/') || hText.includes(',')); 
@@ -779,14 +788,14 @@
         const fSearch = document.getElementById('filterSearch').value.toLowerCase();
 
         let filteredData = globalData.filter(row => {
-            let comp = String(row[cols.component] || '').trim();
-            let cat = String(row[cols.category] || '').trim();
+            let comp = (row[cols.component] != null) ? String(row[cols.component]).trim() : '';
+            let cat = (row[cols.category] != null) ? String(row[cols.category]).trim() : '';
             if (comp.includes('งานประจำ')) cat = 'ยุทธศาสตร์หน่วยงาน';
 
             let compMatch = fComp === 'all' || comp === fComp;
             let catMatch = fCat === 'all' || cat === fCat;
             
-            let pRaw = String(row[cols.policy] || '').trim().toUpperCase();
+            let pRaw = (row[cols.policy] != null) ? String(row[cols.policy]).trim().toUpperCase() : '';
             let policyMatch = fPolicy === 'all' || pRaw.includes(fPolicy.toUpperCase());
             
             let roles = checkRole(row);
@@ -827,13 +836,14 @@
 
             let searchMatch = true;
             if (fSearch !== '') {
-                let krCode = String(row[cols.krID] || '').toLowerCase();
-                let krTitle = String(row[cols.krName] || '').toLowerCase();
-                let projName = String(row[cols.projectName] || '').toLowerCase();
+                let krCode = (row[cols.krID] != null) ? String(row[cols.krID]).toLowerCase() : '';
+                let krTitle = (row[cols.krName] != null) ? String(row[cols.krName]).toLowerCase() : '';
+                let projName = (row[cols.projectName] != null) ? String(row[cols.projectName]).toLowerCase() : '';
                 searchMatch = krCode.includes(fSearch) || krTitle.includes(fSearch) || projName.includes(fSearch);
             }
 
-            let isKRRow = String(row[cols.krName] || '').trim() !== '' && String(row[cols.krName] || '').trim() !== 'NaN';
+            let krName_val = row[cols.krName];
+            let isKRRow = (krName_val != null && String(krName_val).trim() !== '' && String(krName_val).trim() !== 'NaN');
             if (isKRRow) {
                 return compMatch && catMatch && policyMatch && roleMatch && policyRoleMatch && searchMatch;
             }
@@ -863,28 +873,36 @@
         let krGroups = {};
         
         data.forEach(row => {
-            let krTitle = String(row[cols.krName] || '').trim();
+            let krName_val = row[cols.krName];
+            let krTitle = (krName_val != null) ? String(krName_val).trim() : '';
             if(!krTitle || krTitle === 'NaN' || krTitle === 'None') return;
 
-            let krKey = row[cols.krID] || krTitle; 
             let roles = checkRole(row);
-            let comp = String(row[cols.component] || '').trim(); 
+            let comp_val = row[cols.component];
+            let comp = (comp_val != null) ? String(comp_val).trim() : ''; 
             
-            let cat = String(row[cols.category] || 'ไม่ระบุ').trim();
+            let cat_val = row[cols.category];
+            let cat = (cat_val != null) ? String(cat_val).trim() : 'ไม่ระบุ';
             if (comp.includes('งานประจำ')) {
                 cat = 'ยุทธศาสตร์หน่วยงาน';
             }
 
             let krID_val = row[cols.krID];
             let safeKrID = (krID_val !== undefined && krID_val !== null && String(krID_val).trim() !== 'NaN') ? String(krID_val).trim() : '';
+            let krKey = safeKrID || krTitle;
 
             if(!krGroups[krKey]) {
+                let krTarget_val = row[cols.krTarget];
+                let unit_val = row[cols.unit];
+                let policy_val = row[cols.policy];
+                
                 krGroups[krKey] = {
                     title: krTitle, id: safeKrID,
                     component: comp !== 'NaN' ? comp : '-', 
-                    category: cat, policy: String(row[cols.policy] || '').trim(),
-                    unit: String(row[cols.unit] || '-').trim(),
-                    target: parseFloat(String(row[cols.krTarget]).replace(/,/g, '')) || 0,
+                    category: cat, 
+                    policy: (policy_val != null) ? String(policy_val).trim() : '',
+                    unit: (unit_val != null) ? String(unit_val).trim() : '-',
+                    target: parseFloat(String(krTarget_val || '0').replace(/,/g, '')) || 0,
                     
                     sumActual: 0,
                     avgSum: 0,
@@ -901,15 +919,20 @@
                 krGroups[krKey].isR = krGroups[krKey].isR || roles.isR;
             }
 
-            let pName = String(row[cols.projectName] || '').trim();
+            let pName_val = row[cols.projectName];
+            let pName = (pName_val != null) ? String(pName_val).trim() : '';
+
             if(pName && pName !== 'NaN') {
                 let pBudget = parseFloat(String(row[cols.budget] || '0').replace(/,/g, '')) || 0;
                 let pSpent = parseFloat(String(row[cols.spent] || '0').replace(/,/g, '')) || 0;
                 let pTarget = parseFloat(String(row[cols.projTarget]).replace(/,/g, '')) || 0;
                 let pActual = parseFloat(String(row[cols.projActual]).replace(/,/g, '')) || 0;
-                let pUnit = row[cols.projUnit] && row[cols.projUnit] !== 'NaN' ? String(row[cols.projUnit]).trim() : '-';
+                let pUnit_val = row[cols.projUnit];
+                let pUnit = (pUnit_val != null && String(pUnit_val) !== 'NaN') ? String(pUnit_val).trim() : '-';
                 let pProgress = pTarget > 0 ? Math.min((pActual / pTarget) * 100, 100) : 0;
-                let calcFlag = String(row[cols.calcToKR] || '').trim();
+                
+                let calcFlag_val = row[cols.calcToKR];
+                let calcFlag = (calcFlag_val != null) ? String(calcFlag_val).trim() : '';
                 
                 if (calcFlag === 'คำนวณ' || calcFlag === 'รวมค่า') {
                     krGroups[krKey].sumActual += pActual;
@@ -919,11 +942,13 @@
                 }
 
                 let projId = 'proj-' + String(krKey).replace(/\s+/g, '-') + '-' + krGroups[krKey].projects.length;
+                let reportNote_val = row[cols.reportNote];
                 let pData = {
                     id: projId, krParentName: krTitle, name: pName, 
                     budget: pBudget, spent: pSpent, target: pTarget, actual: pActual, 
                     unit: pUnit, progress: pProgress, calcFlag: calcFlag, 
-                    doc: row[cols.docProj], reportNote: String(row[cols.reportNote] || '').trim() 
+                    doc: row[cols.docProj], 
+                    reportNote: (reportNote_val != null) ? String(reportNote_val).trim() : ''
                 };
                 
                 krGroups[krKey].projects.push(pData);
@@ -954,7 +979,7 @@
         let krArray = buildGroups(data, true); 
         let areaCounter = {};
         areaMapping.forEach(a => {
-            areaCounter[a.key] = { name: a.name, krCount: 0, projCount: 0, icon: a.icon, color: a.color };
+            areaCounter[a.key] = { name: a.name, img: a.img, krCount: 0, projCount: 0, icon: a.icon, color: a.color };
         });
 
         let totalBudget = 0; let totalSpent = 0;
@@ -1046,14 +1071,16 @@
         document.getElementById('routineProjInProgress').innerText = routineProjInProgress;
         document.getElementById('routineProjCompleted').innerText = routineProjCompleted;
 
+        // 🌟 ยืนยันการแสดงผลครบ 9 ด้านด้วยภาพ BMA Icon ใน Dashboard
         let areaCardsHTML = '';
         Object.values(areaCounter).forEach(area => {
-            if (area.krCount === 0 && area.projCount === 0) return; 
+            let fallback = `<i class=\\'bi ${area.icon}\\' style=\\'font-size: 2.5rem; color:${area.color};\\'></i>`;
+            let imgOrIcon = `<img src="${area.img}" class="area-icon" onerror="this.outerHTML='${fallback}'">`;
             
             areaCardsHTML += `
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="area-card">
-                        <i class="bi ${area.icon} me-3" style="font-size: 2.8rem; color: ${area.color};"></i>
+                        ${imgOrIcon}
                         <div>
                             <div class="area-title">${area.name}</div>
                             <div class="area-stats">
@@ -1254,7 +1281,7 @@
                     if (isDuplicate) {
                         projRowClass += ' proj-duplicate';
                         let tags = Array.from(krsSet).map(id => `<span class="badge bg-white text-danger border border-danger-subtle ms-1 shadow-sm">${id}</span>`).join('');
-                        duplicateUI = `<div class="mt-2 mb-1"><span class="badge-duplicate"><i class="bi bi-diagram-2-fill me-1 text-warning"></i> สนับสนุนหลาย KR/ภารกิจ: ${tags}</span></div>`;
+                        duplicateUI = `<div class="mt-2 mb-1"><span class="badge-duplicate"><i class="bi bi-diagram-2-fill me-1 text-warning"></i> สนับสนุนหลายรายการ: ${tags}</span></div>`;
                     }
 
                     let calcIcon = (['คำนวณ', 'รวมค่า', 'เฉลี่ย'].includes(proj.calcFlag)) 
@@ -1308,7 +1335,8 @@
         }
 
         globalData.forEach(row => {
-            let pRaw = String(row[cols.policy] || '').trim();
+            let pRaw_val = row[cols.policy];
+            let pRaw = (pRaw_val != null) ? String(pRaw_val).trim() : '';
             let roles = checkRole(row);
             let isSdtInvolved = roles.isH || roles.isCoH || roles.isR; 
 
@@ -1334,7 +1362,7 @@
             return;
         }
 
-        window.glossaryData = glossaryArray.sort((a,b) => a.code.localeCompare(b.code));
+        window.glossaryData = glossaryArray.sort((a,b) => String(a.code).localeCompare(String(b.code)));
         filterGlossary(); 
     }
 
@@ -1342,7 +1370,7 @@
         const query = document.getElementById('glossarySearch').value.toLowerCase();
         let html = '';
         window.glossaryData.forEach(item => {
-            if(item.code.toLowerCase().includes(query) || item.name.toLowerCase().includes(query)) {
+            if(String(item.code).toLowerCase().includes(query) || String(item.name).toLowerCase().includes(query)) {
                 
                 let isDictHost = item.host && (item.host.includes('สดท') || item.host.includes('สำนักดิจิทัล'));
                 let isDictRel = item.relative && (item.relative.includes('สดท') || item.relative.includes('สำนักดิจิทัล'));
