@@ -76,10 +76,12 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05); white-space: nowrap; display: inline-flex; align-items: center; letter-spacing: 0.3px;
         }
         
-        .badge-sub { 
-            font-size: 0.85rem; font-weight: 600; color: var(--bma-green-dark); 
-            border: 1px solid #e2e8f0; padding: 4px 12px; border-radius: 6px; 
-            display: inline-flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.03); background: #ffffff;
+        /* 🌟 Category Badge */
+        .badge-category { 
+            font-size: 0.85rem; font-weight: 600; color: #334155; 
+            background: #ffffff; border: 1px solid #e2e8f0; 
+            padding: 6px 14px; border-radius: 8px; 
+            display: inline-flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
 
         .badge-component { 
@@ -341,8 +343,8 @@
                                 <table class="table table-hover align-middle border overview-table">
                                     <thead class="table-light">
                                         <tr>
-                                            <th style="width: 15%;">ด้านยุทธศาสตร์</th>
-                                            <th style="width: 15%;">รหัส KRs</th>
+                                            <th style="width: 20%;">ด้านยุทธศาสตร์</th>
+                                            <th style="width: 10%;">รหัส KRs</th>
                                             <th style="width: 45%;">ชื่อตัวชี้วัด (KEY RESULT)</th>
                                             <th style="width: 25%;">ระดับความสำเร็จรวม (Progress)</th>
                                         </tr>
@@ -529,16 +531,17 @@
     let compColorMap = {};
     let compColorIndex = 0;
 
+    // 🌟 เปลี่ยนรูปเป็น BMA Icons / Vector Icons แบบสวยงาม
     const areaMapping = [
-        { key: 'เดินทาง', name: '1. ด้านเดินทางดี', img: 'bma_icon01.png' },
-        { key: 'ปลอดภัย', name: '2. ด้านปลอดภัยดี', img: 'bma_icon02.png' },
-        { key: 'โปร่งใส', name: '3. ด้านโปร่งใสดี', img: 'bma_icon03.png' },
-        { key: 'สิ่งแวดล้อม', name: '4. ด้านสิ่งแวดล้อมดี', img: 'bma_icon04.png' },
-        { key: 'สุขภาพ', name: '5. ด้านสุขภาพดี', img: 'bma_icon05.png' },
-        { key: 'เรียน', name: '6. ด้านเรียนดี', img: 'bma_icon06.png' },
-        { key: 'เศรษฐกิจ', name: '7. ด้านเศรษฐกิจดี', img: 'bma_icon07.png' },
-        { key: 'สังคม', name: '8. ด้านสังคมดี', img: 'bma_icon08.png' },
-        { key: 'บริหารจัดการ', name: '9. ด้านบริหารจัดการดี', img: 'bma_icon09.png' }
+        { key: 'เดินทาง', name: '1. ด้านเดินทางดี', img: 'bma_icon01.png', icon: 'bi-car-front-fill', color: '#0071ce' },
+        { key: 'ปลอดภัย', name: '2. ด้านปลอดภัยดี', img: 'bma_icon02.png', icon: 'bi-shield-fill-check', color: '#eab308' },
+        { key: 'โปร่งใส', name: '3. ด้านโปร่งใสดี', img: 'bma_icon03.png', icon: 'bi-search', color: '#8b5cf6' },
+        { key: 'สิ่งแวดล้อม', name: '4. ด้านสิ่งแวดล้อมดี', img: 'bma_icon04.png', icon: 'bi-tree-fill', color: '#22c55e' },
+        { key: 'สุขภาพ', name: '5. ด้านสุขภาพดี', img: 'bma_icon05.png', icon: 'bi-heart-pulse-fill', color: '#ef4444' },
+        { key: 'เรียน', name: '6. ด้านเรียนดี', img: 'bma_icon06.png', icon: 'bi-book-half', color: '#f97316' },
+        { key: 'เศรษฐกิจ', name: '7. ด้านเศรษฐกิจดี', img: 'bma_icon07.png', icon: 'bi-graph-up-arrow', color: '#14b8a6' },
+        { key: 'สังคม', name: '8. ด้านสังคมดี', img: 'bma_icon08.png', icon: 'bi-people-fill', color: '#ec4899' },
+        { key: 'บริหารจัดการ', name: '9. ด้านบริหารจัดการดี', img: 'bma_icon09.png', icon: 'bi-building-fill-gear', color: '#64748b' }
     ];
 
     async function fetchData() {
@@ -570,7 +573,7 @@
 
                 if(globalData.length > 0) {
                     setupColumns(globalData[0]);
-                    initGlobalProjectDict(globalData); // 🌟 ประมวลผลหาโปรเจกต์ซ้ำทันทีที่โหลดเสร็จ
+                    initGlobalProjectDict(globalData); 
                     populateDropdownFilters(globalData);
                     
                     processOverview(globalData); 
@@ -594,7 +597,7 @@
     function setupColumns(row) {
         const keys = Object.keys(row);
         cols = {
-            component: keys.find(k => k.includes('องค์ประกอบ')), // รองรับการดึงคำว่า องค์ประกอบ
+            component: keys.find(k => k.includes('องค์ประกอบ')),
             krID: keys.find(k => k.includes('รหัส KRs')) || keys[1],
             category: keys.find(k => k.includes('ด้าน')) || keys[2],
             issue: keys.find(k => k.includes('ประเด็นพัฒนา')) || keys[3],
@@ -618,13 +621,12 @@
         };
     }
 
-    // 🌟 ฟังก์ชันหาว่าโครงการไหนอยู่ KR ไหนบ้างทั่วทั้งระบบ (ทำครั้งเดียวตอนโหลด)
     function initGlobalProjectDict(data) {
         globalProjectDict = {};
         data.forEach(row => {
             let pName = String(row[cols.projectName] || '').trim();
             let krId = String(row[cols.krID] || '').trim();
-            if (!krId || krId === 'NaN') krId = String(row[cols.krName] || '').trim(); // Fallback to KR name
+            if (!krId || krId === 'NaN') krId = String(row[cols.krName] || '').trim();
 
             if (pName && pName !== 'NaN' && krId && krId !== 'NaN') {
                 if (!globalProjectDict[pName]) globalProjectDict[pName] = new Set();
@@ -674,7 +676,6 @@
         return { isH, isCoH, isR };
     }
 
-    // 🌟 ระบบสร้างป้ายต่างๆ ไม่ใส่ margin เพื่อให้ Flex gap จัดการเรียงแถวเดียวสวยงาม
     function getComponentBadgeHTML(compText) {
         if (!compText || compText === '-' || compText === 'NaN') return '';
         if (!compColorMap[compText]) {
@@ -684,11 +685,13 @@
         return `<span class="badge-component" style="background: ${compColorMap[compText]}"><i class="bi bi-puzzle-fill me-1 text-white-50"></i> ${compText}</span>`;
     }
 
+    // 🌟 อัปเกรดป้ายด้านยุทธศาสตร์ให้ใช้ Bootstrap Vector Icon
     function getAreaIconHTML(categoryName) {
-        if(!categoryName || categoryName === '-' || categoryName === 'NaN') return '<i class="bi bi-tags text-secondary"></i>';
+        if(!categoryName || categoryName === '-' || categoryName === 'NaN') return '<i class="bi bi-tags-fill text-secondary me-1"></i>';
         let found = areaMapping.find(a => categoryName.includes(a.key));
-        let imgSrc = found ? found.img : 'bma_icon09.png'; 
-        return `<img src="${imgSrc}" style="width: 16px; height: 16px; margin-right: 4px; object-fit: contain;">`;
+        let iconClass = found ? found.icon : 'bi-pin-map-fill';
+        let iconColor = found ? found.color : '#6c757d';
+        return `<i class="bi ${iconClass} me-2" style="color: ${iconColor}; font-size: 1.15rem;"></i>`;
     }
 
     function getRoleBadge(isH, isCoH, isR) {
@@ -898,7 +901,7 @@
         let krNotStarted = 0, krInProgress = 0, krCompleted = 0;
         let projNotStarted = 0, projInProgress = 0, projCompleted = 0;
 
-        let processedGlobalProjects = new Set(); // 🌟 สำหรับเช็กโปรเจกต์ซ้ำตอนคำนวณภาพรวม
+        let processedGlobalProjects = new Set(); 
 
         krArray.forEach((group, index) => {
             if (group.isH) countH++;
@@ -912,11 +915,9 @@
             let gBudget = 0; let gSpent = 0;
             group.projects.forEach(p => {
                 
-                // 🌟 งบประมาณประจำ KR (แสดงโชว์ในตาราง ไม่สนใจว่าซ้ำไหม เพราะถือว่า KR นี้ต้องรับผิดชอบงบก้อนนี้)
                 gBudget += p.budget;
                 gSpent += p.spent;
                 
-                // 🌟 แต่! งบประมาณรวมของ "ทั้งระบบ" (Overview Top) จะคำนวณโครงการนี้แค่ 1 ครั้งเท่านั้น
                 if (!processedGlobalProjects.has(p.name)) {
                     processedGlobalProjects.add(p.name);
                     totalProjectsCount++;
@@ -927,7 +928,6 @@
                     else if (p.progress >= 100) projCompleted++;
                     else projInProgress++;
                     
-                    // ป้องกันกราฟเบิ้ลงบประมาณเช่นกัน
                     let cat = group.category;
                     if(!chartBudget[cat]) chartBudget[cat] = 0;
                     chartBudget[cat] += p.budget;
@@ -960,7 +960,10 @@
 
         let areaCardsHTML = '';
         Object.values(areaCounter).forEach(area => {
-            let imgOrIcon = `<img src="${area.img}" class="area-icon" onerror="this.outerHTML='<i class=\\'bi bi-compass text-primary\\' style=\\'font-size: 2.5rem;\\'></i>'">`;
+            let foundArea = areaMapping.find(a => a.name === area.name);
+            let fallback = foundArea ? `<i class=\\'bi ${foundArea.icon}\\' style=\\'font-size: 2.5rem; color:${foundArea.color};\\'></i>` : `<i class=\\'bi bi-compass text-primary\\' style=\\'font-size: 2.5rem;\\'></i>`;
+            let imgOrIcon = `<img src="${area.img}" class="area-icon" onerror="this.outerHTML='${fallback}'">`;
+            
             areaCardsHTML += `
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="area-card">
@@ -989,7 +992,7 @@
             let compBadge = getComponentBadgeHTML(group.component);
             let policyBadgeOverview = getPolicyBadgeHTML(group.policy);
             let roleBadgeOverview = getRoleBadge(group.isH, group.isCoH, group.isR);
-            let areaIconBadge = `<span class="badge-sub border-secondary-subtle bg-white shadow-sm">${getAreaIconHTML(group.category)}${group.category}</span>`;
+            let areaIconBadge = `<span class="badge-category">${getAreaIconHTML(group.category)}${group.category}</span>`;
             
             const overviewKrId = `kr-overview-${index}`;
             krDetailsDb[overviewKrId] = group;
@@ -1086,7 +1089,7 @@
                 let compBadge = getComponentBadgeHTML(group.component);
                 let roleBadge = getRoleBadge(group.isH, group.isCoH, group.isR);
                 let policyBadge = getPolicyBadgeHTML(group.policy);
-                let areaIconBadge = `<span class="badge-sub border-secondary-subtle bg-white shadow-sm">${getAreaIconHTML(group.category)}${group.category}</span>`;
+                let areaIconBadge = `<span class="badge-category">${getAreaIconHTML(group.category)}${group.category}</span>`;
 
                 let krDocButtons = '';
                 if (group.doc1 && String(group.doc1).startsWith('http')) krDocButtons += `<a href="${group.doc1}" target="_blank" class="btn btn-sm btn-primary mb-1 w-100" style="font-size: 0.75rem;"><i class="bi bi-file-earmark-pdf"></i> ปผ.01</a>`;
@@ -1140,7 +1143,6 @@
                     let pBudgPct = proj.budget > 0 ? Math.min((proj.spent / proj.budget) * 100, 100) : 0;
                     let unitLabel = proj.unit !== '-' ? `<span class="ms-1 fw-normal text-muted">${proj.unit}</span>` : '';
 
-                    // 🌟 ระบบเพิ่ม Badge KR ซ้ำซ้อน 🌟
                     let krsSet = globalProjectDict[proj.name] || new Set();
                     let isDuplicate = krsSet.size > 1;
                     let duplicateUI = '';
@@ -1273,7 +1275,7 @@
         let krProgressPercent = k.target > 0 ? Math.min((k.accumulatedActual / k.target) * 100, 100) : 0;
         let compBadge = getComponentBadgeHTML(k.component);
         let roleBadgeModal = getRoleBadge(k.isH, k.isCoH, k.isR);
-        let areaIconBadge = `<span class="badge-sub border-secondary-subtle bg-white shadow-sm">${getAreaIconHTML(k.category)} ${k.category}</span>`;
+        let areaIconBadge = `<span class="badge-category">${getAreaIconHTML(k.category)} ${k.category}</span>`;
         
         let projectsHTML = '';
         if(k.projects.length === 0) {
