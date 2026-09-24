@@ -79,15 +79,21 @@
         .badge-sub { 
             font-size: 0.75rem; font-weight: 600; background: rgba(0, 116, 75, 0.08); color: var(--bma-green-dark); 
             border: 1px solid rgba(0, 116, 75, 0.2); padding: 4px 10px; border-radius: 6px; 
-            display: inline-flex; align-items: center; margin-top: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+
+        /* 🌟 Component Badge */
+        .badge-component { 
+            background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; font-weight: 600; 
+            padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; display: inline-flex; align-items: center; 
+            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3); border: 1px solid rgba(255,255,255,0.2); text-shadow: 0 1px 1px rgba(0,0,0,0.1);
         }
         
         /* 🌟 Policy Badges */
         .badge-policy { 
             background: linear-gradient(135deg, #0071ce, #00569d); color: white; font-weight: 600; 
             padding: 5px 14px; border-radius: 20px; font-size: 0.75rem; display: inline-flex; align-items: center; 
-            box-shadow: 0 3px 6px rgba(0, 113, 206, 0.3); margin-top: 4px; margin-right: 4px; 
-            border: 1px solid rgba(255,255,255,0.2); text-shadow: 0 1px 1px rgba(0,0,0,0.2); transition: all 0.2s; 
+            box-shadow: 0 3px 6px rgba(0, 113, 206, 0.3); border: 1px solid rgba(255,255,255,0.2); text-shadow: 0 1px 1px rgba(0,0,0,0.2); transition: all 0.2s; 
         }
         .badge-policy:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0, 113, 206, 0.4); }
 
@@ -116,7 +122,7 @@
         .badge-policy-none { 
             background: #f1f5f9; color: #64748b; font-weight: 600; padding: 5px 14px; border-radius: 20px; 
             font-size: 0.75rem; display: inline-flex; align-items: center; border: 1px solid #cbd5e1; 
-            margin-top: 4px; margin-right: 4px; box-shadow: inset 0 1px 2px rgba(255,255,255,0.5); 
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.5); 
         }
         
         .badge-sdt { 
@@ -221,7 +227,7 @@
                 <button class="nav-link" id="detail-tab" data-bs-toggle="tab" data-bs-target="#detail" type="button"><i class="bi bi-table me-2"></i>ตารางข้อมูลโครงการ (เจาะลึก)</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="policy-tab" data-bs-toggle="tab" data-bs-target="#policy" type="button"><i class="bi bi-book-half me-2"></i>บรรณานุกรมนโยบาย 261+</button>
+                <button class="nav-link" id="policy-tab" data-bs-toggle="tab" data-bs-target="#policy" type="button"><i class="bi bi-book-half me-2"></i>บรรณานุกรมนโยบาย</button>
             </li>
         </ul>
 
@@ -370,7 +376,7 @@
                 <div class="filter-section shadow-sm">
                     <h6 class="fw-bold text-primary mb-3 fs-6"><i class="bi bi-funnel-fill me-2"></i>ตัวกรองข้อมูลโครงย่อย</h6>
                     <div class="row g-3">
-                        <div class="col-6 col-lg">
+                        <div class="col-12 col-md-6 col-lg-4">
                             <label class="form-label text-muted small fw-bold mb-1">สถานะดำเนินการ</label>
                             <select id="filterStatus" class="form-select" onchange="applyFilters()">
                                 <option value="all">ทั้งหมด</option>
@@ -386,15 +392,19 @@
                                 </optgroup>
                             </select>
                         </div>
-                        <div class="col-6 col-lg">
+                        <div class="col-6 col-md-6 col-lg-4">
+                            <label class="form-label text-muted small fw-bold mb-1">องค์ประกอบ</label>
+                            <select id="filterComponent" class="form-select" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
+                        </div>
+                        <div class="col-6 col-md-4 col-lg-4">
                             <label class="form-label text-muted small fw-bold mb-1">ด้านยุทธศาสตร์</label>
                             <select id="filterCategory" class="form-select" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
                         </div>
-                        <div class="col-6 col-lg">
-                            <label class="form-label text-muted small fw-bold mb-1">นโยบาย 261+</label>
+                        <div class="col-6 col-md-4 col-lg-4">
+                            <label class="form-label text-muted small fw-bold mb-1">นโยบาย (Policy)</label>
                             <select id="filterPolicy" class="form-select" onchange="applyFilters()"><option value="all">ทั้งหมด</option></select>
                         </div>
-                        <div class="col-6 col-lg">
+                        <div class="col-6 col-md-4 col-lg-4">
                             <label class="form-label text-muted small fw-bold mb-1">บทบาทตาม KRs</label>
                             <select id="filterRole" class="form-select" onchange="applyFilters()">
                                 <option value="all">ทั้งหมด</option>
@@ -403,7 +413,7 @@
                                 <option value="relative">หน่วยสนับสนุน (R)</option>
                             </select>
                         </div>
-                        <div class="col-6 col-lg">
+                        <div class="col-12 col-md-6 col-lg-4">
                             <label class="form-label text-muted small fw-bold mb-1">บทบาท Policy ของ สดท.</label>
                             <select id="filterPolicyRole" class="form-select" onchange="applyFilters()">
                                 <option value="all">ทั้งหมด</option>
@@ -412,7 +422,7 @@
                                 <option value="related">เกี่ยวข้องกับงาน สดท.</option>
                             </select>
                         </div>
-                        <div class="col-12 col-lg">
+                        <div class="col-12">
                             <label class="form-label text-muted small fw-bold mb-1">ค้นหารหัส / ชื่อ KR</label>
                             <input type="text" id="filterSearch" class="form-control" placeholder="พิมพ์คำค้นหา..." onkeyup="applyFilters()">
                         </div>
@@ -433,7 +443,7 @@
                         <table class="table-custom">
                             <thead>
                                 <tr>
-                                    <th style="min-width: 350px;">ยุทธศาสตร์ (KRs) / โครงการ</th>
+                                    <th style="min-width: 450px;">ยุทธศาสตร์ (KRs) / โครงการ</th>
                                     <th style="min-width: 150px;">เป้าหมาย / หน่วยนับ</th>
                                     <th style="min-width: 170px;">ความคืบหน้า (ผลสำเร็จ)</th>
                                     <th style="min-width: 170px;">งบประมาณ (เบิกจ่าย)</th>
@@ -453,7 +463,7 @@
                 <div class="content-card mb-4 text-white border-0 shadow" style="background: var(--primary-gradient) !important;">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h4 class="fw-bold mb-1"><i class="bi bi-book-half me-2"></i>บรรณานุกรมนโยบาย 261+</h4>
+                            <h4 class="fw-bold mb-1"><i class="bi bi-book-half me-2"></i>บรรณานุกรมนโยบาย</h4>
                             <p class="mb-0 opacity-75">คำอธิบายชื่อเต็มนโยบายของผู้ว่าราชการกรุงเทพมหานครที่สอดคล้องกับยุทธศาสตร์</p>
                         </div>
                         <i class="bi bi-journal-bookmark text-white opacity-25" style="font-size: 4rem;"></i>
@@ -543,7 +553,7 @@
             if(result.status === 'success') {
                 globalData = result.data || [];
                 
-                // 🌟 ประมวลผลดึงข้อมูล Policy Dictionary ที่มี Host และ Relative
+                // ประมวลผลดึงข้อมูล Policy Dictionary
                 policyDictionary = {};
                 if (result.policy_dict && result.policy_dict.length > 0) {
                     result.policy_dict.forEach(item => {
@@ -582,6 +592,7 @@
     function setupColumns(row) {
         const keys = Object.keys(row);
         cols = {
+            component: keys.find(k => k.includes('องค์ประกอบ')) || keys[1], // 🌟 เพิ่มค้นหาคอลัมน์องค์ประกอบ
             krID: keys.find(k => k.includes('รหัส KRs')) || keys[1],
             category: keys.find(k => k.includes('ด้าน')) || keys[2],
             issue: keys.find(k => k.includes('ประเด็นพัฒนา')) || keys[3],
@@ -608,10 +619,12 @@
     function populateDropdownFilters(data) {
         const catSelect = document.getElementById('filterCategory');
         const policySelect = document.getElementById('filterPolicy');
-        const categories = new Set(); const policies = new Set();
+        const compSelect = document.getElementById('filterComponent'); // 🌟 สำหรับ Filter องค์ประกอบ
+        const categories = new Set(); const policies = new Set(); const components = new Set();
 
         data.forEach(row => {
             if(row[cols.category] && row[cols.category] !== 'NaN') categories.add(String(row[cols.category]).trim());
+            if(row[cols.component] && row[cols.component] !== 'NaN') components.add(String(row[cols.component]).trim());
             
             let pRaw = String(row[cols.policy] || '').trim();
             if(pRaw && pRaw !== 'NaN' && pRaw !== '-' && !pRaw.includes('ไม่สอดคล้อง')) {
@@ -624,6 +637,9 @@
 
         catSelect.innerHTML = '<option value="all">ทั้งหมด</option>';
         categories.forEach(c => { catSelect.innerHTML += `<option value="${c}">${c}</option>`; });
+        
+        compSelect.innerHTML = '<option value="all">ทั้งหมด</option>';
+        components.forEach(c => { compSelect.innerHTML += `<option value="${c}">${c}</option>`; });
 
         policySelect.innerHTML = '<option value="all">ทั้งหมด</option>';
         [...policies].sort().forEach(p => { policySelect.innerHTML += `<option value="${p}">${p}</option>`; });
@@ -641,15 +657,20 @@
         return { isH, isCoH, isR };
     }
 
+    // 🌟 ระบบสร้างป้ายต่างๆ ไม่ใส่ margin เพื่อให้ Flex gap จัดการ
+    function getComponentBadgeHTML(compText) {
+        if (!compText || compText === '-' || compText === 'NaN') return '';
+        return `<span class="badge-component"><i class="bi bi-puzzle-fill me-1 text-white-50"></i> ${compText}</span>`;
+    }
+
     function getRoleBadge(isH, isCoH, isR) {
         let b = '';
-        if (isH) b += `<span class="badge ms-2 shadow-sm badge-role-h rounded-2 py-1 px-2">H</span>`;
-        if (isCoH) b += `<span class="badge ms-2 shadow-sm badge-role-coh rounded-2 py-1 px-2">Co-H</span>`;
-        if (isR) b += `<span class="badge ms-2 shadow-sm badge-role-r rounded-2 py-1 px-2">R</span>`;
+        if (isH) b += `<span class="badge shadow-sm badge-role-h rounded-2 py-1 px-2">H</span>`;
+        if (isCoH) b += `<span class="badge shadow-sm badge-role-coh rounded-2 py-1 px-2">Co-H</span>`;
+        if (isR) b += `<span class="badge shadow-sm badge-role-r rounded-2 py-1 px-2">R</span>`;
         return b;
     }
 
-    // 🌟 ระบบสร้างป้าย 261+ โดยเช็กฐานข้อมูลจาก Dictionary ถ้ามีชื่อ สดท. เป็น Host/Relative
     function getPolicyBadgeHTML(policyText) {
         if(!policyText || policyText === 'NaN' || policyText === '-') return '';
         if(policyText.includes('ไม่สอดคล้อง')) {
@@ -663,18 +684,17 @@
                     let isSdtRelative = false;
                     let dictEntry = policyDictionary[code];
                     
-                    // ตรวจสอบกับข้อมูลจากชีท PolicyDictionary โดยตรง
                     if (dictEntry) {
                         if (dictEntry.host.includes('สดท') || dictEntry.host.includes('สำนักดิจิทัล')) isSdtHost = true;
                         if (dictEntry.relative.includes('สดท') || dictEntry.relative.includes('สำนักดิจิทัล')) isSdtRelative = true;
                     }
 
                     if (isSdtHost) {
-                        badges += `<span class="badge-policy badge-policy-host"><i class="bi bi-star-fill me-1 text-warning"></i> 261+: ${code} <span class="inner-tag-host">H: สดท.</span></span>`;
+                        badges += `<span class="badge-policy badge-policy-host"><i class="bi bi-star-fill me-1 text-warning"></i> Policy: ${code} <span class="inner-tag-host">H: สดท.</span></span>`;
                     } else if (isSdtRelative) {
-                        badges += `<span class="badge-policy badge-policy-relative"><i class="bi bi-star-half me-1 text-white"></i> 261+: ${code} <span class="inner-tag-relative">R: สดท.</span></span>`;
+                        badges += `<span class="badge-policy badge-policy-relative"><i class="bi bi-star-half me-1 text-white"></i> Policy: ${code} <span class="inner-tag-relative">R: สดท.</span></span>`;
                     } else {
-                        badges += `<span class="badge-policy"><i class="bi bi-star me-1 opacity-75"></i> 261+: ${code}</span>`;
+                        badges += `<span class="badge-policy"><i class="bi bi-star me-1 opacity-75"></i> Policy: ${code}</span>`;
                     }
                 }
             });
@@ -682,8 +702,8 @@
         }
     }
 
-    // 🌟 ฟังก์ชันกรองข้อมูลที่มีการเพิ่มเงื่อนไข บทบาท Policy เข้ามา
     function applyFilters() {
+        const fComp = document.getElementById('filterComponent').value;
         const fCat = document.getElementById('filterCategory').value;
         const fPolicy = document.getElementById('filterPolicy').value;
         const fRole = document.getElementById('filterRole').value;
@@ -691,7 +711,9 @@
         const fSearch = document.getElementById('filterSearch').value.toLowerCase();
 
         let filteredData = globalData.filter(row => {
+            let compMatch = fComp === 'all' || String(row[cols.component] || '').trim() === fComp;
             let catMatch = fCat === 'all' || String(row[cols.category] || '').trim() === fCat;
+            
             let pRaw = String(row[cols.policy] || '').trim().toUpperCase();
             let policyMatch = fPolicy === 'all' || pRaw.includes(fPolicy.toUpperCase());
             
@@ -701,7 +723,6 @@
             if (fRole === 'cohost' && !roles.isCoH) roleMatch = false;
             if (fRole === 'relative' && !roles.isR) roleMatch = false;
 
-            // 🌟 เงื่อนไขใหม่: บทบาท Policy ของ สดท.
             let policyRoleMatch = true;
             if (fPolicyRole !== 'all') {
                 let isPH = false;
@@ -725,8 +746,6 @@
                 if (fPolicyRole === 'host' && !isPH) policyRoleMatch = false;
                 if (fPolicyRole === 'relative' && !isPR) policyRoleMatch = false;
                 if (fPolicyRole === 'related') {
-                    // หากเลือก "เกี่ยวข้อง" แปลว่าต้องมีนโยบายอย่างน้อย 1 ตัว และ สดท. เป็น H หรือ R ในนโยบาย
-                    // หรือ สดท. เกี่ยวกับ KR นั้นอยู่แล้ว 
                     let isSdtInvolved = roles.isH || roles.isCoH || roles.isR;
                     if (!hasValidPolicy || (!isPH && !isPR && !isSdtInvolved)) {
                         policyRoleMatch = false;
@@ -743,7 +762,7 @@
 
             let isKRRow = String(row[cols.krName] || '').trim() !== '' && String(row[cols.krName] || '').trim() !== 'NaN';
             if (isKRRow) {
-                return catMatch && policyMatch && roleMatch && policyRoleMatch && searchMatch;
+                return compMatch && catMatch && policyMatch && roleMatch && policyRoleMatch && searchMatch;
             }
             return true; 
         });
@@ -777,10 +796,12 @@
             let krKey = row[cols.krID] || krTitle; 
             let roles = checkRole(row);
             let cat = String(row[cols.category] || 'ไม่ระบุ').trim();
+            let comp = String(row[cols.component] || '').trim(); 
             
             if(!krGroups[krKey]) {
                 krGroups[krKey] = {
                     title: krTitle, id: String(row[cols.krID] || '').trim() !== 'NaN' ? row[cols.krID] : '',
+                    component: comp !== 'NaN' ? comp : '-', 
                     category: cat, policy: String(row[cols.policy] || '').trim(),
                     unit: String(row[cols.unit] || '-').trim(),
                     target: parseFloat(String(row[cols.krTarget]).replace(/,/g, '')) || 0,
@@ -925,6 +946,7 @@
 
         let overviewHTML = '';
         krArray.forEach((group, index) => {
+            let compBadge = getComponentBadgeHTML(group.component);
             let policyBadgeOverview = getPolicyBadgeHTML(group.policy);
             let roleBadgeOverview = getRoleBadge(group.isH, group.isCoH, group.isR);
             
@@ -936,8 +958,11 @@
                     <td><span class="badge-sub text-wrap text-start"><i class="bi bi-tags"></i> ${group.category}</span></td>
                     <td>${group.id ? `<span class="kr-badge">${group.id}</span>` : '<span class="text-muted">-</span>'}</td>
                     <td>
-                        <div class="fw-bold text-dark mb-1" style="font-size:0.95rem;">${group.title}${roleBadgeOverview}</div>
-                        <div class="d-flex flex-wrap">${policyBadgeOverview}</div>
+                        <div class="fw-bold text-dark mb-2" style="font-size:0.95rem;">${group.title}</div>
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            ${compBadge}
+                            ${roleBadgeOverview}${policyBadgeOverview}
+                        </div>
                     </td>
                     <td>
                         <div class="d-flex align-items-center mb-1">
@@ -1013,6 +1038,7 @@
                 group.projects.forEach(p => { gBudget += p.budget; gSpent += p.spent; });
 
                 let budgetPercent = gBudget > 0 ? Math.min((gSpent / gBudget) * 100, 100) : 0;
+                let compBadge = getComponentBadgeHTML(group.component);
                 let roleBadge = getRoleBadge(group.isH, group.isCoH, group.isR);
                 let policyBadge = getPolicyBadgeHTML(group.policy);
 
@@ -1026,11 +1052,15 @@
                             <div class="d-flex align-items-start">
                                 <span class="toggle-icon"><i class="bi bi-chevron-down"></i></span>
                                 <div>
-                                    <div class="mb-1">
-                                        ${group.id ? `<span class="kr-badge me-1">${group.id}</span>` : ''}
-                                        <span class="fw-bold text-primary fs-6 lh-base">${group.title}</span>${roleBadge}
+                                    <div class="mb-2">
+                                        ${group.id ? `<span class="kr-badge me-2">${group.id}</span>` : ''}
+                                        <span class="badge-sub"><i class="bi bi-tags"></i> ${group.category}</span>
                                     </div>
-                                    <div class="mt-2 d-flex flex-wrap align-items-center"><span class="badge-sub me-1"><i class="bi bi-tags"></i> ${group.category}</span>${policyBadge}</div>
+                                    <div class="fw-bold text-primary fs-6 lh-base mb-2">${group.title}</div>
+                                    <div class="d-flex flex-wrap align-items-center gap-2">
+                                        ${compBadge}
+                                        ${roleBadge}${policyBadge}
+                                    </div>
                                 </div>
                             </div>
                         </td>
@@ -1182,6 +1212,7 @@
         if(!k) return;
 
         let krProgressPercent = k.target > 0 ? Math.min((k.accumulatedActual / k.target) * 100, 100) : 0;
+        let compBadge = getComponentBadgeHTML(k.component);
         let roleBadgeModal = getRoleBadge(k.isH, k.isCoH, k.isR);
         
         let projectsHTML = '';
@@ -1218,12 +1249,16 @@
 
         let html = `
             <div class="bg-white p-3 p-md-4 rounded border mb-4 shadow-sm">
-                <div class="d-flex align-items-center mb-2">
+                <div class="mb-2">
                     ${k.id ? `<span class="kr-badge me-2">${k.id}</span>` : ''}
                     <span class="badge-sub"><i class="bi bi-tags"></i> ${k.category}</span>
                 </div>
-                <div class="fs-5 text-dark fw-bold mb-0 lh-base mt-2">${k.title} ${roleBadgeModal}</div>
-                <div class="d-flex flex-wrap mt-2">${k.policy && k.policy !== '-' && k.policy !== 'NaN' ? getPolicyBadgeHTML(k.policy) : ''}</div>
+                <div class="fs-5 text-dark fw-bold mb-2 lh-base">${k.title}</div>
+                <div class="d-flex flex-wrap align-items-center gap-2 mt-1">
+                    ${compBadge}
+                    ${roleBadgeModal}
+                    ${k.policy && k.policy !== '-' && k.policy !== 'NaN' ? getPolicyBadgeHTML(k.policy) : ''}
+                </div>
             </div>
             
             <div class="row g-2 g-md-3 mb-4">
