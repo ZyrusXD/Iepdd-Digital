@@ -934,7 +934,7 @@
                 let calcFlag_val = row[cols.calcToKR];
                 let calcFlag = (calcFlag_val != null) ? String(calcFlag_val).trim() : '';
                 
-                if (calcFlag === 'คำนวณ' || calcFlag === 'รวมค่า') {
+                if (calcFlag === 'คำนวณ' || calcFlag === 'บวก') {
                     krGroups[krKey].sumActual += pActual;
                 } else if (calcFlag === 'เฉลี่ย') {
                     krGroups[krKey].avgSum += pActual;
@@ -1295,7 +1295,7 @@
                         duplicateUI = `<div class="mt-2 mb-1"><span class="badge-duplicate"><i class="bi bi-diagram-2-fill me-1 text-warning"></i> สนับสนุนหลายรายการ: ${tags}</span></div>`;
                     }
 
-                    let calcIcon = (['คำนวณ', 'รวมค่า', 'เฉลี่ย'].includes(proj.calcFlag)) 
+                    let calcIcon = (['คำนวณ', 'บวก', 'เฉลี่ย'].includes(proj.calcFlag)) 
                                     ? `<i class="bi bi-flag-fill text-danger ms-2" title="นำไปคำนวณเข้า KR (${proj.calcFlag})"></i>` : '';
 
                     tableHTML += `
@@ -1436,7 +1436,7 @@
                     duplicateUI = `<div class="mt-2 mb-1"><span class="badge-duplicate"><i class="bi bi-diagram-2-fill me-1 text-warning"></i> สนับสนุนหลายรายการ: ${tags}</span></div>`;
                 }
 
-                let calcIcon = (['คำนวณ', 'รวมค่า', 'เฉลี่ย'].includes(proj.calcFlag)) 
+                let calcIcon = (['คำนวณ', 'บวก', 'เฉลี่ย'].includes(proj.calcFlag)) 
                                 ? `<i class="bi bi-flag-fill text-danger ms-2" title="นำไปคำนวณเข้า KR (${proj.calcFlag})"></i>` : '';
 
                 projectsHTML += `
