@@ -38,7 +38,7 @@
 
         .content-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; }
         .stat-box { padding: 20px; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); }
-        .stat-box h3 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0; }
+        .stat-box h3 { font-size: 2rem; font-weight: 700; margin-bottom: 0; }
         .stat-icon { position: absolute; right: -10px; bottom: -15px; font-size: 5rem; opacity: 0.15; transition: transform 0.3s;}
         .stat-box:hover .stat-icon { transform: scale(1.1) rotate(-5deg); }
 
@@ -224,36 +224,39 @@
             <!-- ================= TAB 1: OVERVIEW ================= -->
             <div class="tab-pane fade show active" id="overview">
                 
-                <div class="row g-3 mb-4">
-                    <div class="col-6 col-md-3">
+                <!-- 🌟 5 กล่องสถิติด้านบนสุด -->
+                <div class="row row-cols-2 row-cols-lg-5 g-3 mb-4">
+                    <div class="col">
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-green);">
-                            <p class="mb-1 opacity-75 fw-medium small">ตัวชี้วัด (KRs)</p>
+                            <p class="mb-1 opacity-75 fw-medium small">ตัวชี้วัด (KRs ยุทธศาสตร์)</p>
                             <h3 id="statKRs" class="mb-1">0</h3>
-                            <div class="d-flex gap-1 flex-wrap" style="font-size: 0.7rem;">
-                                <span id="countH" class="badge bg-white text-dark opacity-100 shadow-sm border">H: 0</span>
-                                <span id="countCoH" class="badge bg-white text-dark opacity-100 shadow-sm border">Co-H: 0</span>
-                                <span id="countR" class="badge bg-white text-dark opacity-100 shadow-sm border">R: 0</span>
-                            </div>
                             <i class="bi bi-flag-fill stat-icon text-white"></i>
                         </div>
                     </div>
-                    <div class="col-6 col-md-3">
+                    <div class="col">
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-blue);">
-                            <p class="mb-1 opacity-75 fw-medium small">โครงการ/กิจกรรม (ไม่นับซ้ำ)</p>
+                            <p class="mb-1 opacity-75 fw-medium small">โครงการยุทธศาสตร์</p>
                             <h3 id="statProjects">0</h3>
-                            <i class="bi bi-diagram-3-fill stat-icon text-white"></i>
+                            <i class="bi bi-rocket-takeoff-fill stat-icon text-white"></i>
                         </div>
                     </div>
-                    <div class="col-6 col-md-3">
+                    <div class="col">
+                        <div class="stat-box text-white shadow-sm h-100" style="background-color: #6366f1;">
+                            <p class="mb-1 opacity-75 fw-medium small">ภารกิจงานประจำ</p>
+                            <h3 id="statRoutineProjects">0</h3>
+                            <i class="bi bi-briefcase-fill stat-icon text-white"></i>
+                        </div>
+                    </div>
+                    <div class="col">
                         <div class="stat-box h-100" style="background-color: var(--bma-light-green); color: white;">
-                            <p class="mb-1 opacity-75 fw-medium small">งบประมาณรวมสุทธิ (บาท)</p>
+                            <p class="mb-1 opacity-75 fw-medium small">งบประมาณรวม (บาท)</p>
                             <h3 id="statBudget" class="fs-4">0</h3>
                             <i class="bi bi-cash-coin stat-icon text-white"></i>
                         </div>
                     </div>
-                    <div class="col-6 col-md-3">
+                    <div class="col">
                         <div class="stat-box h-100" style="background-color: var(--bma-orange); color: white;">
-                            <p class="mb-1 opacity-75 fw-medium small">เบิกจ่ายสะสมสุทธิ</p>
+                            <p class="mb-1 opacity-75 fw-medium small">เบิกจ่ายสะสม</p>
                             <h3 id="statSpent" class="fs-4">0</h3>
                             <div class="mt-1 d-flex align-items-center">
                                 <div class="progress flex-grow-1 me-2" style="height: 4px; background: rgba(255,255,255,0.3);">
@@ -266,7 +269,9 @@
                     </div>
                 </div>
 
+                <!-- 🌟 กล่องสถานะ KRs และ โครงการยุทธศาสตร์ -->
                 <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-activity me-2 text-primary"></i>สถานะการดำเนินงาน (คลิกเพื่อดูรายละเอียด)</h5>
+                
                 <div class="row g-2 g-md-3 mb-2">
                     <div class="col-12 col-md-4">
                         <div class="status-box bg-status-red clickable-box" onclick="navigateToTabAndFilter('kr_not_started')">
@@ -291,25 +296,50 @@
                 <div class="row g-2 g-md-3 mb-4">
                     <div class="col-12 col-md-4">
                         <div class="status-box bg-status-red clickable-box" style="opacity: 0.9;" onclick="navigateToTabAndFilter('proj_not_started')">
-                            <div><div class="title">โครงการ ยังไม่ดำเนินการ</div><div class="subtitle">ความคืบหน้า 0%</div></div>
+                            <div><div class="title">โครงการยุทธศาสตร์ ยังไม่เริ่ม</div><div class="subtitle">ความคืบหน้า 0%</div></div>
                             <div class="d-flex align-items-center"><h3 id="projNotStarted" class="me-3">0</h3><i class="bi bi-x-circle-fill status-icon"></i></div>
                         </div>
                     </div>
                     <div class="col-12 col-md-4">
                         <div class="status-box bg-status-yellow clickable-box" style="opacity: 0.9;" onclick="navigateToTabAndFilter('proj_in_progress')">
-                            <div><div class="title">โครงการ อยู่ระหว่างดำเนินการ</div><div class="subtitle">ความคืบหน้ามากกว่า 0%</div></div>
+                            <div><div class="title">โครงการยุทธศาสตร์ กำลังทำ</div><div class="subtitle">ความคืบหน้ามากกว่า 0%</div></div>
                             <div class="d-flex align-items-center"><h3 id="projInProgress" class="me-3">0</h3><i class="bi bi-arrow-repeat status-icon"></i></div>
                         </div>
                     </div>
                     <div class="col-12 col-md-4">
                         <div class="status-box bg-status-green clickable-box" style="opacity: 0.9;" onclick="navigateToTabAndFilter('proj_completed')">
-                            <div><div class="title">โครงการ ดำเนินการแล้วเสร็จ</div><div class="subtitle">ความคืบหน้า 100%</div></div>
+                            <div><div class="title">โครงการยุทธศาสตร์ แล้วเสร็จ</div><div class="subtitle">ความคืบหน้า 100%</div></div>
                             <div class="d-flex align-items-center"><h3 id="projCompleted" class="me-3">0</h3><i class="bi bi-check-circle-fill status-icon"></i></div>
                         </div>
                     </div>
                 </div>
 
-                <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-grid-fill me-2 text-primary"></i>สรุปผลตามยุทธศาสตร์ 9 ด้าน</h5>
+                <!-- 🌟 กล่องสถานะแยกสำหรับงานประจำโดยเฉพาะ -->
+                <div class="mt-4 mb-2 text-secondary fw-bold" style="font-size: 0.95rem;">
+                    <i class="bi bi-briefcase-fill me-1 text-primary"></i> โครงการ/กิจกรรมตามภารกิจงานประจำ
+                </div>
+                <div class="row g-2 g-md-3 mb-5">
+                    <div class="col-12 col-md-4">
+                        <div class="status-box bg-status-red clickable-box" style="opacity: 0.8;" onclick="navigateToTabAndFilter('routine_not_started')">
+                            <div><div class="title">งานประจำ ยังไม่เริ่ม</div><div class="subtitle">ความคืบหน้า 0%</div></div>
+                            <div class="d-flex align-items-center"><h3 id="routineProjNotStarted" class="me-3">0</h3><i class="bi bi-x-circle-fill status-icon"></i></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="status-box bg-status-yellow clickable-box" style="opacity: 0.8;" onclick="navigateToTabAndFilter('routine_in_progress')">
+                            <div><div class="title">งานประจำ กำลังทำ</div><div class="subtitle">ความคืบหน้ามากกว่า 0%</div></div>
+                            <div class="d-flex align-items-center"><h3 id="routineProjInProgress" class="me-3">0</h3><i class="bi bi-arrow-repeat status-icon"></i></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="status-box bg-status-green clickable-box" style="opacity: 0.8;" onclick="navigateToTabAndFilter('routine_completed')">
+                            <div><div class="title">งานประจำ แล้วเสร็จ</div><div class="subtitle">ความคืบหน้า 100%</div></div>
+                            <div class="d-flex align-items-center"><h3 id="routineProjCompleted" class="me-3">0</h3><i class="bi bi-check-circle-fill status-icon"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-grid-fill me-2 text-primary"></i>สรุปผลตามยุทธศาสตร์ กทม. และหน่วยงาน</h5>
                 <div class="row g-3 mb-4" id="areaCardsContainer"></div>
 
                 <div class="row g-4 mb-4">
@@ -334,7 +364,7 @@
                 <div class="row g-3">
                     <div class="col-12">
                         <div class="content-card">
-                            <h5 class="fw-bold mb-3 text-secondary fs-6"><i class="bi bi-list-stars me-2 text-primary"></i>สรุปสถานะความสำเร็จของตัวชี้วัด (KRs) ทั้งหมด</h5>
+                            <h5 class="fw-bold mb-3 text-secondary fs-6"><i class="bi bi-list-stars me-2 text-primary"></i>สรุปสถานะความสำเร็จของตัวชี้วัดและงานประจำทั้งหมด</h5>
                             <div class="swipe-hint"><i class="bi bi-hand-index-thumb"></i> เลื่อนตารางซ้าย-ขวา เพื่อดูข้อมูลเพิ่มเติม</div>
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle border overview-table">
@@ -342,7 +372,7 @@
                                         <tr>
                                             <th style="width: 20%;">ด้านยุทธศาสตร์</th>
                                             <th style="width: 10%;">รหัส KRs</th>
-                                            <th style="width: 45%;">ชื่อตัวชี้วัด (KEY RESULT)</th>
+                                            <th style="width: 45%;">ชื่อตัวชี้วัด (KEY RESULT) / ภารกิจ</th>
                                             <th style="width: 25%;">ระดับความสำเร็จรวม (Progress)</th>
                                         </tr>
                                     </thead>
@@ -371,10 +401,15 @@
                                     <option value="kr_in_progress">KR กำลังดำเนินการ (>0%)</option>
                                     <option value="kr_completed">KR แล้วเสร็จ (100%)</option>
                                 </optgroup>
-                                <optgroup label="สถานะโครงการ">
-                                    <option value="proj_not_started">โครงการ ยังไม่ดำเนินการ (0%)</option>
-                                    <option value="proj_in_progress">โครงการ กำลังดำเนินการ (>0%)</option>
-                                    <option value="proj_completed">โครงการ แล้วเสร็จ (100%)</option>
+                                <optgroup label="สถานะโครงการยุทธศาสตร์">
+                                    <option value="proj_not_started">ยุทธศาสตร์ ยังไม่ดำเนินการ (0%)</option>
+                                    <option value="proj_in_progress">ยุทธศาสตร์ กำลังดำเนินการ (>0%)</option>
+                                    <option value="proj_completed">ยุทธศาสตร์ แล้วเสร็จ (100%)</option>
+                                </optgroup>
+                                <optgroup label="สถานะภารกิจงานประจำ">
+                                    <option value="routine_not_started">งานประจำ ยังไม่ดำเนินการ (0%)</option>
+                                    <option value="routine_in_progress">งานประจำ กำลังดำเนินการ (>0%)</option>
+                                    <option value="routine_completed">งานประจำ แล้วเสร็จ (100%)</option>
                                 </optgroup>
                             </select>
                         </div>
@@ -528,7 +563,7 @@
     let compColorMap = {};
     let compColorIndex = 0;
 
-    // เปลี่ยนรูปเป็น Vector Icons
+    // 🌟 เพิ่มไอคอนสำหรับ 'ยุทธศาสตร์หน่วยงาน'
     const areaMapping = [
         { key: 'เดินทาง', name: '1. ด้านเดินทางดี', img: 'bma_icon01.png', icon: 'bi-car-front-fill', color: '#0071ce' },
         { key: 'ปลอดภัย', name: '2. ด้านปลอดภัยดี', img: 'bma_icon02.png', icon: 'bi-shield-fill-check', color: '#eab308' },
@@ -538,7 +573,8 @@
         { key: 'เรียน', name: '6. ด้านเรียนดี', img: 'bma_icon06.png', icon: 'bi-book-half', color: '#f97316' },
         { key: 'เศรษฐกิจ', name: '7. ด้านเศรษฐกิจดี', img: 'bma_icon07.png', icon: 'bi-graph-up-arrow', color: '#14b8a6' },
         { key: 'สังคม', name: '8. ด้านสังคมดี', img: 'bma_icon08.png', icon: 'bi-people-fill', color: '#ec4899' },
-        { key: 'บริหารจัดการ', name: '9. ด้านบริหารจัดการดี', img: 'bma_icon09.png', icon: 'bi-building-fill-gear', color: '#64748b' }
+        { key: 'บริหารจัดการ', name: '9. ด้านบริหารจัดการดี', img: 'bma_icon09.png', icon: 'bi-building-fill-gear', color: '#64748b' },
+        { key: 'ยุทธศาสตร์หน่วยงาน', name: 'ยุทธศาสตร์หน่วยงาน (งานประจำ)', img: 'bma_icon09.png', icon: 'bi-briefcase-fill', color: '#475569' }
     ];
 
     async function fetchData() {
@@ -618,7 +654,6 @@
         };
     }
 
-    // 🌟 ดึงเฉพาะ KR ID ตามต้องการ หากไม่มีกำหนดเป็น "ไม่ระบุรหัส"
     function initGlobalProjectDict(data) {
         globalProjectDict = {};
         data.forEach(row => {
@@ -640,8 +675,13 @@
         const categories = new Set(); const policies = new Set(); const components = new Set();
 
         data.forEach(row => {
-            if(row[cols.category] && row[cols.category] !== 'NaN') categories.add(String(row[cols.category]).trim());
-            if(row[cols.component] && row[cols.component] !== 'NaN') components.add(String(row[cols.component]).trim());
+            let comp = String(row[cols.component] || '').trim();
+            if(comp && comp !== 'NaN') components.add(comp);
+
+            // 🌟 แทรกยุทธศาสตร์หน่วยงานเพิ่มในฟิลเตอร์ หากมีงานประจำ
+            let cat = String(row[cols.category] || '').trim();
+            if (comp.includes('งานประจำ')) cat = 'ยุทธศาสตร์หน่วยงาน';
+            if(cat && cat !== 'NaN') categories.add(cat);
             
             let pRaw = String(row[cols.policy] || '').trim();
             if(pRaw && pRaw !== 'NaN' && pRaw !== '-' && !pRaw.includes('ไม่สอดคล้อง')) {
@@ -739,8 +779,12 @@
         const fSearch = document.getElementById('filterSearch').value.toLowerCase();
 
         let filteredData = globalData.filter(row => {
-            let compMatch = fComp === 'all' || String(row[cols.component] || '').trim() === fComp;
-            let catMatch = fCat === 'all' || String(row[cols.category] || '').trim() === fCat;
+            let comp = String(row[cols.component] || '').trim();
+            let cat = String(row[cols.category] || '').trim();
+            if (comp.includes('งานประจำ')) cat = 'ยุทธศาสตร์หน่วยงาน';
+
+            let compMatch = fComp === 'all' || comp === fComp;
+            let catMatch = fCat === 'all' || cat === fCat;
             
             let pRaw = String(row[cols.policy] || '').trim().toUpperCase();
             let policyMatch = fPolicy === 'all' || pRaw.includes(fPolicy.toUpperCase());
@@ -824,10 +868,14 @@
 
             let krKey = row[cols.krID] || krTitle; 
             let roles = checkRole(row);
-            let cat = String(row[cols.category] || 'ไม่ระบุ').trim();
             let comp = String(row[cols.component] || '').trim(); 
             
-            // 🌟 แก้ไขบั๊กตัวเลขด้วยการแปลงค่า KR ID ให้เป็น String( ) เสมอ
+            // 🌟 บังคับหมวดหมู่ "ยุทธศาสตร์หน่วยงาน" หากเป็นงานประจำ
+            let cat = String(row[cols.category] || 'ไม่ระบุ').trim();
+            if (comp.includes('งานประจำ')) {
+                cat = 'ยุทธศาสตร์หน่วยงาน';
+            }
+
             let krID_val = row[cols.krID];
             let safeKrID = (krID_val !== undefined && krID_val !== null && String(krID_val).trim() !== 'NaN') ? String(krID_val).trim() : '';
 
@@ -838,7 +886,12 @@
                     category: cat, policy: String(row[cols.policy] || '').trim(),
                     unit: String(row[cols.unit] || '-').trim(),
                     target: parseFloat(String(row[cols.krTarget]).replace(/,/g, '')) || 0,
+                    
+                    sumActual: 0,
+                    avgSum: 0,
+                    avgCount: 0,
                     accumulatedActual: 0, 
+                    
                     isH: roles.isH, isCoH: roles.isCoH, isR: roles.isR,
                     doc1: row[cols.docKR1], doc2: row[cols.docKR2],
                     projects: [], krBudget: 0, krSpent: 0
@@ -859,7 +912,12 @@
                 let pProgress = pTarget > 0 ? Math.min((pActual / pTarget) * 100, 100) : 0;
                 let calcFlag = String(row[cols.calcToKR] || '').trim();
                 
-                if(calcFlag === 'คำนวณ') krGroups[krKey].accumulatedActual += pActual;
+                if (calcFlag === 'คำนวณ' || calcFlag === 'รวมค่า') {
+                    krGroups[krKey].sumActual += pActual;
+                } else if (calcFlag === 'เฉลี่ย') {
+                    krGroups[krKey].avgSum += pActual;
+                    krGroups[krKey].avgCount++;
+                }
 
                 let projId = 'proj-' + String(krKey).replace(/\s+/g, '-') + '-' + krGroups[krKey].projects.length;
                 let pData = {
@@ -879,6 +937,11 @@
 
         let krArray = Object.values(krGroups);
         krArray.forEach(group => {
+            let finalActual = group.sumActual;
+            if (group.avgCount > 0) {
+                finalActual += (group.avgSum / group.avgCount);
+            }
+            group.accumulatedActual = finalActual;
             group.krProgressPercent = group.target > 0 ? Math.min((group.accumulatedActual / group.target) * 100, 100) : 0;
         });
 
@@ -895,39 +958,63 @@
             areaCounter[a.key] = { name: a.name, img: a.img, krCount: 0, projCount: 0 };
         });
 
-        let totalBudget = 0; let totalSpent = 0; let totalProjectsCount = 0;
+        let totalBudget = 0; let totalSpent = 0;
         let chartBudget = {}; let chartProgress = {};
 
+        // 🌟 แยกตัวนับตามประเภท (ยุทธศาสตร์ vs งานประจำ)
+        let stratKrCount = 0; let stratProjCount = 0;
+        let routineProjCount = 0;
+        
         let countH = 0, countCoH = 0, countR = 0;
+        
+        // 🌟 สถานะ KRs รวม
         let krNotStarted = 0, krInProgress = 0, krCompleted = 0;
+        
+        // 🌟 สถานะ Project ยุทธศาสตร์
         let projNotStarted = 0, projInProgress = 0, projCompleted = 0;
+        
+        // 🌟 สถานะ Project งานประจำ
+        let routineProjNotStarted = 0, routineProjInProgress = 0, routineProjCompleted = 0;
 
         let processedGlobalProjects = new Set(); 
 
         krArray.forEach((group, index) => {
+            let isRoutine = group.component.includes('งานประจำ');
+
             if (group.isH) countH++;
             if (group.isCoH) countCoH++;
             if (group.isR) countR++;
 
-            if (group.krProgressPercent === 0) krNotStarted++;
-            else if (group.krProgressPercent >= 100) krCompleted++;
-            else krInProgress++;
+            // KRs ยุทธศาสตร์ (ไม่นับงานประจำ)
+            if (!isRoutine) {
+                stratKrCount++;
+                if (group.krProgressPercent === 0) krNotStarted++;
+                else if (group.krProgressPercent >= 100) krCompleted++;
+                else krInProgress++;
+            }
 
             let gBudget = 0; let gSpent = 0;
             group.projects.forEach(p => {
-                
                 gBudget += p.budget;
                 gSpent += p.spent;
                 
                 if (!processedGlobalProjects.has(p.name)) {
                     processedGlobalProjects.add(p.name);
-                    totalProjectsCount++;
+                    
                     totalBudget += p.budget;
                     totalSpent += p.spent;
                     
-                    if (p.progress === 0) projNotStarted++;
-                    else if (p.progress >= 100) projCompleted++;
-                    else projInProgress++;
+                    if (!isRoutine) {
+                        stratProjCount++;
+                        if (p.progress === 0) projNotStarted++;
+                        else if (p.progress >= 100) projCompleted++;
+                        else projInProgress++;
+                    } else {
+                        routineProjCount++;
+                        if (p.progress === 0) routineProjNotStarted++;
+                        else if (p.progress >= 100) routineProjCompleted++;
+                        else routineProjInProgress++;
+                    }
                     
                     let cat = group.category;
                     if(!chartBudget[cat]) chartBudget[cat] = 0;
@@ -948,19 +1035,31 @@
             for (let a of areaMapping) { if(cat.includes(a.key)) { areaCounter[a.key].krCount++; break; } }
         });
 
-        document.getElementById('krNotStarted').innerText = krNotStarted;
-        document.getElementById('krInProgress').innerText = krInProgress;
-        document.getElementById('krCompleted').innerText = krCompleted;
-        document.getElementById('projNotStarted').innerText = projNotStarted;
-        document.getElementById('projInProgress').innerText = projInProgress;
-        document.getElementById('projCompleted').innerText = projCompleted;
-
+        document.getElementById('statKRs').innerText = stratKrCount.toLocaleString();
+        document.getElementById('statProjects').innerText = stratProjCount.toLocaleString();
+        document.getElementById('statRoutineProjects').innerText = routineProjCount.toLocaleString();
+        
         document.getElementById('countH').innerText = `H: ${countH}`;
         document.getElementById('countCoH').innerText = `Co-H: ${countCoH}`;
         document.getElementById('countR').innerText = `R: ${countR}`;
 
+        // 🌟 อัปเดตกล่องสถานะ
+        document.getElementById('krNotStarted').innerText = krNotStarted;
+        document.getElementById('krInProgress').innerText = krInProgress;
+        document.getElementById('krCompleted').innerText = krCompleted;
+
+        document.getElementById('projNotStarted').innerText = projNotStarted;
+        document.getElementById('projInProgress').innerText = projInProgress;
+        document.getElementById('projCompleted').innerText = projCompleted;
+
+        document.getElementById('routineProjNotStarted').innerText = routineProjNotStarted;
+        document.getElementById('routineProjInProgress').innerText = routineProjInProgress;
+        document.getElementById('routineProjCompleted').innerText = routineProjCompleted;
+
         let areaCardsHTML = '';
         Object.values(areaCounter).forEach(area => {
+            if (area.krCount === 0 && area.projCount === 0) return; // ซ่อนด้านที่ไม่มีข้อมูล
+            
             let foundArea = areaMapping.find(a => a.name === area.name);
             let fallback = foundArea ? `<i class=\\'bi ${foundArea.icon}\\' style=\\'font-size: 2.5rem; color:${foundArea.color};\\'></i>` : `<i class=\\'bi bi-compass text-primary\\' style=\\'font-size: 2.5rem;\\'></i>`;
             let imgOrIcon = `<img src="${area.img}" class="area-icon" onerror="this.outerHTML='${fallback}'">`;
@@ -972,7 +1071,7 @@
                         <div>
                             <div class="area-title">${area.name}</div>
                             <div class="area-stats">
-                                <span class="badge bg-secondary me-1">${area.krCount} KR</span>
+                                <span class="badge bg-secondary me-1">${area.krCount} รายการ</span>
                                 <span class="badge bg-primary">${area.projCount} โครงการ</span>
                             </div>
                         </div>
@@ -982,7 +1081,6 @@
         });
         document.getElementById('areaCardsContainer').innerHTML = areaCardsHTML;
 
-        // 🌟 แก้ไขบั๊กตัวเลขโดยครอบ String() เสมอ
         krArray.sort((a, b) => {
             let idA = String(a.id || 'ZZZ'); let idB = String(b.id || 'ZZZ');
             if (idA === idB) return String(a.category).localeCompare(String(b.category));
@@ -1026,8 +1124,6 @@
         });
         document.getElementById('overviewKrTableBody').innerHTML = overviewHTML;
 
-        document.getElementById('statKRs').innerText = krArray.length.toLocaleString();
-        document.getElementById('statProjects').innerText = totalProjectsCount.toLocaleString();
         document.getElementById('statBudget').innerText = window.innerWidth < 768 ? formatNumberAbbr(totalBudget) : totalBudget.toLocaleString();
         document.getElementById('statSpent').innerText = window.innerWidth < 768 ? formatNumberAbbr(totalSpent) : totalSpent.toLocaleString();
         
@@ -1047,21 +1143,41 @@
             if (fStatus === 'kr_in_progress') krArray = krArray.filter(g => g.krProgressPercent > 0 && g.krProgressPercent < 100);
             if (fStatus === 'kr_completed') krArray = krArray.filter(g => g.krProgressPercent >= 100);
             
+            // 🌟 แยกกรองยุทธศาสตร์ กับ งานประจำ
             if (fStatus === 'proj_not_started') {
+                krArray = krArray.filter(g => !g.component.includes('งานประจำ'));
                 krArray.forEach(g => g.projects = g.projects.filter(p => p.progress === 0));
                 krArray = krArray.filter(g => g.projects.length > 0);
             }
             if (fStatus === 'proj_in_progress') {
+                krArray = krArray.filter(g => !g.component.includes('งานประจำ'));
                 krArray.forEach(g => g.projects = g.projects.filter(p => p.progress > 0 && p.progress < 100));
                 krArray = krArray.filter(g => g.projects.length > 0);
             }
             if (fStatus === 'proj_completed') {
+                krArray = krArray.filter(g => !g.component.includes('งานประจำ'));
+                krArray.forEach(g => g.projects = g.projects.filter(p => p.progress >= 100));
+                krArray = krArray.filter(g => g.projects.length > 0);
+            }
+
+            // 🌟 กรองงานประจำ
+            if (fStatus === 'routine_not_started') {
+                krArray = krArray.filter(g => g.component.includes('งานประจำ'));
+                krArray.forEach(g => g.projects = g.projects.filter(p => p.progress === 0));
+                krArray = krArray.filter(g => g.projects.length > 0);
+            }
+            if (fStatus === 'routine_in_progress') {
+                krArray = krArray.filter(g => g.component.includes('งานประจำ'));
+                krArray.forEach(g => g.projects = g.projects.filter(p => p.progress > 0 && p.progress < 100));
+                krArray = krArray.filter(g => g.projects.length > 0);
+            }
+            if (fStatus === 'routine_completed') {
+                krArray = krArray.filter(g => g.component.includes('งานประจำ'));
                 krArray.forEach(g => g.projects = g.projects.filter(p => p.progress >= 100));
                 krArray = krArray.filter(g => g.projects.length > 0);
             }
         }
 
-        // 🌟 แก้ไขบั๊กตัวเลขโดยครอบ String() เสมอ
         krArray.sort((a, b) => {
             let idA = String(a.id || 'ZZZ'); let idB = String(b.id || 'ZZZ');
             if (idA === idB) return String(a.category).localeCompare(String(b.category));
@@ -1074,7 +1190,7 @@
             totalFilteredProjs += group.projects.length; 
             group.projects.forEach(p => uniqueFilteredProjs.add(p.name));
         });
-        document.getElementById('filteredCountResult').innerHTML = `<i class="bi bi-funnel-fill me-2"></i> กรองพบ: ${krArray.length} KRs / ${uniqueFilteredProjs.size} โครงการ (ไม่นับซ้ำ)`;
+        document.getElementById('filteredCountResult').innerHTML = `<i class="bi bi-funnel-fill me-2"></i> กรองพบ: ${krArray.length} รายการ / ${uniqueFilteredProjs.size} โครงการ (ไม่นับซ้ำ)`;
 
         let tableHTML = ''; let krCount = 0;
 
@@ -1154,15 +1270,17 @@
                     if (isDuplicate) {
                         projRowClass += ' proj-duplicate';
                         let tags = Array.from(krsSet).map(id => `<span class="badge bg-white text-danger border border-danger-subtle ms-1 shadow-sm">${id}</span>`).join('');
-                        duplicateUI = `<div class="mt-2 mb-1"><span class="badge-duplicate"><i class="bi bi-diagram-2-fill me-1 text-warning"></i> สนับสนุนหลาย KR: ${tags}</span></div>`;
+                        duplicateUI = `<div class="mt-2 mb-1"><span class="badge-duplicate"><i class="bi bi-diagram-2-fill me-1 text-warning"></i> สนับสนุนหลาย KR/ภารกิจ: ${tags}</span></div>`;
                     }
+
+                    let calcIcon = (['คำนวณ', 'รวมค่า', 'เฉลี่ย'].includes(proj.calcFlag)) 
+                                    ? `<i class="bi bi-flag-fill text-danger ms-2" title="นำไปคำนวณเข้า KR (${proj.calcFlag})"></i>` : '';
 
                     tableHTML += `
                         <tr class="${projRowClass} kr-child-${krRowId}">
                             <td class="ps-4 ps-md-5">
-                                <div class="text-dark" style="font-size:0.95rem;"><i class="bi bi-arrow-return-right text-muted me-1"></i> ${proj.name}</div>
+                                <div class="text-dark" style="font-size:0.95rem;"><i class="bi bi-arrow-return-right text-muted me-1"></i> ${proj.name} ${calcIcon}</div>
                                 ${duplicateUI}
-                                ${proj.calcFlag === 'คำนวณ' ? `<span class="badge-sub text-info border-info mt-1 bg-white shadow-sm"><i class="bi bi-plus-circle-fill me-1"></i> คำนวณยอดเข้า KR นี้</span>` : ''}
                             </td>
                             <td>
                                 <div class="text-muted small mb-1">เป้า: <strong class="text-dark">${proj.target.toLocaleString()}</strong>${unitLabel}</div>
@@ -1282,7 +1400,7 @@
         
         let projectsHTML = '';
         if(k.projects.length === 0) {
-            projectsHTML = '<tr><td colspan="4" class="text-center text-danger py-4">ยังไม่มีโครงการ/กิจกรรมรองรับตัวชี้วัดนี้</td></tr>';
+            projectsHTML = '<tr><td colspan="4" class="text-center text-danger py-4">ยังไม่มีโครงการ/กิจกรรมรองรับรายการนี้</td></tr>';
         } else {
             k.projects.forEach(proj => {
                 let unitLabel = proj.unit !== '-' ? `<span class="text-muted ms-1 fw-normal">${proj.unit}</span>` : '';
@@ -1292,15 +1410,17 @@
                 let duplicateUI = '';
                 if (isDuplicate) {
                     let tags = Array.from(krsSet).map(id => `<span class="badge bg-white text-danger border border-danger-subtle ms-1 shadow-sm">${id}</span>`).join('');
-                    duplicateUI = `<div class="mt-2 mb-1"><span class="badge-duplicate"><i class="bi bi-diagram-2-fill me-1 text-warning"></i> สนับสนุนหลาย KR: ${tags}</span></div>`;
+                    duplicateUI = `<div class="mt-2 mb-1"><span class="badge-duplicate"><i class="bi bi-diagram-2-fill me-1 text-warning"></i> สนับสนุนหลาย KR/ภารกิจ: ${tags}</span></div>`;
                 }
+
+                let calcIcon = (['คำนวณ', 'รวมค่า', 'เฉลี่ย'].includes(proj.calcFlag)) 
+                                ? `<i class="bi bi-flag-fill text-danger ms-2" title="นำไปคำนวณเข้า KR (${proj.calcFlag})"></i>` : '';
 
                 projectsHTML += `
                     <tr class="${isDuplicate ? 'bg-warning-subtle' : ''}">
                         <td class="text-start">
-                            <a href="javascript:void(0)" onclick="switchModalToProject('${proj.id}')" class="hover-link fw-bold text-dark text-decoration-none">${proj.name}</a>
+                            <a href="javascript:void(0)" onclick="switchModalToProject('${proj.id}')" class="hover-link fw-bold text-dark text-decoration-none">${proj.name}</a> ${calcIcon}
                             ${duplicateUI}
-                            ${proj.calcFlag === 'คำนวณ' ? `<div class="mt-1"><span class="badge-sub text-info border-info bg-white shadow-sm"><i class="bi bi-plus-circle-fill me-1"></i> คำนวณยอดเข้า KR นี้</span></div>` : ''}
                         </td>
                         <td class="text-center">
                             <span class="text-dark fw-bold">${proj.target.toLocaleString()}</span> ${unitLabel}
@@ -1338,7 +1458,7 @@
             <div class="row g-2 g-md-3 mb-4">
                 <div class="col-12 col-md-4">
                     <div class="p-3 bg-white rounded border text-center shadow-sm h-100">
-                        <div class="small text-muted mb-1">เป้าหมายรวม (KR)</div>
+                        <div class="small text-muted mb-1">เป้าหมายรวม</div>
                         <div class="fw-bold fs-4">${k.target.toLocaleString()} <span class="fs-6 text-muted fw-normal ms-1">${k.unit}</span></div>
                     </div>
                 </div>
@@ -1362,7 +1482,7 @@
             </div>
 
             <div class="bg-white p-3 p-md-4 rounded border shadow-sm">
-                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="bi bi-diagram-3 text-primary me-2"></i>รายชื่อโครงการ/กิจกรรมที่สนับสนุนตัวชี้วัดนี้</h6>
+                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="bi bi-diagram-3 text-primary me-2"></i>รายชื่อโครงการ/กิจกรรมที่สนับสนุนรายการนี้</h6>
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered align-middle mb-0">
                         <thead class="table-light text-center">
@@ -1408,7 +1528,7 @@
             <div class="bg-white p-3 p-md-4 rounded border mb-4 shadow-sm">
                 <h6 class="fw-bold text-muted mb-2"><i class="bi bi-briefcase-fill me-1"></i> ชื่อโครงการ/กิจกรรม</h6>
                 <div class="fs-5 text-dark fw-bold mb-3">${p.name}</div>
-                <h6 class="fw-bold text-muted mb-2"><i class="bi bi-link-45deg me-1"></i> ตอบสนองตัวชี้วัด (KR) ล่าสุดที่คลิก</h6>
+                <h6 class="fw-bold text-muted mb-2"><i class="bi bi-link-45deg me-1"></i> ตอบสนองตัวชี้วัด/ภารกิจ ล่าสุดที่คลิก</h6>
                 <div class="text-primary fw-medium">${p.krParentName}</div>
             </div>
             
@@ -1480,7 +1600,7 @@
         const ctxP = document.getElementById('progressChart').getContext('2d');
         progressChartInstance = new Chart(ctxP, {
             type: 'bar',
-            data: { labels: pLabels, datasets: [{ label: 'ร้อยละความสำเร็จเฉลี่ยของ KRs', data: pData, backgroundColor: '#00744b', borderRadius: 4 }] },
+            data: { labels: pLabels, datasets: [{ label: 'ร้อยละความสำเร็จเฉลี่ย (รวมงานประจำ)', data: pData, backgroundColor: '#00744b', borderRadius: 4 }] },
             options: { responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { maxRotation: 45, minRotation: 45, font: {size: 10} } }, y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false } } }
         });
     }
