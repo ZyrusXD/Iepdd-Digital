@@ -38,7 +38,7 @@
 
         .content-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; }
         .stat-box { padding: 20px; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); }
-        .stat-box h3 { font-size: 2rem; font-weight: 700; margin-bottom: 0; }
+        .stat-box h3 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0; }
         .stat-icon { position: absolute; right: -10px; bottom: -15px; font-size: 5rem; opacity: 0.15; transition: transform 0.3s;}
         .stat-box:hover .stat-icon { transform: scale(1.1) rotate(-5deg); }
 
@@ -58,7 +58,6 @@
 
         .area-card { background: white; border-radius: 12px; padding: 15px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.3s; display: flex; align-items: center; gap: 15px; }
         .area-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,116,75,0.1); border-color: var(--bma-green); }
-        .area-icon { width: 50px; height: 50px; object-fit: contain; }
         .area-title { font-weight: 700; color: #1e293b; font-size: 1.05rem; margin-bottom: 2px; }
         .area-stats { font-size: 0.85rem; color: #64748b; }
         
@@ -224,12 +223,16 @@
             <!-- ================= TAB 1: OVERVIEW ================= -->
             <div class="tab-pane fade show active" id="overview">
                 
-                <!-- 🌟 5 กล่องสถิติด้านบนสุด -->
                 <div class="row row-cols-2 row-cols-lg-5 g-3 mb-4">
                     <div class="col">
                         <div class="stat-box text-white shadow-sm h-100" style="background-color: var(--bma-green);">
                             <p class="mb-1 opacity-75 fw-medium small">ตัวชี้วัด (KRs ยุทธศาสตร์)</p>
                             <h3 id="statKRs" class="mb-1">0</h3>
+                            <div class="d-flex gap-1 flex-wrap" style="font-size: 0.7rem;">
+                                <span id="countH" class="badge bg-white text-dark opacity-100 shadow-sm border">H: 0</span>
+                                <span id="countCoH" class="badge bg-white text-dark opacity-100 shadow-sm border">Co-H: 0</span>
+                                <span id="countR" class="badge bg-white text-dark opacity-100 shadow-sm border">R: 0</span>
+                            </div>
                             <i class="bi bi-flag-fill stat-icon text-white"></i>
                         </div>
                     </div>
@@ -249,14 +252,14 @@
                     </div>
                     <div class="col">
                         <div class="stat-box h-100" style="background-color: var(--bma-light-green); color: white;">
-                            <p class="mb-1 opacity-75 fw-medium small">งบประมาณรวม (บาท)</p>
+                            <p class="mb-1 opacity-75 fw-medium small">งบประมาณรวมสุทธิ (บาท)</p>
                             <h3 id="statBudget" class="fs-4">0</h3>
                             <i class="bi bi-cash-coin stat-icon text-white"></i>
                         </div>
                     </div>
                     <div class="col">
                         <div class="stat-box h-100" style="background-color: var(--bma-orange); color: white;">
-                            <p class="mb-1 opacity-75 fw-medium small">เบิกจ่ายสะสม</p>
+                            <p class="mb-1 opacity-75 fw-medium small">เบิกจ่ายสะสมสุทธิ</p>
                             <h3 id="statSpent" class="fs-4">0</h3>
                             <div class="mt-1 d-flex align-items-center">
                                 <div class="progress flex-grow-1 me-2" style="height: 4px; background: rgba(255,255,255,0.3);">
@@ -269,7 +272,6 @@
                     </div>
                 </div>
 
-                <!-- 🌟 กล่องสถานะ KRs และ โครงการยุทธศาสตร์ -->
                 <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-activity me-2 text-primary"></i>สถานะการดำเนินงาน (คลิกเพื่อดูรายละเอียด)</h5>
                 
                 <div class="row g-2 g-md-3 mb-2">
@@ -314,7 +316,6 @@
                     </div>
                 </div>
 
-                <!-- 🌟 กล่องสถานะแยกสำหรับงานประจำโดยเฉพาะ -->
                 <div class="mt-4 mb-2 text-secondary fw-bold" style="font-size: 0.95rem;">
                     <i class="bi bi-briefcase-fill me-1 text-primary"></i> โครงการ/กิจกรรมตามภารกิจงานประจำ
                 </div>
@@ -563,18 +564,18 @@
     let compColorMap = {};
     let compColorIndex = 0;
 
-    // 🌟 เพิ่มไอคอนสำหรับ 'ยุทธศาสตร์หน่วยงาน'
+    // Vector Icons สำหรับด้านยุทธศาสตร์
     const areaMapping = [
-        { key: 'เดินทาง', name: '1. ด้านเดินทางดี', img: 'bma_icon01.png', icon: 'bi-car-front-fill', color: '#0071ce' },
-        { key: 'ปลอดภัย', name: '2. ด้านปลอดภัยดี', img: 'bma_icon02.png', icon: 'bi-shield-fill-check', color: '#eab308' },
-        { key: 'โปร่งใส', name: '3. ด้านโปร่งใสดี', img: 'bma_icon03.png', icon: 'bi-search', color: '#8b5cf6' },
-        { key: 'สิ่งแวดล้อม', name: '4. ด้านสิ่งแวดล้อมดี', img: 'bma_icon04.png', icon: 'bi-tree-fill', color: '#22c55e' },
-        { key: 'สุขภาพ', name: '5. ด้านสุขภาพดี', img: 'bma_icon05.png', icon: 'bi-heart-pulse-fill', color: '#ef4444' },
-        { key: 'เรียน', name: '6. ด้านเรียนดี', img: 'bma_icon06.png', icon: 'bi-book-half', color: '#f97316' },
-        { key: 'เศรษฐกิจ', name: '7. ด้านเศรษฐกิจดี', img: 'bma_icon07.png', icon: 'bi-graph-up-arrow', color: '#14b8a6' },
-        { key: 'สังคม', name: '8. ด้านสังคมดี', img: 'bma_icon08.png', icon: 'bi-people-fill', color: '#ec4899' },
-        { key: 'บริหารจัดการ', name: '9. ด้านบริหารจัดการดี', img: 'bma_icon09.png', icon: 'bi-building-fill-gear', color: '#64748b' },
-        { key: 'ยุทธศาสตร์หน่วยงาน', name: 'ยุทธศาสตร์หน่วยงาน (งานประจำ)', img: 'bma_icon09.png', icon: 'bi-briefcase-fill', color: '#475569' }
+        { key: 'เดินทาง', name: '1. ด้านเดินทางดี', icon: 'bi-car-front-fill', color: '#0071ce' },
+        { key: 'ปลอดภัย', name: '2. ด้านปลอดภัยดี', icon: 'bi-shield-fill-check', color: '#eab308' },
+        { key: 'โปร่งใส', name: '3. ด้านโปร่งใสดี', icon: 'bi-search', color: '#8b5cf6' },
+        { key: 'สิ่งแวดล้อม', name: '4. ด้านสิ่งแวดล้อมดี', icon: 'bi-tree-fill', color: '#22c55e' },
+        { key: 'สุขภาพ', name: '5. ด้านสุขภาพดี', icon: 'bi-heart-pulse-fill', color: '#ef4444' },
+        { key: 'เรียน', name: '6. ด้านเรียนดี', icon: 'bi-book-half', color: '#f97316' },
+        { key: 'เศรษฐกิจ', name: '7. ด้านเศรษฐกิจดี', icon: 'bi-graph-up-arrow', color: '#14b8a6' },
+        { key: 'สังคม', name: '8. ด้านสังคมดี', icon: 'bi-people-fill', color: '#ec4899' },
+        { key: 'บริหารจัดการ', name: '9. ด้านบริหารจัดการดี', icon: 'bi-building-fill-gear', color: '#64748b' },
+        { key: 'ยุทธศาสตร์หน่วยงาน', name: 'ยุทธศาสตร์หน่วยงาน (งานประจำ)', icon: 'bi-briefcase-fill', color: '#475569' }
     ];
 
     async function fetchData() {
@@ -678,7 +679,6 @@
             let comp = String(row[cols.component] || '').trim();
             if(comp && comp !== 'NaN') components.add(comp);
 
-            // 🌟 แทรกยุทธศาสตร์หน่วยงานเพิ่มในฟิลเตอร์ หากมีงานประจำ
             let cat = String(row[cols.category] || '').trim();
             if (comp.includes('งานประจำ')) cat = 'ยุทธศาสตร์หน่วยงาน';
             if(cat && cat !== 'NaN') categories.add(cat);
@@ -870,7 +870,6 @@
             let roles = checkRole(row);
             let comp = String(row[cols.component] || '').trim(); 
             
-            // 🌟 บังคับหมวดหมู่ "ยุทธศาสตร์หน่วยงาน" หากเป็นงานประจำ
             let cat = String(row[cols.category] || 'ไม่ระบุ').trim();
             if (comp.includes('งานประจำ')) {
                 cat = 'ยุทธศาสตร์หน่วยงาน';
@@ -955,25 +954,18 @@
         let krArray = buildGroups(data, true); 
         let areaCounter = {};
         areaMapping.forEach(a => {
-            areaCounter[a.key] = { name: a.name, img: a.img, krCount: 0, projCount: 0 };
+            areaCounter[a.key] = { name: a.name, krCount: 0, projCount: 0, icon: a.icon, color: a.color };
         });
 
         let totalBudget = 0; let totalSpent = 0;
         let chartBudget = {}; let chartProgress = {};
 
-        // 🌟 แยกตัวนับตามประเภท (ยุทธศาสตร์ vs งานประจำ)
         let stratKrCount = 0; let stratProjCount = 0;
         let routineProjCount = 0;
         
         let countH = 0, countCoH = 0, countR = 0;
-        
-        // 🌟 สถานะ KRs รวม
         let krNotStarted = 0, krInProgress = 0, krCompleted = 0;
-        
-        // 🌟 สถานะ Project ยุทธศาสตร์
         let projNotStarted = 0, projInProgress = 0, projCompleted = 0;
-        
-        // 🌟 สถานะ Project งานประจำ
         let routineProjNotStarted = 0, routineProjInProgress = 0, routineProjCompleted = 0;
 
         let processedGlobalProjects = new Set(); 
@@ -985,7 +977,6 @@
             if (group.isCoH) countCoH++;
             if (group.isR) countR++;
 
-            // KRs ยุทธศาสตร์ (ไม่นับงานประจำ)
             if (!isRoutine) {
                 stratKrCount++;
                 if (group.krProgressPercent === 0) krNotStarted++;
@@ -1043,7 +1034,6 @@
         document.getElementById('countCoH').innerText = `Co-H: ${countCoH}`;
         document.getElementById('countR').innerText = `R: ${countR}`;
 
-        // 🌟 อัปเดตกล่องสถานะ
         document.getElementById('krNotStarted').innerText = krNotStarted;
         document.getElementById('krInProgress').innerText = krInProgress;
         document.getElementById('krCompleted').innerText = krCompleted;
@@ -1058,16 +1048,12 @@
 
         let areaCardsHTML = '';
         Object.values(areaCounter).forEach(area => {
-            if (area.krCount === 0 && area.projCount === 0) return; // ซ่อนด้านที่ไม่มีข้อมูล
-            
-            let foundArea = areaMapping.find(a => a.name === area.name);
-            let fallback = foundArea ? `<i class=\\'bi ${foundArea.icon}\\' style=\\'font-size: 2.5rem; color:${foundArea.color};\\'></i>` : `<i class=\\'bi bi-compass text-primary\\' style=\\'font-size: 2.5rem;\\'></i>`;
-            let imgOrIcon = `<img src="${area.img}" class="area-icon" onerror="this.outerHTML='${fallback}'">`;
+            if (area.krCount === 0 && area.projCount === 0) return; 
             
             areaCardsHTML += `
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="area-card">
-                        ${imgOrIcon}
+                        <i class="bi ${area.icon} me-3" style="font-size: 2.8rem; color: ${area.color};"></i>
                         <div>
                             <div class="area-title">${area.name}</div>
                             <div class="area-stats">
@@ -1143,7 +1129,6 @@
             if (fStatus === 'kr_in_progress') krArray = krArray.filter(g => g.krProgressPercent > 0 && g.krProgressPercent < 100);
             if (fStatus === 'kr_completed') krArray = krArray.filter(g => g.krProgressPercent >= 100);
             
-            // 🌟 แยกกรองยุทธศาสตร์ กับ งานประจำ
             if (fStatus === 'proj_not_started') {
                 krArray = krArray.filter(g => !g.component.includes('งานประจำ'));
                 krArray.forEach(g => g.projects = g.projects.filter(p => p.progress === 0));
@@ -1160,7 +1145,6 @@
                 krArray = krArray.filter(g => g.projects.length > 0);
             }
 
-            // 🌟 กรองงานประจำ
             if (fStatus === 'routine_not_started') {
                 krArray = krArray.filter(g => g.component.includes('งานประจำ'));
                 krArray.forEach(g => g.projects = g.projects.filter(p => p.progress === 0));
@@ -1237,7 +1221,7 @@
                         </td>
                         <td>
                             <div class="d-flex justify-content-between small fw-bold mb-1">
-                                <span>ผลสำเร็จรวม KR</span> <span class="${group.krProgressPercent==100?'text-success':'text-primary'}">${group.krProgressPercent.toFixed(1)}%</span>
+                                <span>ผลสำเร็จรวม</span> <span class="${group.krProgressPercent==100?'text-success':'text-primary'}">${group.krProgressPercent.toFixed(1)}%</span>
                             </div>
                             <div class="progress progress-slim mb-1"><div class="progress-bar progress-bar-kpi" style="width: ${group.krProgressPercent}%;"></div></div>
                             <div class="text-muted text-end" style="font-size:0.75rem;">ทำได้ <strong class="text-dark">${group.accumulatedActual.toLocaleString()}</strong> / เป้าหมาย <strong class="text-dark">${group.target.toLocaleString()}</strong> <span class="ms-1 text-muted fw-normal">${group.unit}</span></div>
@@ -1410,7 +1394,7 @@
                 let duplicateUI = '';
                 if (isDuplicate) {
                     let tags = Array.from(krsSet).map(id => `<span class="badge bg-white text-danger border border-danger-subtle ms-1 shadow-sm">${id}</span>`).join('');
-                    duplicateUI = `<div class="mt-2 mb-1"><span class="badge-duplicate"><i class="bi bi-diagram-2-fill me-1 text-warning"></i> สนับสนุนหลาย KR/ภารกิจ: ${tags}</span></div>`;
+                    duplicateUI = `<div class="mt-2 mb-1"><span class="badge-duplicate"><i class="bi bi-diagram-2-fill me-1 text-warning"></i> สนับสนุนหลายรายการ: ${tags}</span></div>`;
                 }
 
                 let calcIcon = (['คำนวณ', 'รวมค่า', 'เฉลี่ย'].includes(proj.calcFlag)) 
@@ -1600,7 +1584,7 @@
         const ctxP = document.getElementById('progressChart').getContext('2d');
         progressChartInstance = new Chart(ctxP, {
             type: 'bar',
-            data: { labels: pLabels, datasets: [{ label: 'ร้อยละความสำเร็จเฉลี่ย (รวมงานประจำ)', data: pData, backgroundColor: '#00744b', borderRadius: 4 }] },
+            data: { labels: pLabels, datasets: [{ label: 'ร้อยละความสำเร็จเฉลี่ย', data: pData, backgroundColor: '#00744b', borderRadius: 4 }] },
             options: { responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { maxRotation: 45, minRotation: 45, font: {size: 10} } }, y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false } } }
         });
     }
